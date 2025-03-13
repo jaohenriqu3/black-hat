@@ -30,20 +30,25 @@ export default class Lobby extends Phaser.Scene {
         const tileset = this.lobby.addTilesetImage("tiletest", "tiletest");
 
         // Layers
-        this.lobby.createLayer("Chao", tileset, 0, 0);
-        this.lobby.createLayer("Parede", tileset, 0, 0);
-        const objetos = this.lobby.createLayer("Objetos", tileset, 0, 0);
+        this.lobby.createLayer("Chao", tileset, 50, 0);
+        const parede  = this.lobby.createLayer("Parede", tileset, 50, 0);
+        const objetos = this.lobby.createLayer("Objetos", tileset, 50, 0);
 
         // Player
-        this.player = new PlayerPrefab(this, 100, 100, "dante");
+        this.player = new PlayerPrefab(this, 120, 100, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
 
        // Collider
-       // objetos.setCollisionByProperty({ collider: true }); 
-       // objetos.setCollisionByExclusion([-1]); 
-       // this.physics.add.collider(this.player, objetos);
+         objetos.setCollisionByProperty({ collider: true }); 
+         objetos.setCollisionByExclusion([-1]); 
+         this.physics.add.collider(this.player, objetos);
+
+         parede.setCollisionByProperty({ collider: true}) 
+         parede.setCollisionByExclusion([-1]);  
+         this.physics.add.collider(this.player, parede);
+
 
     //Debug
        // objetos.renderDebug(this.add.graphics().setDepth(1))

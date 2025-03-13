@@ -35,7 +35,6 @@ class Boot extends Phaser.Scene {
 	}
 
 	create() {
-
 		this.scene.start("Preload");
 	}
 }
