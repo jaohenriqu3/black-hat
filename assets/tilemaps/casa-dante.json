@@ -117,7 +117,21 @@
         {
          "firstgid":1,
          "image": "./tilesets/tiletest.png",
-         "name": "tiletest"
+         "name": "tiletest",
+         "columns":37,
+         "imageheight":512,
+         "imagewidth":768,
+         "margin":0,
+         "properties":[
+                {
+                 "name":"collider",
+                 "type":"bool",
+                 "value":true
+                }],
+         "spacing":0,
+         "tilecount":1036,
+         "tileheight":16,
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",

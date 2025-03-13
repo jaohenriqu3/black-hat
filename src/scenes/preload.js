@@ -17,6 +17,7 @@ export default class Preload extends Phaser.Scene {
         this.load.image("tiles", "assets/tilesets/tilemap_packed.png"); // Tileset
         this.load.tilemapTiledJSON("map", "assets/tilemaps/delfiCity-7.json"); // Mapa JSON do Tiled
        // this.load.spritesheet("player", "assets/player.png", { frameWidth: 32, frameHeight: 32 }); // Personagem
+
     }
 
     create() {

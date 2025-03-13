@@ -1,4 +1,5 @@
-import PlayerPrefab from "../prefabs/playerPrefab.js";
+import PlayerPrefab from "../prefabs/playerPrefab.js"; 
+import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js";
 
 export default class Level extends Phaser.Scene {
 
@@ -10,37 +11,9 @@ export default class Level extends Phaser.Scene {
         // Mapa e os tilesets
         this.load.tilemapTiledJSON("delfiCity-7", "assets/tilemaps/delfiCity-7.json");
         this.load.image("tilemap_packed", "assets/tilesets/tilemap_packed.png");
+
+        preloadPlayerAnimations(this)
         
-        // Animações
-        this.load.image('dante', 'assets/sprites/dante/dante.png');
-
-        this.load.image('move-down1', 'assets/sprites/dante/move-down/dante-move-down-1.png');
-        this.load.image('move-down2', 'assets/sprites/dante/move-down/dante-move-down-2.png');
-        this.load.image('move-down3', 'assets/sprites/dante/move-down/dante-move-down-3.png'); 
-
-        this.load.image('move-left1', 'assets/sprites/dante/move-left/dante-move-left-1.png');
-        this.load.image('move-left2', 'assets/sprites/dante/move-left/dante-move-left-2.png');
-        this.load.image('move-left3', 'assets/sprites/dante/move-left/dante-move-left-3.png');
-        this.load.image('move-left4', 'assets/sprites/dante/move-left/dante-move-left-4.png');
-
-        this.load.image('move-right1', 'assets/sprites/dante/move-right/dante-move-right-1.png');
-        this.load.image('move-right2', 'assets/sprites/dante/move-right/dante-move-right-2.png');
-        this.load.image('move-right3', 'assets/sprites/dante/move-right/dante-move-right-3.png');
-        this.load.image('move-right4', 'assets/sprites/dante/move-right/dante-move-right-4.png');
-
-        this.load.image('move-up1', 'assets/sprites/dante/move-up/dante-move-up-1.png');
-        this.load.image('move-up2', 'assets/sprites/dante/move-up/dante-move-up-2.png');
-        this.load.image('move-up3', 'assets/sprites/dante/move-up/dante-move-up-3.png'); 
-
-        this.load.image('turn1', 'assets/sprites/dante/turn/dante-turn-1.png');
-        this.load.image('turn2', 'assets/sprites/dante/turn/dante-turn-2.png');
-
-        this.load.image('turn2-1', 'assets/sprites/dante/turn2/dante-turn-2-1.png');
-        this.load.image('turn2-2', 'assets/sprites/dante/turn2/dante-turn-2-2.png'); 
-
-        this.load.image('turn-up-1', 'assets/sprites/dante/turn-up/dante-turn-up-1.png');
-        this.load.image('turn-up-2', 'assets/sprites/dante/turn-up/dante-turn-up-2.png');
-
         console.log(this.textures.list);
     }
 
@@ -63,80 +36,7 @@ export default class Level extends Phaser.Scene {
         this.player = new PlayerPrefab(this, 1022, 371, "dante");
         this.physics.add.existing(this.player);
 
-        this.anims.create({
-            key: 'move-down',
-            frames: [
-                { key: 'move-down1' },
-                { key: 'move-down2' },
-                { key: 'move-down3' }
-            ],
-            frameRate: 6,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'move-left',
-            frames: [
-                { key: 'move-left1' },
-                { key: 'move-left2' },
-                { key: 'move-left3' }
-            ],
-            frameRate: 6,
-            repeat: -1
-        });
-
-
-        this.anims.create({
-            key: 'move-right',
-            frames: [
-                { key: 'move-right1' },
-                { key: 'move-right2' },
-                { key: 'move-right3' }
-            ],
-            frameRate: 6,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'move-up',
-            frames: [
-                { key: 'move-up1' },
-                { key: 'move-up2' },
-                { key: 'move-up3' }
-            ],
-            frameRate: 6,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'turn',
-            frames: [
-                { key: 'turn1' },
-                { key: 'turn2' }
-            ],
-            frameRate: 2,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'turn2',
-            frames: [
-                { key: 'turn2-1' },
-                { key: 'turn2-2' }
-            ],
-            frameRate: 2,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'turn-up',
-            frames: [
-                { key: 'turn-up-1' },
-                { key: 'turn-up-2' }
-            ],
-            frameRate: 2,
-            repeat: -1
-        });
+        PlayerAnimations(this)
 
         //Collider
         objetos.setCollisionByProperty({ collider: true }); 
@@ -151,6 +51,8 @@ export default class Level extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, this.delfiCity_7.widthInPixels, this.delfiCity_7.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
+
+
 
     update() {
         this.player.setVelocity(0);
