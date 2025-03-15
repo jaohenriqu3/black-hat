@@ -37,6 +37,6 @@ export default class Preload extends Phaser.Scene {
 
         const image = this.add.image(centerX, centerY - 70, "loadingImage").setScale(0.5).setOrigin(0.5);
         
-        this.scene.start("Level");
+        this.scene.start("Lobby");
     }
 }

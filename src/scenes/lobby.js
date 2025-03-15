@@ -35,7 +35,7 @@ export default class Lobby extends Phaser.Scene {
         const objetos = this.lobby.createLayer("Objetos", tileset, 50, 0);
 
         // Player
-        this.player = new PlayerPrefab(this, 120, 100, "dante");
+        this.player = new PlayerPrefab(this, 420, 260, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
@@ -47,7 +47,17 @@ export default class Lobby extends Phaser.Scene {
 
          parede.setCollisionByProperty({ collider: true}) 
          parede.setCollisionByExclusion([-1]);  
-         this.physics.add.collider(this.player, parede);
+         this.physics.add.collider(this.player, parede); 
+
+        // Criar zona de interação da porta
+        this.doorZone = this.physics.add.sprite(1030, 350, null).setSize(50, 50);
+        this.doorZone.setVisible(false);
+
+        
+
+        
+
+
 
 
     //Debug
