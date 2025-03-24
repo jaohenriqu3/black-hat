@@ -12,18 +12,21 @@ export default class Lobby extends Phaser.Scene {
         this.load.tilemapTiledJSON("casaDante", "assets/tilemaps/casa-dante.json");
         this.load.image("tiletest", "assets/tilesets/tiletest.png"); 
 
+        this.load.image("keyE", "assets/inputs/keyE.png");
+
         preloadPlayerAnimations(this)
         
         console.log(this.textures.list);
     }
 
-    
     create() {
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.left_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        this.right_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        this.right_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT); 
+
+        this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
         // Tilemap
         this.lobby = this.make.tilemap({ key: "casaDante" }); 
@@ -40,7 +43,7 @@ export default class Lobby extends Phaser.Scene {
 
         PlayerAnimations(this)
 
-       // Collider
+        // Collider
          objetos.setCollisionByProperty({ collider: true }); 
          objetos.setCollisionByExclusion([-1]); 
          this.physics.add.collider(this.player, objetos);
@@ -50,23 +53,40 @@ export default class Lobby extends Phaser.Scene {
          this.physics.add.collider(this.player, parede); 
 
         // Criar zona de interação da porta
-        this.doorZone = this.physics.add.sprite(1030, 350, null).setSize(50, 50);
-        this.doorZone.setVisible(false);
+        this.doorZone = this.physics.add.staticGroup();
+        const lobbyDoor = this.doorZone.create(420, 260,).setSize(50, 50).setVisible(null);
 
+        this.textBackground = this.add.rectangle(420, 275, 120, 15, 0xFFFFFF).setOrigin(0.5);
+        this.textBackground.setAlpha(0.8);
+
+        this.enterTextLobby = this.add.text(420, 275, "Pressione E para sair de casa", { fontSize: "14x", fill: "#000000" }).setOrigin(0.5).setScale(0.8)
+        this.enterTextLobby.setVisible(false); 
         
+       // this.enterTextLobby.setDepth(1);
 
-        
+        this.enterImageLobby = this.add.image(420, 300, "keyE").setOrigin(0.5).setScale(1.8);
+        this.enterImageLobby.setVisible(false); 
 
+        this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
-
-
-    //Debug
-       // objetos.renderDebug(this.add.graphics().setDepth(1))
+        //Debug
+        // objetos.renderDebug(this.add.graphics().setDepth(1))
 
         // Configurar câmera
         this.cameras.main.setZoom(2.4);
         this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
-    }
+    } 
+
+    showEnterPrompt(player, lobbyDoor) { 
+        this.enterTextLobby.setVisible(true);
+        this.enterImageLobby.setVisible(true);
+        this.textBackground.setVisible(true)
+
+        // Verifica se o player pressionou "E"
+        if (Phaser.Input.Keyboard.JustDown(this.eKey)) {  
+            this.scene.start("Level"); // Muda para a cena do Lobby
+        } 
+    } 
 
     update() {
         this.player.setVelocity(0);
@@ -98,6 +118,13 @@ export default class Lobby extends Phaser.Scene {
             } else if (this.lastDirection === "d-up") {
                 this.player.play('turn-up', true); 
             }
+        }
+
+        // Ocultar texto e imagem se o player se afastar da porta
+        if (!this.physics.overlap(this.player, this.doorZone)) {
+            this.enterTextLobby.setVisible(false);
+            this.enterImageLobby.setVisible(false); 
+            this.textBackground.setVisible(false);
         }
     }
 }

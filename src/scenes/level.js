@@ -49,9 +49,8 @@ export default class Level extends Phaser.Scene {
 
         // Criar uma zona de interação para a porta
         this.doorZone = this.physics.add.staticGroup();
-        const lobbyDoor = this.doorZone.create(1030, 350,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
+        const lobbyDoorOut = this.doorZone.create(1030, 350,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
 
-        // Texto e imagem do aviso de entrada (inicialmente invisíveis)
         this.enterText = this.add.text(1030, 330, "Pressione E para entrar em casa", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
         this.enterText.setVisible(false);
 
@@ -70,7 +69,7 @@ export default class Level extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
 
-    showEnterPrompt(player, lobbyDoor) {
+    showEnterPrompt(player, lobbyDoorOut) {
         this.enterText.setVisible(true);
         this.enterImage.setVisible(true);
 
