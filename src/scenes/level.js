@@ -12,7 +12,7 @@ export default class Level extends Phaser.Scene {
         this.load.tilemapTiledJSON("delfiCity-7", "assets/tilemaps/delfiCity-7.json");
         this.load.image("tilemap_packed", "assets/tilesets/tilemap_packed.png"); 
 
-        this.load.image("keyE", "assets/inputs/keyE.png");
+        this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
         
@@ -30,6 +30,7 @@ export default class Level extends Phaser.Scene {
 
         // Tilemap
         this.delfiCity_7 = this.make.tilemap({ key: "delfiCity-7" });
+        
         const tileset = this.delfiCity_7.addTilesetImage("city-map", "tilemap_packed");
 
         // Layers

@@ -9,10 +9,16 @@ export default class Lobby extends Phaser.Scene {
 
     preload() {
         // Mapa e os tilesets
-        this.load.tilemapTiledJSON("casaDante", "assets/tilemaps/casa-dante.json");
-        this.load.image("tiletest", "assets/tilesets/tiletest.png"); 
+        this.load.tilemapTiledJSON("casaDante", "assets/tilemaps/lobby.json");
 
-        this.load.image("keyE", "assets/inputs/keyE.png");
+        this.load.image("casa-dante2" , "assets/tilesets/casa-dante2.png");
+        this.load.image("infra", "assets/tilesets/infra.png");
+        this.load.image("sala", "assets/tilesets/sala.png");
+        this.load.image("quarto", "assets/tilesets/quarto.png");
+        this.load.image("banheiro", "assets/tilesets/banheiro.png");
+        this.load.image("cozinha", "assets/tilesets/cozinha.png");
+
+        this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
         
@@ -28,14 +34,40 @@ export default class Lobby extends Phaser.Scene {
 
         this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
-        // Tilemap
-        this.lobby = this.make.tilemap({ key: "casaDante" }); 
-        const tileset = this.lobby.addTilesetImage("tiletest", "tiletest");
+        // Tilemap 
+        console.log(this.cache.json.get("casaDante"));
+
+        this.lobby = this.make.tilemap("casaDante" ); 
+
+        const tilesInfra = this.lobby.addTilesetImage("infra", "infra");
+        const tilesCasaDante = this.lobby.addTilesetImage("casa-dante2", "casa-dante2");
+        const tilesSala = this.lobby.addTilesetImage("sala", "sala");
+        const tilesQuarto = this.lobby.addTilesetImage("quarto", "quarto");
+        const tilesBanheiro = this.lobby.addTilesetImage("banheiro", "banheiro");
+        const tilesCozinha = this.lobby.addTilesetImage("cozinha", "cozinha"); 
+
+        console.log(this.lobby.tilesets);
+
+
 
         // Layers
-        this.lobby.createLayer("Chao", tileset, 50, 0);
-        const parede  = this.lobby.createLayer("Parede", tileset, 50, 0);
-        const objetos = this.lobby.createLayer("Objetos", tileset, 50, 0);
+       // this.lobby.createLayer("Chao", tileset, 50, 0);
+
+        // Criar layers usando os tilesets corretos
+        this.lobby.createLayer("Chao", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+        this.lobby.createLayer("Chao2", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+        const parede = this.lobby.createLayer("Parede", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+        const objetos = this.lobby.createLayer("Objetos", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+
+        this.lobby.tilesets.forEach((tileset, index) => {
+            console.log(`Tileset ${index}: Name=${tileset.name}, FirstGID=${tileset.firstgid}`);
+        });
+
+        this.load.once("complete", () => {
+            console.log("Arquivos carregados:", this.cache.json.getKeys());
+        });
+
+        console.log(this.lobby.tilesets.map(ts => ({ name: ts.name, firstgid: ts.firstgid })));
 
         // Player
         this.player = new PlayerPrefab(this, 420, 260, "dante");
@@ -44,13 +76,13 @@ export default class Lobby extends Phaser.Scene {
         PlayerAnimations(this)
 
         // Collider
-         objetos.setCollisionByProperty({ collider: true }); 
-         objetos.setCollisionByExclusion([-1]); 
-         this.physics.add.collider(this.player, objetos);
+       //  objetos.setCollisionByProperty({ collider: true }); 
+        // objetos.setCollisionByExclusion([-1]); 
+       //  this.physics.add.collider(this.player, objetos);
 
-         parede.setCollisionByProperty({ collider: true}) 
-         parede.setCollisionByExclusion([-1]);  
-         this.physics.add.collider(this.player, parede); 
+        // parede.setCollisionByProperty({ collider: true}) 
+        // parede.setCollisionByExclusion([-1]);  
+        // this.physics.add.collider(this.player, parede); 
 
         // Criar zona de interação da porta
         this.doorZone = this.physics.add.staticGroup();
@@ -59,22 +91,35 @@ export default class Lobby extends Phaser.Scene {
         this.textBackground = this.add.rectangle(420, 275, 120, 15, 0xFFFFFF).setOrigin(0.5);
         this.textBackground.setAlpha(0.8);
 
-        this.enterTextLobby = this.add.text(420, 275, "Pressione E para sair de casa", { fontSize: "14x", fill: "#000000" }).setOrigin(0.5).setScale(0.8)
+        this.enterTextLobby = this.add.text(420, 275, "Pressione E para sair da casa", { fontSize: "14x", fill: "#000000" }).setOrigin(0.5).setScale(0.8)
         this.enterTextLobby.setVisible(false); 
-        
-       // this.enterTextLobby.setDepth(1);
 
         this.enterImageLobby = this.add.image(420, 300, "keyE").setOrigin(0.5).setScale(1.8);
         this.enterImageLobby.setVisible(false); 
 
-        this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
+        this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this); 
+
+        console.log(`Map size: ${this.lobby.widthInPixels}x${this.lobby.heightInPixels}`);
+
+        console.log(this.lobby);
+
+        this.lobby.tilesets.forEach((tileset, index) => {
+            console.log(`Tileset ${index}:`, tileset);
+        });
+
+
+        console.log("JSON Original:", this.cache.json.get("casaDante"));
+        console.log("Tilesets no Jogo:", this.lobby.tilesets);
+
+
+
 
         //Debug
         // objetos.renderDebug(this.add.graphics().setDepth(1))
 
         // Configurar câmera
-        this.cameras.main.setZoom(2.4);
-        this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
+        //this.cameras.main.setZoom(2.4);
+       // this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
     } 
 
     showEnterPrompt(player, lobbyDoor) { 
