@@ -9,14 +9,22 @@ export default class Lobby extends Phaser.Scene {
 
     preload() {
         // Mapa e os tilesets
-        this.load.tilemapTiledJSON("casaDante", "assets/tilemaps/lobby.json");
 
-        this.load.image("casa-dante2" , "assets/tilesets/casa-dante2.png");
-        this.load.image("infra", "assets/tilesets/infra.png");
-        this.load.image("sala", "assets/tilesets/sala.png");
-        this.load.image("quarto", "assets/tilesets/quarto.png");
-        this.load.image("banheiro", "assets/tilesets/banheiro.png");
-        this.load.image("cozinha", "assets/tilesets/cozinha.png");
+        // Mapa e os tilesets
+        this.load.tilemapTiledJSON("casaDante", "assets/tilemaps/casa-dante2.json");
+        this.load.image("tiletest", "assets/tilesets/tiletest.png"); 
+        this.load.image("infra16", "assets/tilesets/infra16.png"); 
+        this.load.image("bedroom", "assets/tilesets/bedroom.png");
+        this.load.image("room", "assets/tilesets/room.png"); 
+        this.load.image("bathroom", "assets/tilesets/bathroom.png");
+        this.load.image("kitchen", "assets/tilesets/kitchen.png");
+
+        //this.load.image("casa-dante2" , "assets/tilesets/casa-dante2.png");
+       // this.load.image("infra", "assets/tilesets/infra.png");
+       // this.load.image("sala", "assets/tilesets/sala.png");
+       // this.load.image("quarto", "assets/tilesets/quarto.png");
+       // this.load.image("banheiro", "assets/tilesets/banheiro.png");
+       // this.load.image("cozinha", "assets/tilesets/cozinha.png");
 
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
@@ -37,37 +45,39 @@ export default class Lobby extends Phaser.Scene {
         // Tilemap 
         console.log(this.cache.json.get("casaDante"));
 
-        this.lobby = this.make.tilemap("casaDante" ); 
+        this.lobby = this.make.tilemap({ key: "casaDante" });  
 
-        const tilesInfra = this.lobby.addTilesetImage("infra", "infra");
-        const tilesCasaDante = this.lobby.addTilesetImage("casa-dante2", "casa-dante2");
-        const tilesSala = this.lobby.addTilesetImage("sala", "sala");
-        const tilesQuarto = this.lobby.addTilesetImage("quarto", "quarto");
-        const tilesBanheiro = this.lobby.addTilesetImage("banheiro", "banheiro");
-        const tilesCozinha = this.lobby.addTilesetImage("cozinha", "cozinha"); 
+        const tileset = this.lobby.addTilesetImage("tiletest", "tiletest");
+        const infra = this.lobby.addTilesetImage("infra16", "infra16"); 
+        const bedroom = this.lobby.addTilesetImage("bedroom", "bedroom");
+        const room = this.lobby.addTilesetImage("room", "room");
+        const bathroom = this.lobby.addTilesetImage("bathroom", "bathroom");
+        const kitchen = this.lobby.addTilesetImage("kitchen", "kitchen");
+         
+        //const tilesInfra = this.lobby.addTilesetImage("infra", "infra");
+       // const tilesCasaDante = this.lobby.addTilesetImage("casa-dante2", "casa-dante2");
+       // const tilesSala = this.lobby.addTilesetImage("sala", "sala");
+       // const tilesQuarto = this.lobby.addTilesetImage("quarto", "quarto");
+       // const tilesBanheiro = this.lobby.addTilesetImage("banheiro", "banheiro");
+       // const tilesCozinha = this.lobby.addTilesetImage("cozinha", "cozinha"); 
 
-        console.log(this.lobby.tilesets);
-
-
+        console.log(this.lobby.tilesets); 
 
         // Layers
        // this.lobby.createLayer("Chao", tileset, 50, 0);
+       // Layers
+       this.lobby.createLayer("Chao", tileset, 50, 0); 
+       this.lobby.createLayer("Chao2", [tileset, infra, bedroom, room, bathroom, kitchen], 50, 0); 
+       const parede  = this.lobby.createLayer("Parede", tileset, 50, 0);
+       const objetos = this.lobby.createLayer("Objetos", [tileset, infra, bedroom, room, bathroom, kitchen], 50, 0);
+       const objetos2 = this.lobby.createLayer("Objetos2", [tileset, infra, bedroom, room, bathroom, kitchen], 50, 0);
+       this.lobby.createLayer("Objetos3", [tileset, infra, bedroom, room, bathroom, kitchen], 50, 0);
 
-        // Criar layers usando os tilesets corretos
-        this.lobby.createLayer("Chao", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
-        this.lobby.createLayer("Chao2", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
-        const parede = this.lobby.createLayer("Parede", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
-        const objetos = this.lobby.createLayer("Objetos", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
-
-        this.lobby.tilesets.forEach((tileset, index) => {
-            console.log(`Tileset ${index}: Name=${tileset.name}, FirstGID=${tileset.firstgid}`);
-        });
-
-        this.load.once("complete", () => {
-            console.log("Arquivos carregados:", this.cache.json.getKeys());
-        });
-
-        console.log(this.lobby.tilesets.map(ts => ({ name: ts.name, firstgid: ts.firstgid })));
+        // Lobby.json
+        //this.lobby.createLayer("Chao", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+        //this.lobby.createLayer("Chao2", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+        //const parede = this.lobby.createLayer("Parede", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+        //const objetos = this.lobby.createLayer("Objetos", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
 
         // Player
         this.player = new PlayerPrefab(this, 420, 260, "dante");
@@ -76,17 +86,17 @@ export default class Lobby extends Phaser.Scene {
         PlayerAnimations(this)
 
         // Collider
-       //  objetos.setCollisionByProperty({ collider: true }); 
-        // objetos.setCollisionByExclusion([-1]); 
-       //  this.physics.add.collider(this.player, objetos);
+       objetos.setCollisionByProperty({ collider: true }); 
+       objetos.setCollisionByExclusion([-1]); 
+       this.physics.add.collider(this.player, objetos);
 
-        // parede.setCollisionByProperty({ collider: true}) 
-        // parede.setCollisionByExclusion([-1]);  
-        // this.physics.add.collider(this.player, parede); 
+        parede.setCollisionByProperty({ collider: true}) 
+        parede.setCollisionByExclusion([-1]);  
+        this.physics.add.collider(this.player, parede); 
 
         // Criar zona de interação da porta
         this.doorZone = this.physics.add.staticGroup();
-        const lobbyDoor = this.doorZone.create(420, 260,).setSize(50, 50).setVisible(null);
+        const lobbyDoor = this.doorZone.create(420, 260,).setSize(60, 60).setVisible(null);
 
         this.textBackground = this.add.rectangle(420, 275, 120, 15, 0xFFFFFF).setOrigin(0.5);
         this.textBackground.setAlpha(0.8);
@@ -107,19 +117,15 @@ export default class Lobby extends Phaser.Scene {
             console.log(`Tileset ${index}:`, tileset);
         });
 
-
         console.log("JSON Original:", this.cache.json.get("casaDante"));
         console.log("Tilesets no Jogo:", this.lobby.tilesets);
-
-
-
 
         //Debug
         // objetos.renderDebug(this.add.graphics().setDepth(1))
 
         // Configurar câmera
-        //this.cameras.main.setZoom(2.4);
-       // this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
+        this.cameras.main.setZoom(2.4);
+        this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
     } 
 
     showEnterPrompt(player, lobbyDoor) { 
