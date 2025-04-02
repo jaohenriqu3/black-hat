@@ -19,13 +19,6 @@ export default class Lobby extends Phaser.Scene {
         this.load.image("bathroom", "assets/tilesets/bathroom.png");
         this.load.image("kitchen", "assets/tilesets/kitchen.png");
 
-        //this.load.image("casa-dante2" , "assets/tilesets/casa-dante2.png");
-       // this.load.image("infra", "assets/tilesets/infra.png");
-       // this.load.image("sala", "assets/tilesets/sala.png");
-       // this.load.image("quarto", "assets/tilesets/quarto.png");
-       // this.load.image("banheiro", "assets/tilesets/banheiro.png");
-       // this.load.image("cozinha", "assets/tilesets/cozinha.png");
-
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
@@ -35,6 +28,9 @@ export default class Lobby extends Phaser.Scene {
 
     create() {
         // Inputs
+
+        window.lastScene = "Level";
+
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.left_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -53,18 +49,8 @@ export default class Lobby extends Phaser.Scene {
         const room = this.lobby.addTilesetImage("room", "room");
         const bathroom = this.lobby.addTilesetImage("bathroom", "bathroom");
         const kitchen = this.lobby.addTilesetImage("kitchen", "kitchen");
-         
-        //const tilesInfra = this.lobby.addTilesetImage("infra", "infra");
-       // const tilesCasaDante = this.lobby.addTilesetImage("casa-dante2", "casa-dante2");
-       // const tilesSala = this.lobby.addTilesetImage("sala", "sala");
-       // const tilesQuarto = this.lobby.addTilesetImage("quarto", "quarto");
-       // const tilesBanheiro = this.lobby.addTilesetImage("banheiro", "banheiro");
-       // const tilesCozinha = this.lobby.addTilesetImage("cozinha", "cozinha"); 
-
         console.log(this.lobby.tilesets); 
 
-        // Layers
-       // this.lobby.createLayer("Chao", tileset, 50, 0);
        // Layers
        this.lobby.createLayer("Chao", tileset, 50, 0); 
        this.lobby.createLayer("Chao2", [tileset, infra, bedroom, room, bathroom, kitchen], 50, 0); 
@@ -73,14 +59,19 @@ export default class Lobby extends Phaser.Scene {
        const objetos2 = this.lobby.createLayer("Objetos2", [tileset, infra, bedroom, room, bathroom, kitchen], 50, 0);
        this.lobby.createLayer("Objetos3", [tileset, infra, bedroom, room, bathroom, kitchen], 50, 0);
 
-        // Lobby.json
-        //this.lobby.createLayer("Chao", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
-        //this.lobby.createLayer("Chao2", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
-        //const parede = this.lobby.createLayer("Parede", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
-        //const objetos = this.lobby.createLayer("Objetos", [tilesInfra, tilesCasaDante, tilesSala, tilesQuarto, tilesBanheiro, tilesCozinha], 0, 0);
+
+        let startX, startY;
+
+        if (window.lastScene === "Level") {
+            startX = 420;
+            startY = 270;
+        } else {
+            startX = 205;
+            startY = 260;
+        }
 
         // Player
-        this.player = new PlayerPrefab(this, 420, 260, "dante");
+        this.player = new PlayerPrefab(this, startX, startY, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
@@ -135,7 +126,8 @@ export default class Lobby extends Phaser.Scene {
 
         // Verifica se o player pressionou "E"
         if (Phaser.Input.Keyboard.JustDown(this.eKey)) {  
-            this.scene.start("Level"); // Muda para a cena do Lobby
+            window.lastScene = "Lobby";
+            this.scene.start("Level"); 
         } 
     } 
 

@@ -1,6 +1,7 @@
 import Preload from './scenes/preload.js'
 import Level from './scenes/level.js' 
-import Lobby from './scenes/lobby.js';
+import Lobby from './scenes/lobby.js'; 
+import Coffe from './scenes/coffeshop.js';
 
 window.addEventListener('load', function () {
 
@@ -26,6 +27,9 @@ window.addEventListener('load', function () {
 	game.scene.add("Boot", Boot, true);
 	game.scene.add("Lobby", Lobby )
 	game.scene.add("Level", Level );
+	game.scene.add("Coffe", Coffe);
+
+	window.lastScene = null;
 });
 
 class Boot extends Phaser.Scene {

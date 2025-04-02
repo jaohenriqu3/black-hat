@@ -37,8 +37,15 @@ export default class Level extends Phaser.Scene {
         this.delfiCity_7.createLayer("Chão", tileset, 0, 0);
         const objetos = this.delfiCity_7.createLayer("Objetos", tileset, 0, 0);
 
+        const spawnPositions = {
+            "Lobby": { x: 1030, y: 371 },   // Saiu da casa
+            "Coffe": { x: 680, y: 371 },    // Saiu da cafeteria
+        };
+
+        const spawn = spawnPositions[window.lastScene] || { x: 420, y: 700 }; // Padrão se não vier de outra cena
+
         // Player
-        this.player = new PlayerPrefab(this, 1030, 371, "dante");
+        this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
@@ -48,21 +55,11 @@ export default class Level extends Phaser.Scene {
         objetos.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetos); 
 
-        // Criar uma zona de interação para a porta
-        this.doorZone = this.physics.add.staticGroup();
-        const lobbyDoorOut = this.doorZone.create(1030, 350,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
 
-        this.enterText = this.add.text(1030, 330, "Pressione E para entrar em casa", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
-        this.enterText.setVisible(false);
+        this.doorZones = this.physics.add.staticGroup();
 
-        this.enterImage = this.add.image(1030, 310, "keyE").setOrigin(0.5).setScale(1.8);
-        this.enterImage.setVisible(false);
-
-        // Ativar detecção de sobreposição do player com a porta
-        this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
-
-        //Debug
-       // objetos.renderDebug(this.add.graphics().setDepth(1))
+        this.lobbyDoor = this.createDoor(1030, 350, "Pressione E para entrar em casa", "Lobby");
+        this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
 
         // Configurar câmera
         this.cameras.main.setZoom(2.0);
@@ -70,15 +67,26 @@ export default class Level extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
 
-    showEnterPrompt(player, lobbyDoorOut) {
-        this.enterText.setVisible(true);
-        this.enterImage.setVisible(true);
+   createDoor(x, y, text, sceneName) {
+    const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false);
+    door.textBackground = this.add.rectangle(x, y - 20, 220, 15, 0xFFFFFF, 0.6).setOrigin(0.5).setVisible(false); 
+    door.enterText = this.add.text(x, y - 20, text, { fontSize: "10px", fill: "#000000" }).setOrigin(0.5).setVisible(false);
+    door.enterImage = this.add.image(x, y - 40, "keyE").setOrigin(0.5).setScale(1.8).setVisible(false);
+    door.sceneName = sceneName;
 
-        // Verifica se o player pressionou "E"
-        if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
-            this.scene.start("Lobby"); // Muda para a cena do Lobby
-        }
+    this.physics.add.overlap(this.player, door, () => this.showEnterPrompt(door), null, this);
+    return door;
     }
+
+    showEnterPrompt(door) {
+    door.enterText.setVisible(true);
+    door.enterImage.setVisible(true);
+    door.textBackground.setVisible(true);
+
+    if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
+        this.scene.start(door.sceneName);
+        }
+    }   
 
     update() {
         this.player.setVelocity(0);
@@ -111,11 +119,13 @@ export default class Level extends Phaser.Scene {
 				this.player.play('turn-up', true); 
 			}
 		}
-
-        // Ocultar texto e imagem se o player se afastar da porta
-        if (!this.physics.overlap(this.player, this.doorZone)) {
-            this.enterText.setVisible(false);
-            this.enterImage.setVisible(false);
-        }
+  
+       this.doorZones.children.iterate((door) => {
+        if (!this.physics.overlap(this.player, door)) {
+            door.enterText.setVisible(false);
+            door.enterImage.setVisible(false);
+            door.textBackground.setVisible(false);
+             }
+        });
     }
 }
