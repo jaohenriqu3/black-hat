@@ -38,11 +38,12 @@ export default class Level extends Phaser.Scene {
         const objetos = this.delfiCity_7.createLayer("Objetos", tileset, 0, 0);
 
         const spawnPositions = {
-            "Lobby": { x: 1030, y: 371 },   // Saiu da casa
+            "Lobby": { x: 1030, y: 371 },   // Saiu da ceasa
             "Coffe": { x: 680, y: 371 },    // Saiu da cafeteria
+            "Doodle": { x: 210, y: 390 },   // Saiu da Doodle
         };
 
-        const spawn = spawnPositions[window.lastScene] || { x: 420, y: 700 }; // Padrão se não vier de outra cena
+        const spawn = spawnPositions[window.lastScene] || { x: 210, y: 390 }; // Padrão se não vier de outra cena
 
         // Player
         this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
@@ -60,6 +61,7 @@ export default class Level extends Phaser.Scene {
 
         this.lobbyDoor = this.createDoor(1030, 350, "Pressione E para entrar em casa", "Lobby");
         this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
+        this.doodleDoor = this.createDoor(210, 390, "Pressione E para entrar na Doodle", "Doodle");
 
         // Configurar câmera
         this.cameras.main.setZoom(2.0);

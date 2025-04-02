@@ -2,6 +2,7 @@ import Preload from './scenes/preload.js'
 import Level from './scenes/level.js' 
 import Lobby from './scenes/lobby.js'; 
 import Coffe from './scenes/coffeshop.js';
+import Doodle from './scenes/doodle.js'; 
 
 window.addEventListener('load', function () {
 
@@ -28,6 +29,7 @@ window.addEventListener('load', function () {
 	game.scene.add("Lobby", Lobby )
 	game.scene.add("Level", Level );
 	game.scene.add("Coffe", Coffe);
+	game.scene.add("Doodle", Doodle)
 
 	window.lastScene = null;
 });
