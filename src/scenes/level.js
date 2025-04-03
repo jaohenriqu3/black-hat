@@ -56,7 +56,6 @@ export default class Level extends Phaser.Scene {
         objetos.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetos); 
 
-
         this.doorZones = this.physics.add.staticGroup();
 
         this.lobbyDoor = this.createDoor(1030, 350, "Pressione E para entrar em casa", "Lobby");
@@ -86,6 +85,7 @@ export default class Level extends Phaser.Scene {
     door.textBackground.setVisible(true);
 
     if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
+        window.lastScene = "Level";
         this.scene.start(door.sceneName);
         }
     }   

@@ -54,8 +54,15 @@ export default class Doodle extends Phaser.Scene {
         const objetosDoodle2 = this.doodle.createLayer("Objetos2", [pcDoodle, stage, playsDoodle, television, music], 0, 0);
         const objetosDoodle3 = this.doodle.createLayer("Objetos3", [pcDoodle, stage, playsDoodle, television, music, logo], 0, 0);
 
-        // Player
-        this.player = new PlayerPrefab(this, 400, 400, "dante");
+        // Definir posição inicial do player
+        const spawnPositions = {
+            "Level": { x: 400, y: 400 }, // Vindo da cidade
+            "DataCenter": { x: 135, y: 75 } // Vindo do Data Center
+        };
+        const spawn = spawnPositions[window.lastScene] || { x: 400, y: 400 };
+
+        //Player
+        this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
@@ -69,20 +76,13 @@ export default class Doodle extends Phaser.Scene {
         objetosDoodle.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosDoodle); 
 
-        // Criar uma zona de interação para a porta
-        this.doorZone = this.physics.add.staticGroup();
-        const lobbyDoorOut = this.doorZone.create(400, 400,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
+        // Criar zona de interação para saída para a cidade
+        this.doorZones = this.physics.add.staticGroup();
 
-        this.textBackground = this.add.rectangle(400, 400, 200, 15, 0xFFFFFF).setOrigin(0.5);
-        this.textBackground.setAlpha(0.6);
+        this.doodleOutDoor = this.createDoor(400, 400, "Pressione E para sair da Doodle", "Level");
+        this.dataCenterDoor = this.createDoor(135, 75, "Pressione E para entrar no Data Center", "DataCenter");
 
-        this.enterText = this.add.text(400, 400, "Pressione E para sair da Doodle", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
-        this.enterText.setVisible(false);
-
-        this.enterImage = this.add.image(400, 430, "keyE").setOrigin(0.5).setScale(1.8);
-        this.enterImage.setVisible(false);
-
-        //Ativar detecção de sobreposição do player com a porta
+        // Ativar detecção de sobreposição do player com a porta
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
@@ -94,15 +94,25 @@ export default class Doodle extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
 
-    showEnterPrompt(player, lobbyDoorOut) {
-        this.enterText.setVisible(true);
-        this.enterImage.setVisible(true);
-        this.textBackground.setVisible(true)
+    createDoor(x, y, text, sceneName) {
+        const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false);
+        door.textBackground = this.add.rectangle(x, y - 10, 240, 15, 0xFFFFFF, 0.6).setOrigin(0.5).setVisible(false); 
+        door.enterText = this.add.text(x, y - 10, text, { fontSize: "10px", fill: "#000000" }).setOrigin(0.5).setVisible(false);
+        door.enterImage = this.add.image(x, y + 20, "keyE").setOrigin(0.5).setScale(1.8).setVisible(false);
+        door.sceneName = sceneName;
+    
+        this.physics.add.overlap(this.player, door, () => this.showEnterPrompt(door), null, this);
+        return door;
+    }
 
-        // Verifica se o player pressionou "E"
-        if (Phaser.Input.Keyboard.JustDown(this.eKey)) { 
+    showEnterPrompt(door) {
+        door.textBackground.setVisible(true);
+        door.enterText.setVisible(true);
+        door.enterImage.setVisible(true);
+    
+        if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
             window.lastScene = "Doodle";
-            this.scene.start("Level"); 
+            this.scene.start(door.sceneName);
         }
     }
 
@@ -138,11 +148,12 @@ export default class Doodle extends Phaser.Scene {
             }
         }
 
-        //Ocultar texto e imagem se o player se afastar da porta
-        if (!this.physics.overlap(this.player, this.doorZone)) {
-            this.enterText.setVisible(false);
-            this.enterImage.setVisible(false);
-            this.textBackground.setVisible(false);
-        }
+        this.doorZones.children.iterate((door) => {
+            if (!this.physics.overlap(this.player, door)) {
+                door.enterText.setVisible(false);
+                door.enterImage.setVisible(false);
+                door.textBackground.setVisible(false);
+                 }
+            });
     }
 }

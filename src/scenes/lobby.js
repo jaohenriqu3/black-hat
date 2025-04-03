@@ -29,7 +29,10 @@ export default class Lobby extends Phaser.Scene {
     create() {
         // Inputs
 
-        window.lastScene = "Level";
+        if (!window.lastScene) {
+            window.lastScene = "Lobby"; 
+        }
+        
 
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -66,8 +69,8 @@ export default class Lobby extends Phaser.Scene {
             startX = 420;
             startY = 270;
         } else {
-            startX = 205;
-            startY = 260;
+            startX = 200;
+            startY = 70;
         }
 
         // Player
