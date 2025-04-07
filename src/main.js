@@ -5,7 +5,8 @@ import Coffe from './scenes/coffeshop.js';
 import Doodle from './scenes/doodle.js'; 
 import DataCenter from './scenes/dataCenter.js';
 import IboDelfi from './scenes/ibodelfi.js'; 
-import IboOffice from './scenes/iboOffice.js';
+import IboOffice from './scenes/iboOffice.js'; 
+import Cassino from './scenes/cassino.js';
 
 window.addEventListener('load', function () {
 
@@ -36,6 +37,7 @@ window.addEventListener('load', function () {
 	game.scene.add("DataCenter", DataCenter);
 	game.scene.add("IboDelfi", IboDelfi)
 	game.scene.add("IboOffice", IboOffice)
+	game.scene.add("Cassino", Cassino)
 	
 	window.lastScene = null;
 });

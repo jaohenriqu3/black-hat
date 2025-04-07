@@ -38,13 +38,14 @@ export default class Level extends Phaser.Scene {
         const objetos = this.delfiCity_7.createLayer("Objetos", tileset, 0, 0);
 
         const spawnPositions = {
-            "Lobby": { x: 1030, y: 371 },   // Saiu da ceasa
-            "Coffe": { x: 680, y: 371 },    // Saiu da cafeteria
-            "Doodle": { x: 210, y: 390 },   // Saiu da Doodle
-            "IboDelfi": {x: 422, y: 345}
+            "Lobby": { x: 1030, y: 371 },   
+            "Coffe": { x: 680, y: 371 },    
+            "Doodle": { x: 210, y: 390 },   
+            "IboDelfi": {x: 422, y: 345},
+            "Cassino": {x: 1335, y: 150}
         };
 
-        const spawn = spawnPositions[window.lastScene] || { x: 422, y: 345 }; // Padrão se não vier de outra cena
+        const spawn = spawnPositions[window.lastScene] || { x: 1335, y: 150 }; // Padrão se não vier de outra cena
 
         // Player
         this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
@@ -63,6 +64,7 @@ export default class Level extends Phaser.Scene {
         this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
         this.doodleDoor = this.createDoor(210, 390, "Pressione E para entrar na Doodle", "Doodle");
         this.iboDoor = this.createDoor(422, 345, "Pressione E para entrar na IBODELFI", "IboDelfi");
+        this.cassinoDoor = this.createDoor(1335, 150, "Pressione E para entrar no cassino", "Cassino");
 
         // Configurar câmera
         this.cameras.main.setZoom(2.0);
