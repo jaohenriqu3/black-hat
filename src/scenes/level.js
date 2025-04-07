@@ -45,7 +45,7 @@ export default class Level extends Phaser.Scene {
             "Cassino": {x: 1335, y: 150}
         };
 
-        const spawn = spawnPositions[window.lastScene] || { x: 1335, y: 150 }; // Padrão se não vier de outra cena
+        const spawn = spawnPositions[window.lastScene] || { x: 405, y: 745  }; //Parque 
 
         // Player
         this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
@@ -64,10 +64,10 @@ export default class Level extends Phaser.Scene {
         this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
         this.doodleDoor = this.createDoor(210, 390, "Pressione E para entrar na Doodle", "Doodle");
         this.iboDoor = this.createDoor(422, 345, "Pressione E para entrar na IBODELFI", "IboDelfi");
-        this.cassinoDoor = this.createDoor(1335, 150, "Pressione E para entrar no cassino", "Cassino");
+        this.cassinoDoor = this.createDoor(1335, 150, "E para entrar no cassino", "Cassino");
 
-        // Configurar câmera
-        this.cameras.main.setZoom(2.0);
+        // Câmera
+        this.cameras.main.setZoom(1.0);
         this.cameras.main.setBounds(0, 0, this.delfiCity_7.widthInPixels, this.delfiCity_7.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
@@ -98,22 +98,22 @@ export default class Level extends Phaser.Scene {
         this.player.setVelocity(0);
 
 		if (this.left_key.isDown){
-			this.player.setVelocityX(-50);
+			this.player.setVelocityX(-100);
 			this.player.play('move-left' , true);
 			this.lastDirection = "d-left";
 		} 
 		else if (this.right_key.isDown){
-			this.player.setVelocityX(50);
+			this.player.setVelocityX(100);
 			this.player.play('move-right', true);
 			this.lastDirection = "d-right";
 		}
 		else if (this.up_key.isDown){
-			this.player.setVelocityY(-50); 
+			this.player.setVelocityY(-110); 
 			this.player.play('move-up', true)
 			this.lastDirection = "d-up";
 		} 
 		else if (this.down_key.isDown){
-			this.player.setVelocityY(50);
+			this.player.setVelocityY(100);
 			this.player.play('move-down', true);
 			this.lastDirection = "d-right";
 	    } else {

@@ -70,12 +70,12 @@ export default class Cassino extends Phaser.Scene {
         //Definir posição inicial do player
         const spawnPositions = { 
              "Level": { x: 270, y: 410 }, 
-             "CassinoOffice": { x: 435, y: 55 }   
+             "CassinoOffice": { x: 450, y:55 }   
          } 
         const spawn = spawnPositions[window.lastScene] || {  x: 270, y: 410 };
 
         //Player
-        this.player = new PlayerPrefab(this, 270, 410, "dante");
+        this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
