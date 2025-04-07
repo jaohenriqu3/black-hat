@@ -1,3 +1,5 @@
+import TelaInicial from './screens/initialScreen.js';
+
 import Preload from './scenes/preload.js'
 import Level from './scenes/level.js' 
 import Lobby from './scenes/lobby.js'; 
@@ -28,6 +30,8 @@ window.addEventListener('load', function () {
             }
 		}
 	});
+
+	game.scene.add("TelaInicial", TelaInicial);
 
 	game.scene.add("Preload", Preload);
 	game.scene.add("Boot", Boot, true);

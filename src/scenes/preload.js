@@ -21,7 +21,7 @@ export default class Preload extends Phaser.Scene {
        });
         
        
-       this.load.image("loadingImage", "assets/preload/hat.png");
+        this.load.image("loadingImage", "assets/preload/hat.png");
         const image = this.add.image(centerX, centerY - 70, "loadingImage").setScale(0.5).setOrigin(0.5);
 
     }
@@ -31,6 +31,6 @@ export default class Preload extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
-        this.scene.start("Level");
+        this.scene.start("TelaInicial");
     }
 }
