@@ -1,5 +1,7 @@
 import PlayerPrefab from "../prefabs/playerPrefab.js";
 import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
+import { addMenuButton } from '../components/menuButton/menuButton.js'; 
+import { EscMenu } from "../components/menuButton/menuESC.js";
 
 export default class DataCenter extends Phaser.Scene {
 
@@ -8,7 +10,9 @@ export default class DataCenter extends Phaser.Scene {
     }
 
     preload() {
-        // Mapa e os tilesets
+        this.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
+
+        
         this.load.tilemapTiledJSON("dataCenter", "assets/tilemaps/data-center.json");
 
         this.load.image("baseData", "assets/tilesets/walls.png"); 
@@ -22,6 +26,10 @@ export default class DataCenter extends Phaser.Scene {
     }
 
     create() {
+
+        addMenuButton(this); 
+        EscMenu(this)
+
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -126,6 +134,14 @@ export default class DataCenter extends Phaser.Scene {
             } else if (this.lastDirection === "d-up") {
                 this.player.play('turn-up', true); 
             }
+        } 
+
+        if (this.menuButton) {
+            const cam = this.cameras.main;
+            const screenPos = cam.getWorldPoint(0, 0); // pega o ponto superior esquerdo visível da câmera
+            const margin = 10;
+    
+            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
         }
 
         //Ocultar texto e imagem se o player se afastar da porta

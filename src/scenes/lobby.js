@@ -1,5 +1,7 @@
 import PlayerPrefab from "../prefabs/playerPrefab.js";
-import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js";
+import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
+import { addMenuButton } from '../components/menuButton/menuButton.js';
+import { EscMenu } from "../components/menuButton/menuESC.js";
 
 export default class Lobby extends Phaser.Scene {
 
@@ -8,7 +10,7 @@ export default class Lobby extends Phaser.Scene {
     }
 
     preload() {
-        // Mapa e os tilesets
+        this.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
 
         // Mapa e os tilesets
         this.load.tilemapTiledJSON("casaDante", "assets/tilemaps/casa-dante2.json");
@@ -27,12 +29,16 @@ export default class Lobby extends Phaser.Scene {
     }
 
     create() {
-        // Inputs
 
+        this.scale.startFullscreen();
+        
         if (!window.lastScene) {
             window.lastScene = "Lobby"; 
         }
-        
+        // Inputs
+
+        addMenuButton(this);
+        EscMenu(this)
 
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -120,6 +126,7 @@ export default class Lobby extends Phaser.Scene {
         // Configurar câmera
         this.cameras.main.setZoom(2.4);
         this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
+
     } 
 
     showEnterPrompt(player, lobbyDoor) { 
@@ -134,8 +141,8 @@ export default class Lobby extends Phaser.Scene {
         } 
     } 
 
-    update() {
-        this.player.setVelocity(0);
+    update() {  
+         this.player.setVelocity(0);
 
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
@@ -165,6 +172,14 @@ export default class Lobby extends Phaser.Scene {
                 this.player.play('turn-up', true); 
             }
         }
+
+    if (this.menuButton) {
+        const cam = this.cameras.main;
+        const screenPos = cam.getWorldPoint(0, 0); // pega o ponto superior esquerdo visível da câmera
+        const margin = 10;
+
+        this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
+    }
 
         // Ocultar texto e imagem se o player se afastar da porta
         if (!this.physics.overlap(this.player, this.doorZone)) {

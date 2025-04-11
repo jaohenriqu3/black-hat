@@ -9,9 +9,12 @@ export default class TelaInicial extends Phaser.Scene {
     }
 
     create() {
+
+        this.scale.startFullscreen();
+
         this.add.image(700, 400, "telaInicial").setOrigin(0.5) 
 
-    this.fullText = "Pressione ENTER para jogar";
+    this.fullText = "Pressione ENTER para começar";
     this.currentText = "";
 
     this.enterText = this.add.text(700, 550, "", {

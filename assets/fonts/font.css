@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'VHS-GOTHIC';
+    src: url('./VHS-GOTHIC.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+} 
+
+@font-face {
+    font-family: 'VCR-OSD-MONO';
+    src: url('./VCR_OSD_MONO_1.001.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

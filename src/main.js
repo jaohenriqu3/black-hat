@@ -1,4 +1,5 @@
 import TelaInicial from './screens/initialScreen.js';
+import Menu from './screens/menuScreen.js';
 
 import Preload from './scenes/preload.js'
 import Level from './scenes/level.js' 
@@ -9,7 +10,8 @@ import DataCenter from './scenes/dataCenter.js';
 import IboDelfi from './scenes/ibodelfi.js'; 
 import IboOffice from './scenes/iboOffice.js'; 
 import Cassino from './scenes/cassino.js';
-import CassinoOffice from './scenes/cassinoOffice.js';
+import CassinoOffice from './scenes/cassinoOffice.js'; 
+
 
 window.addEventListener('load', function () {
 
@@ -31,7 +33,8 @@ window.addEventListener('load', function () {
 		}
 	});
 
-	game.scene.add("TelaInicial", TelaInicial);
+	game.scene.add("TelaInicial", TelaInicial); 
+	game.scene.add("Menu", Menu);
 
 	game.scene.add("Preload", Preload);
 	game.scene.add("Boot", Boot, true);
