@@ -1,5 +1,6 @@
 import TelaInicial from './screens/initialScreen.js';
-import Menu from './screens/menuScreen.js';
+import Menu from './screens/menuScreen.js'; 
+import DantePC from './screens/dantePC.js';
 
 import Preload from './scenes/preload.js'
 import Level from './scenes/level.js' 
@@ -35,6 +36,7 @@ window.addEventListener('load', function () {
 
 	game.scene.add("TelaInicial", TelaInicial); 
 	game.scene.add("Menu", Menu);
+	game.scene.add("DantePC", DantePC)
 
 	game.scene.add("Preload", Preload);
 	game.scene.add("Boot", Boot, true);

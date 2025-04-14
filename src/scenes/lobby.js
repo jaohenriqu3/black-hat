@@ -1,7 +1,9 @@
 import PlayerPrefab from "../prefabs/playerPrefab.js";
 import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
 import { addMenuButton } from '../components/menuButton/menuButton.js';
-import { EscMenu } from "../components/menuButton/menuESC.js";
+import { EscMenu } from "../components/menuButton/menuESC.js"; 
+import CoreBar from "../components/coreBar/coreBar.js";
+
 
 export default class Lobby extends Phaser.Scene {
 
@@ -30,13 +32,13 @@ export default class Lobby extends Phaser.Scene {
 
     create() {
 
-        this.scale.startFullscreen();
+       // this.scale.startFullscreen();
         
         if (!window.lastScene) {
             window.lastScene = "Lobby"; 
         }
-        // Inputs
 
+        this.coreBar = new CoreBar(this, 10, 50);
         addMenuButton(this);
         EscMenu(this)
 
@@ -173,13 +175,18 @@ export default class Lobby extends Phaser.Scene {
             }
         }
 
-    if (this.menuButton) {
-        const cam = this.cameras.main;
-        const screenPos = cam.getWorldPoint(0, 0); // pega o ponto superior esquerdo visível da câmera
-        const margin = 10;
-
-        this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
-    }
+        if (this.menuButton && this.coreBar) {
+            const cam = this.cameras.main;
+            const screenPos = cam.getWorldPoint(0, 0);
+            const margin = 10;
+        
+            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
+        
+            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin - 5;
+            const coreBarY = screenPos.y + margin + 5;
+        
+            this.coreBar.setPosition(coreBarX, coreBarY);
+        }
 
         // Ocultar texto e imagem se o player se afastar da porta
         if (!this.physics.overlap(this.player, this.doorZone)) {

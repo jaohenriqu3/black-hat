@@ -10,7 +10,7 @@ export default class TelaInicial extends Phaser.Scene {
 
     create() {
 
-        this.scale.startFullscreen();
+       // this.scale.startFullscreen();
 
         this.add.image(700, 400, "telaInicial").setOrigin(0.5) 
 

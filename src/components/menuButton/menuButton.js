@@ -1,6 +1,5 @@
 export function preloadMenuButton(scene) {
   scene.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
-
 }
 
 export function addMenuButton(scene) { 
@@ -13,8 +12,8 @@ export function addMenuButton(scene) {
       .setDepth(1000)
       .on('pointerdown', () => {
         const currentScene = scene.scene.key;
-        scene.scene.pause(currentScene); // Pausa a cena atual
-        scene.scene.launch('Menu', { returnTo: currentScene }); // Passa a info da cena atual
+        scene.scene.pause(currentScene);
+        scene.scene.launch('Menu', { returnTo: currentScene }); 
       });
   
       scene.menuButton = icon;

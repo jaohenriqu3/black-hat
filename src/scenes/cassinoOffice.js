@@ -2,6 +2,7 @@ import PlayerPrefab from "../prefabs/playerPrefab.js";
 import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
 import { addMenuButton } from '../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../components/menuButton/menuESC.js";
+import CoreBar from "../components/coreBar/coreBar.js";
 
 export default class CassinoOffice extends Phaser.Scene {
 
@@ -34,7 +35,8 @@ export default class CassinoOffice extends Phaser.Scene {
     create() {
 
         addMenuButton(this);
-        EscMenu(this)
+        EscMenu(this) 
+        this.coreBar = new CoreBar(this, 10, 50);
 
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -167,15 +169,19 @@ export default class CassinoOffice extends Phaser.Scene {
             }
         } 
 
-        if (this.menuButton) {
+        if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
-            const screenPos = cam.getWorldPoint(0, 0); // pega o ponto superior esquerdo visível da câmera
+            const screenPos = cam.getWorldPoint(0, 0);
             const margin = 10;
-    
+        
             this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
+        
+            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin - 5;
+            const coreBarY = screenPos.y + margin + 5;
+        
+            this.coreBar.setPosition(coreBarX, coreBarY);
         }
 
-        //Ocultar texto e imagem se o player se afastar da porta
         if (!this.physics.overlap(this.player, this.doorZone)) {
             this.enterText.setVisible(false);
             this.enterImage.setVisible(false);
