@@ -4,6 +4,9 @@ import { addMenuButton } from '../components/menuButton/menuButton.js';
 import { EscMenu } from "../components/menuButton/menuESC.js"; 
 import CoreBar from "../components/coreBar/coreBar.js";
 
+import CoinBar from "../components/coinBar/coinBar.js"; 
+import Wallet from "../components/coinBar/walletState.js";
+
 
 export default class IboOffice extends Phaser.Scene {
 
@@ -14,6 +17,10 @@ export default class IboOffice extends Phaser.Scene {
     preload() {
 
         this.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
+
+        this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
+        this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
+        this.load.image("ficha", "assets/inputs/UI/coins/ficha.png");
 
         this.load.tilemapTiledJSON("iboOffice", "assets/tilemaps/iboOffice.json");
 
@@ -35,6 +42,7 @@ export default class IboOffice extends Phaser.Scene {
         EscMenu(this)
         addMenuButton(this);
         this.coreBar = new CoreBar(this, 10, 50);
+        this.coinBar = new CoinBar(this, this.cameras.main.width); 
 
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -78,7 +86,7 @@ export default class IboOffice extends Phaser.Scene {
         objetosOffice2.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosOffice2);
 
-        // Criar uma zona de interação para a porta
+        
         this.doorZone = this.physics.add.staticGroup();
         const dataCenterDoor = this.doorZone.create(315, 270,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
 
@@ -91,13 +99,11 @@ export default class IboOffice extends Phaser.Scene {
         this.enterImage = this.add.image(315, 300, "keyE").setOrigin(0.5).setScale(1.8);
         this.enterImage.setVisible(false);
 
-        //Ativar detecção de sobreposição do player com a porta
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
         //objetos.renderDebug(this.add.graphics().setDepth(1))
 
-        // Configurar câmera
         this.cameras.main.setZoom(2.5);
         this.cameras.main.setBounds(0, 0, this.IboOffice.widthInPixels, this.IboOffice.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -108,7 +114,6 @@ export default class IboOffice extends Phaser.Scene {
         this.enterImage.setVisible(true);
         this.textBackground.setVisible(true)
 
-        // Verifica se o player pressionou "E"
         if (Phaser.Input.Keyboard.JustDown(this.eKey)) { 
             window.lastScene = "IboOffice";
             this.scene.start("IboDelfi"); 
@@ -152,15 +157,28 @@ export default class IboOffice extends Phaser.Scene {
             const screenPos = cam.getWorldPoint(0, 0);
             const margin = 10;
         
-            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
+            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin - 5);
         
-            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin - 5;
-            const coreBarY = screenPos.y + margin + 5;
+            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin ;
+            const coreBarY = screenPos.y + margin ;
         
             this.coreBar.setPosition(coreBarX, coreBarY);
         }
 
-        //Ocultar texto e imagem se o player se afastar da porta
+        if (this.coinBar) {
+            const cam = this.cameras.main;
+            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const margin = 5;
+        
+            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+
+            const coinBarX = screenPos.x - coinBarWidth - margin;
+            const coinBarY = screenPos.y + margin + 3;
+        
+            this.coinBar.setPosition(coinBarX, coinBarY);
+            this.coinBar.container.setScale(0.5)
+        }
+
         if (!this.physics.overlap(this.player, this.doorZone)) {
             this.enterText.setVisible(false);
             this.enterImage.setVisible(false);

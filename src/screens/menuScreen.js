@@ -24,7 +24,6 @@ export default class Menu extends Phaser.Scene {
         this.add.rectangle(0, 0, width, height, 0x000000, 0.5)
             .setOrigin(0);
 
-        // Painel principal (como se fosse uma tela de terminal neon)
         const panel = this.add.rectangle(width / 2, height / 2, 1300, 700, 0xAD7E51)
 
         const closeButton = this.add.image((width / 2) - 650 + 20, (height / 2) - 350 + 20, 'closeIcon')
@@ -39,7 +38,7 @@ export default class Menu extends Phaser.Scene {
         this.returnToGame();
     });
 
-        // Título MENU
+        // MENU
         const title = this.add.text(width / 2, 150, 'MENU', {
             fontSize: '99px',
             fontFamily: 'Lucida Console',
@@ -89,7 +88,6 @@ export default class Menu extends Phaser.Scene {
     handleButton(action) {
         switch (action) {
             case 'Settings':
-                // abrir menu de ajustes futuramente
                 console.log("Abrir Ajustes");
                 break;
             case 'Controls':
@@ -108,10 +106,8 @@ export default class Menu extends Phaser.Scene {
         const width = 1400;
         const height = 800;
     
-        // Overlay semi-transparente
         const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.6).setOrigin(0).setDepth(999);
     
-        // Painel central
         const popup = this.add.rectangle(width / 2, height / 2, 500, 300, 0x2f2f2f)
             .setStrokeStyle(3, 0xffffff)
             .setDepth(1000);
@@ -122,7 +118,7 @@ export default class Menu extends Phaser.Scene {
             color: '#ffffff',
         }).setOrigin(0.5).setDepth(1000);
     
-        // Botão "Sim"
+        // "Sim"
         const yesButton = this.add.rectangle(width / 2 - 100, height / 2 + 50, 120, 50, 0x555555)
             .setInteractive({ useHandCursor: true })
             .on('pointerover', () => yesButton.setFillStyle(0x777777))
@@ -141,7 +137,7 @@ export default class Menu extends Phaser.Scene {
             fontFamily: 'monospace'
         }).setOrigin(0.5).setDepth(1000);
     
-        // Botão "Não"
+        // "Não"
         const noButton = this.add.rectangle(width / 2 + 100, height / 2 + 50, 120, 50, 0x555555)
             .setInteractive({ useHandCursor: true })
             .on('pointerover', () => noButton.setFillStyle(0x777777))
@@ -165,7 +161,6 @@ export default class Menu extends Phaser.Scene {
     }
     
 
-    update() {
-        
+    update() {    
     }
 }

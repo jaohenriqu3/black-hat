@@ -3,6 +3,8 @@ import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animations
 import { addMenuButton } from '../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../components/menuButton/menuESC.js";
 import CoreBar from "../components/coreBar/coreBar.js";
+import CoinBar from "../components/coinBar/coinBar.js"; 
+import Wallet from "../components/coinBar/walletState.js"; 
 
 export default class Doodle extends Phaser.Scene {
 
@@ -36,7 +38,7 @@ export default class Doodle extends Phaser.Scene {
         addMenuButton(this);
         EscMenu(this) 
         this.coreBar = new CoreBar(this, 10, 50);
-
+        this.coinBar = new CoinBar(this, this.cameras.main.width); 
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -85,19 +87,18 @@ export default class Doodle extends Phaser.Scene {
         objetosDoodle.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosDoodle); 
 
-        // Criar zona de interação para saída para a cidade
+        
         this.doorZones = this.physics.add.staticGroup();
 
         this.doodleOutDoor = this.createDoor(400, 400, "Pressione E para sair da Doodle", "Level");
         this.dataCenterDoor = this.createDoor(135, 75, "Pressione E para entrar no Data Center", "DataCenter");
 
-        // Ativar detecção de sobreposição do player com a porta
+      
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
         //objetos.renderDebug(this.add.graphics().setDepth(1))
 
-        // Configurar câmera
         this.cameras.main.setZoom(2.4);
         this.cameras.main.setBounds(0, 0, this.doodle.widthInPixels, this.doodle.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -163,13 +164,27 @@ export default class Doodle extends Phaser.Scene {
             const screenPos = cam.getWorldPoint(0, 0);
             const margin = 10;
         
-            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
+            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin - 5);
         
-            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin - 5;
-            const coreBarY = screenPos.y + margin + 5;
+            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin ;
+            const coreBarY = screenPos.y + margin ;
         
             this.coreBar.setPosition(coreBarX, coreBarY);
         }
+
+        if (this.coinBar) {
+            const cam = this.cameras.main;
+            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const margin = 5;
+        
+            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+
+            const coinBarX = screenPos.x - coinBarWidth - margin;
+            const coinBarY = screenPos.y + margin + 3;
+        
+            this.coinBar.setPosition(coinBarX, coinBarY);
+            this.coinBar.container.setScale(0.5)
+        } 
 
         this.doorZones.children.iterate((door) => {
             if (!this.physics.overlap(this.player, door)) {

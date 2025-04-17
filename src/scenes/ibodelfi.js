@@ -3,6 +3,8 @@ import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animations
 import { addMenuButton } from '../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../components/menuButton/menuESC.js";
 import CoreBar from "../components/coreBar/coreBar.js";
+import CoinBar from "../components/coinBar/coinBar.js"; 
+import Wallet from "../components/coinBar/walletState.js"; 
 
 export default class IboDelfi extends Phaser.Scene {
 
@@ -33,6 +35,7 @@ export default class IboDelfi extends Phaser.Scene {
         addMenuButton(this);
         EscMenu(this)
         this.coreBar = new CoreBar(this, 10, 50);
+        this.coinBar = new CoinBar(this, this.cameras.main.width); 
 
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -58,7 +61,7 @@ export default class IboDelfi extends Phaser.Scene {
         const iboObjetos2 = this.iboDelfi.createLayer("Objetos2", [iboInfra, iboInfra2, iboInfra3, iboIntens], 30, 0);
         const iboObjetos3 = this.iboDelfi.createLayer("Objetos3", [iboInfra, iboInfra2, iboInfra3, iboIntens], 30, 0);
         
-        // Definir posição inicial do player
+       
         const spawnPositions = {
             "Level": { x: 390, y: 255 }, 
             "IboOffice": { x: 435, y: 55 } 
@@ -80,13 +83,13 @@ export default class IboDelfi extends Phaser.Scene {
         iboObjetos.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, iboObjetos); 
 
-        //Criar zona de interação para saída para a cidade
+       
         this.doorZones = this.physics.add.staticGroup();
 
         this.iboOutDoor = this.createDoor(390, 255, "Pressione E para sair da IBODELFI", "Level");
         this.iboOfficeDoor = this.createDoor(435, 55, "Pressione E para entrar no escritório", "IboOffice");
 
-        //Ativar detecção de sobreposição do player com a porta
+    
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
@@ -157,13 +160,27 @@ export default class IboDelfi extends Phaser.Scene {
             const screenPos = cam.getWorldPoint(0, 0);
             const margin = 10;
         
-            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin);
+            this.menuButton.setPosition(screenPos.x + margin, screenPos.y + margin - 5);
         
-            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin - 5;
-            const coreBarY = screenPos.y + margin + 5;
+            const coreBarX = this.menuButton.x + this.menuButton.displayWidth + margin ;
+            const coreBarY = screenPos.y + margin ;
         
             this.coreBar.setPosition(coreBarX, coreBarY);
         }
+
+        if (this.coinBar) {
+            const cam = this.cameras.main;
+            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const margin = 5;
+        
+            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+
+            const coinBarX = screenPos.x - coinBarWidth - margin;
+            const coinBarY = screenPos.y + margin + 3;
+        
+            this.coinBar.setPosition(coinBarX, coinBarY);
+            this.coinBar.container.setScale(0.5)
+        } 
 
         this.doorZones.children.iterate((door) => {
             if (!this.physics.overlap(this.player, door)) {
