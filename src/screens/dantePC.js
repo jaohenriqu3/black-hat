@@ -1,5 +1,8 @@
 import CoreBar from "../components/coreBar/coreBar.js";
 
+import CoinBar from "../components/coinBar/coinBar.js";
+import Wallet from "../components/coinBar/walletState.js";
+
 export default class DantePC extends Phaser.Scene { 
 
     constructor() {
@@ -8,6 +11,13 @@ export default class DantePC extends Phaser.Scene {
 
     preload() {
         this.load.image("dantePC", "assets/screens/dantePC.png"); 
+        this.load.image("shop", "assets/inputs/UI/shop/cart.png"); 
+        this.load.image("shop-black", "assets/inputs/UI/shop/cart-black.png");  
+
+        this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
+        this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
+        this.load.image("ficha", "assets/inputs/UI/coins/ficha.png");
+
         this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     }
 
@@ -15,6 +25,9 @@ export default class DantePC extends Phaser.Scene {
 
       this.coreBar = new CoreBar(this, 1220, 15);
       this.coreBar.container.setScale(3.0)
+
+      this.coinBar = new CoinBar(this, 980, 50); 
+      this.coinBar.container.setScale(1.1)
 
       this.add.image(700, 450 ,"dantePC"); 
 
@@ -53,6 +66,13 @@ export default class DantePC extends Phaser.Scene {
 
       this.title4 = this.add.text(410, 370, "Capítulo 4", 
       { fontSize: "24px", fill: "#000000", fontFamily: 'monospace',}).setOrigin(0.5); 
+
+      this.shopBackground = this.add.rectangle(815, 190, 250, 150, 0xC5C5C5).setOrigin(0.5); 
+      this.add.image(810, 170, "shop-black").setScale();
+      this.shopText = this.add.text(815, 230, "Shop", 
+        { fontSize: "24px", fill: "#000000", fontFamily: 'monospace',}).setOrigin(0.5); 
+
+      this.puzzleBackground = this.add.rectangle(815, 350, 250, 150, 0xC5C5C5).setOrigin(0.5);
 
     } 
 
