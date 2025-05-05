@@ -1,14 +1,15 @@
+import PlayerState from "../../state/playerState.js"; 
+
 export default class CoreBar {
     constructor(scene, x, y, maxCores = 10) {
         this.scene = scene;
         this.maxCores = maxCores;
-        this.currentCores = maxCores;
         this.margin = 10;
 
-        // Container principal
-        this.container = scene.add.container(x, y).setDepth(1000);
+        // estado global
+        this.currentCores = PlayerState.getCores();
 
-        // Fundo da barra
+        this.container = scene.add.container(x, y).setDepth(1000);
         const barWidth = 50;
         const barHeight = 10;
         const background = scene.add.rectangle(0, 0, barWidth, barHeight, 0x222222)
@@ -16,7 +17,6 @@ export default class CoreBar {
             .setStrokeStyle(1.5, 0x988774);
         this.container.add(background);
 
-        // Retângulos dos cores
         this.coreRects = [];
         const coreWidth = (barWidth - (maxCores + 1) * 2) / maxCores;
         const coreHeight = barHeight - 4;
@@ -26,29 +26,29 @@ export default class CoreBar {
             this.container.add(rect);
             this.coreRects.push(rect);
         }
+
+        this.updateCores(PlayerState.getCores());
     }
 
     setPosition(x, y) {
         this.container.setPosition(x, y);
     }
 
-    // Atualiza a quantidade de cores exibidos
     updateCores(newCount) {
         this.currentCores = Phaser.Math.Clamp(newCount, 0, this.maxCores);
+        PlayerState.setCores(this.currentCores);
         for (let i = 0; i < this.maxCores; i++) {
             this.coreRects[i].setVisible(i < this.currentCores);
         }
     }
 
-    // Reduz um core
     loseCore() {
-        if (this.currentCores > 0) {
-            this.updateCores(this.currentCores - 1);
-        }
+        PlayerState.loseCore();
+        this.updateCores(PlayerState.getCores());
     }
 
-    // Restaura todos os cores
     resetCores() {
-        this.updateCores(this.maxCores);
+        PlayerState.resetCores();
+        this.updateCores(PlayerState.getCores());
     }
 }

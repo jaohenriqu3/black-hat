@@ -3,10 +3,14 @@ import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animations
 import { addMenuButton } from '../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../components/menuButton/menuESC.js";
 
-import CoreBar from "../components/coreBar/coreBar.js";
+import CoreBar from "../components/coreBar/coreBar.js"; 
+import PlayerState from "../state/playerState.js";
 
 import CoinBar from "../components/coinBar/coinBar.js";
-import Wallet from "../components/coinBar/walletState.js";
+import Wallet from "../components/coinBar/walletState.js"; 
+
+import { preloadNPCAnimations, NPCAnimations } from "../prefabs/NPCs/test/testAnimation.js";
+import NpcPrefab from "../prefabs/NPCs/test/testPrefab.js";
 
 export default class Level extends Phaser.Scene {
 
@@ -27,8 +31,7 @@ export default class Level extends Phaser.Scene {
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
-        
-        console.log(this.textures.list);
+        preloadNPCAnimations(this);
     }
 
     create() {
@@ -39,7 +42,6 @@ export default class Level extends Phaser.Scene {
         this.coreBar = new CoreBar(this, 10, 50); 
         this.coinBar = new CoinBar(this, this.cameras.main.width); 
         
-
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -65,15 +67,23 @@ export default class Level extends Phaser.Scene {
             "Cassino": {x: 1335, y: 150}
         };
 
-        const spawn = spawnPositions[window.lastScene] || { x: 405, y: 745  }; //Parque 
+        const spawn = spawnPositions[window.lastScene] || { x: 405, y: 745  }; 
 
         //Parque: x: 405, y: 745
         
         // Player
         this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
         this.physics.add.existing(this.player);
-
         PlayerAnimations(this)
+
+        //NPC 
+         this.npc = new NpcPrefab(this, 650, 390, 'npc-test');
+       //  this.physics.add.collider(this.npc, objetos);
+         NPCAnimations(this);
+
+         this.physics.add.collider(this.player, this.npc)
+
+
 
         //Collider
         objetos.setCollisionByProperty({ collider: true }); 
@@ -89,7 +99,7 @@ export default class Level extends Phaser.Scene {
         this.cassinoDoor = this.createDoor(1335, 150, "E para entrar no cassino", "Cassino");
 
         // Câmera
-        this.cameras.main.setZoom(2.4);
+        this.cameras.main.setZoom(2.2);
         this.cameras.main.setBounds(0, 0, this.delfiCity_7.widthInPixels, this.delfiCity_7.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
@@ -116,7 +126,7 @@ export default class Level extends Phaser.Scene {
         }
     }   
 
-    update() {
+    update(time, delta) {
         this.player.setVelocity(0);
 
 		if (this.left_key.isDown){
@@ -148,6 +158,8 @@ export default class Level extends Phaser.Scene {
 			}
 		} 
 
+        this.npc.update(time, delta);
+
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
             const screenPos = cam.getWorldPoint(0, 0);
@@ -163,10 +175,10 @@ export default class Level extends Phaser.Scene {
 
         if (this.coinBar) {
             const cam = this.cameras.main;
-            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const screenPos = cam.getWorldPoint(cam.width, 0); 
             const margin = 5;
         
-            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+            const coinBarWidth = this.coinBar.container.width || 180; 
 
             const coinBarX = screenPos.x - coinBarWidth - margin;
             const coinBarY = screenPos.y + margin + 3;

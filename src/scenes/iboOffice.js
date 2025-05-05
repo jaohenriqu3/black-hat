@@ -2,7 +2,8 @@ import PlayerPrefab from "../prefabs/playerPrefab.js";
 import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
 import { addMenuButton } from '../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../components/menuButton/menuESC.js"; 
-import CoreBar from "../components/coreBar/coreBar.js";
+import CoreBar from "../components/coreBar/coreBar.js"; 
+import PlayerState from "../state/playerState.js";
 
 import CoinBar from "../components/coinBar/coinBar.js"; 
 import Wallet from "../components/coinBar/walletState.js";
@@ -86,7 +87,6 @@ export default class IboOffice extends Phaser.Scene {
         objetosOffice2.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosOffice2);
 
-        
         this.doorZone = this.physics.add.staticGroup();
         const dataCenterDoor = this.doorZone.create(315, 270,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
 
@@ -167,10 +167,10 @@ export default class IboOffice extends Phaser.Scene {
 
         if (this.coinBar) {
             const cam = this.cameras.main;
-            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const screenPos = cam.getWorldPoint(cam.width, 0); 
             const margin = 5;
         
-            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+            const coinBarWidth = this.coinBar.container.width || 180; 
 
             const coinBarX = screenPos.x - coinBarWidth - margin;
             const coinBarY = screenPos.y + margin + 3;

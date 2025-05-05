@@ -5,6 +5,7 @@ import { EscMenu } from "../components/menuButton/menuESC.js";
 import CoreBar from "../components/coreBar/coreBar.js";
 import CoinBar from "../components/coinBar/coinBar.js"; 
 import Wallet from "../components/coinBar/walletState.js"; 
+import PlayerState from "../state/playerState.js";
 
 export default class DataCenter extends Phaser.Scene {
 
@@ -15,7 +16,6 @@ export default class DataCenter extends Phaser.Scene {
     preload() {
         this.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
 
-        
         this.load.tilemapTiledJSON("dataCenter", "assets/tilemaps/data-center.json");
 
         this.load.image("baseData", "assets/tilesets/walls.png"); 
@@ -152,10 +152,10 @@ export default class DataCenter extends Phaser.Scene {
 
         if (this.coinBar) {
             const cam = this.cameras.main;
-            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const screenPos = cam.getWorldPoint(cam.width, 0); 
             const margin = 5;
         
-            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+            const coinBarWidth = this.coinBar.container.width || 180; 
 
             const coinBarX = screenPos.x - coinBarWidth - margin;
             const coinBarY = screenPos.y + margin + 3;

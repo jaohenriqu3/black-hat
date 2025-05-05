@@ -5,6 +5,7 @@ import { EscMenu } from "../components/menuButton/menuESC.js";
 import CoreBar from "../components/coreBar/coreBar.js";
 import CoinBar from "../components/coinBar/coinBar.js"; 
 import Wallet from "../components/coinBar/walletState.js"; 
+import PlayerState from "../state/playerState.js";
 
 export default class Doodle extends Phaser.Scene {
 
@@ -38,7 +39,8 @@ export default class Doodle extends Phaser.Scene {
         addMenuButton(this);
         EscMenu(this) 
         this.coreBar = new CoreBar(this, 10, 50);
-        this.coinBar = new CoinBar(this, this.cameras.main.width); 
+        this.coinBar = new CoinBar(this, this.cameras.main.width);
+
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.down_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -65,10 +67,9 @@ export default class Doodle extends Phaser.Scene {
         const objetosDoodle2 = this.doodle.createLayer("Objetos2", [pcDoodle, stage, playsDoodle, television, music], 0, 0);
         const objetosDoodle3 = this.doodle.createLayer("Objetos3", [pcDoodle, stage, playsDoodle, television, music, logo], 0, 0);
 
-        // Definir posição inicial do player
         const spawnPositions = {
-            "Level": { x: 400, y: 400 }, // Vindo da cidade
-            "DataCenter": { x: 135, y: 75 } // Vindo do Data Center
+            "Level": { x: 400, y: 400 }, 
+            "DataCenter": { x: 135, y: 75 } 
         };
         const spawn = spawnPositions[window.lastScene] || { x: 400, y: 400 };
 
@@ -174,11 +175,10 @@ export default class Doodle extends Phaser.Scene {
 
         if (this.coinBar) {
             const cam = this.cameras.main;
-            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const screenPos = cam.getWorldPoint(cam.width, 0); 
             const margin = 5;
         
-            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
-
+            const coinBarWidth = this.coinBar.container.width || 180; 
             const coinBarX = screenPos.x - coinBarWidth - margin;
             const coinBarY = screenPos.y + margin + 3;
         

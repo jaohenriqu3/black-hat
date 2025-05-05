@@ -1,4 +1,3 @@
-// walletState.js
 const Wallet = {
     delfir: 800,
     ditcoin: 0,

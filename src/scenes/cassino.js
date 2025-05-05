@@ -3,6 +3,7 @@ import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animations
 import { addMenuButton } from '../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../components/menuButton/menuESC.js";
 import CoreBar from "../components/coreBar/coreBar.js";
+import PlayerState from "../state/playerState.js";
 
 import CoinBar from "../components/coinBar/coinBar.js"; 
 import Wallet from "../components/coinBar/walletState.js"; 
@@ -84,7 +85,7 @@ export default class Cassino extends Phaser.Scene {
         const objetosCassino4 = this.cassino.createLayer("Objetos4", [gamesCassino, itemsCassino, itemsCassino2, itemsCassino3, itemsCassino4, itemsCassino5, 
             itemsCassino6, itemsCassino7, itemsCassino8, infraCassino], 30, 0);
 
-        //Definir posição inicial do player
+        
         const spawnPositions = { 
              "Level": { x: 270, y: 410 }, 
              "CassinoOffice": { x: 450, y:55 }   
@@ -114,13 +115,11 @@ export default class Cassino extends Phaser.Scene {
         objetosCassino4.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosCassino4); 
 
-        //Criar zona de interação para saída para a cidade
         this.doorZones = this.physics.add.staticGroup();
 
         this.cassinoOutDoor = this.createDoor(270, 430, "Pressione E para sair do Cassino", "Level");
         this.cassiboOfficeDoor = this.createDoor(455, 55, "Pressione E para entrar no escritório", "CassinoOffice");
 
-        //Ativar detecção de sobreposição do player com a porta
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
@@ -201,10 +200,10 @@ export default class Cassino extends Phaser.Scene {
 
         if (this.coinBar) {
             const cam = this.cameras.main;
-            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const screenPos = cam.getWorldPoint(cam.width, 0); 
             const margin = 5;
         
-            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+            const coinBarWidth = this.coinBar.container.width || 180; 
 
             const coinBarX = screenPos.x - coinBarWidth - margin;
             const coinBarY = screenPos.y + margin + 3;

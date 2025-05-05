@@ -1,4 +1,5 @@
-import CoreBar from "../components/coreBar/coreBar.js";
+import PlayerState from "../state/playerState.js";
+import CoreBar from "../components/coreBar/coreBar.js"; 
 
 import CoinBar from "../components/coinBar/coinBar.js";
 import Wallet from "../components/coinBar/walletState.js";
@@ -127,8 +128,8 @@ export default class DantePC extends Phaser.Scene {
         });
     
         const shopData = [
-            {
-                name: "Recarregar Core",
+            {name: "Recarregar Core",
+                
                 icon: "core-bar",
                 price: "R$ 4,90",
                 scale: 0.8
@@ -175,12 +176,33 @@ export default class DantePC extends Phaser.Scene {
                 fontFamily: "monospace"
             }).setOrigin(0.5).setDepth(11);
     
-            // Torna clicável para futuras funções
+            
             bg.setInteractive();
+
             bg.on("pointerdown", () => {
-                console.log(`Clique em: ${itemData.name}`);
-                // Aqui poderá colocar a lógica para comprar ou recarregar core, etc.
-            });
+                console.log(`Clique em: ${itemData.name}`); 
+
+                if (itemData.name === "Recarregar Core") {
+                    this.coreBar.resetCores();
+                    console.log("Cores recarregadas!");
+                    return;
+                }
+            
+                const delfirMap = {
+                    "500 Delfir": 500,
+                    "2000 Delfir": 2000,
+                    "10000 Delfir": 10000,
+                };
+            
+                if (delfirMap[itemData.name]) {
+                    const amount = delfirMap[itemData.name];
+    
+                    Wallet.add("delfir", amount);
+                    PlayerState.addCoin("delfir", amount);
+                    this.coinBar._refreshDisplay();
+            
+                    console.log(`Adicionados ${amount} Delfir`) 
+            }});
     
             this.shopItems.push(bg, icon, label, price);
         });

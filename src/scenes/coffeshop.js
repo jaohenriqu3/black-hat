@@ -2,7 +2,8 @@ import PlayerPrefab from "../prefabs/playerPrefab.js";
 import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
 import { addMenuButton } from '../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../components/menuButton/menuESC.js"; 
-import CoreBar from "../components/coreBar/coreBar.js";
+import CoreBar from "../components/coreBar/coreBar.js"; 
+import PlayerState from "../state/playerState.js";
 
 import CoinBar from "../components/coinBar/coinBar.js"; 
 import Wallet from "../components/coinBar/walletState.js"; 
@@ -80,7 +81,6 @@ export default class Coffe extends Phaser.Scene {
         coffeeObjetos.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, coffeeObjetos); 
 
-        // Criar uma zona de interação para a porta
         this.doorZone = this.physics.add.staticGroup();
         const lobbyDoorOut = this.doorZone.create(210, 260,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
 
@@ -93,13 +93,11 @@ export default class Coffe extends Phaser.Scene {
         this.enterImage = this.add.image(210, 290, "keyE").setOrigin(0.5).setScale(1.8);
         this.enterImage.setVisible(false);
 
-        //Ativar detecção de sobreposição do player com a porta
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
         //objetos.renderDebug(this.add.graphics().setDepth(1))
 
-        // Configurar câmera
         this.cameras.main.setZoom(2.4);
         this.cameras.main.setBounds(0, 0, this.coffeShop.widthInPixels, this.coffeShop.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
@@ -164,10 +162,10 @@ export default class Coffe extends Phaser.Scene {
 
         if (this.coinBar) {
             const cam = this.cameras.main;
-            const screenPos = cam.getWorldPoint(cam.width, 0); // canto superior direito
+            const screenPos = cam.getWorldPoint(cam.width, 0); 
             const margin = 5;
         
-            const coinBarWidth = this.coinBar.container.width || 180; // largura do container (padrão 180)
+            const coinBarWidth = this.coinBar.container.width || 180; 
 
             const coinBarX = screenPos.x - coinBarWidth - margin;
             const coinBarY = screenPos.y + margin + 3;
@@ -176,7 +174,6 @@ export default class Coffe extends Phaser.Scene {
             this.coinBar.container.setScale(0.5)
         } 
 
-        // Ocultar texto e imagem se o player se afastar da porta
         if (!this.physics.overlap(this.player, this.doorZone)) {
             this.enterText.setVisible(false);
             this.enterImage.setVisible(false);
