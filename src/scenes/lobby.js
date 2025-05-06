@@ -24,7 +24,6 @@ export default class Lobby extends Phaser.Scene {
         this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
         this.load.image("ficha", "assets/inputs/UI/coins/ficha.png");
 
-
         this.load.tilemapTiledJSON("casaDante", "assets/tilemaps/casa-dante2.json");
         this.load.image("tiletest", "assets/tilesets/tiletest.png"); 
         this.load.image("infra16", "assets/tilesets/infra16.png"); 
@@ -32,6 +31,8 @@ export default class Lobby extends Phaser.Scene {
         this.load.image("room", "assets/tilesets/room.png"); 
         this.load.image("bathroom", "assets/tilesets/bathroom.png");
         this.load.image("kitchen", "assets/tilesets/kitchen.png");
+
+        this.load.audio('step', 'assets/audios/steps/indoor-footsteps.mp3');
 
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
@@ -94,6 +95,13 @@ export default class Lobby extends Phaser.Scene {
 
         PlayerAnimations(this)
 
+        //Som
+        this.stepSound = this.sound.add('step', {
+            loop: true,
+            volume: 1.5, 
+            rate: 1.3
+        }); 
+        
         // Collider
         objetos.setCollisionByProperty({ collider: true }); 
         objetos.setCollisionByExclusion([-1]); 
@@ -137,27 +145,34 @@ export default class Lobby extends Phaser.Scene {
     }
    
     update() {  
+
+        let moving = false;
+
          this.player.setVelocity(0);
 
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
             this.player.play('move-left' , true);
             this.lastDirection = "d-left";
+            moving = true;
         } 
         else if (this.right_key.isDown){
             this.player.setVelocityX(50);
             this.player.play('move-right', true);
             this.lastDirection = "d-right";
+            moving = true;
         }
         else if (this.up_key.isDown){
             this.player.setVelocityY(-50); 
             this.player.play('move-up', true)
             this.lastDirection = "d-up";
+            moving = true;
         } 
         else if (this.down_key.isDown){
             this.player.setVelocityY(50);
             this.player.play('move-down', true);
             this.lastDirection = "d-right";
+            moving = true;
         } else {
             if (this.lastDirection === "d-right") {
                 this.player.play('turn', true);
@@ -166,6 +181,14 @@ export default class Lobby extends Phaser.Scene {
             } else if (this.lastDirection === "d-up") {
                 this.player.play('turn-up', true); 
             }
+        }
+
+        if (moving) {
+            if (!this.stepSound.isPlaying) {
+                this.stepSound.play();
+            }
+        } else {
+            this.stepSound.stop();
         }
 
         if (this.menuButton && this.coreBar) {

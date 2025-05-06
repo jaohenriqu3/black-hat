@@ -28,6 +28,10 @@ export default class Level extends Phaser.Scene {
         this.load.tilemapTiledJSON("delfiCity-7", "assets/tilemaps/delfiCity-7.json");
         this.load.image("tilemap_packed", "assets/tilesets/tilemap_packed.png"); 
 
+        this.load.audio('out-step', 'assets/audios/steps/outside-footsteps.mp3');
+        this.load.audio('city', 'assets/audios/city/city-sound.mp3');
+
+
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
@@ -76,14 +80,33 @@ export default class Level extends Phaser.Scene {
         this.physics.add.existing(this.player);
         PlayerAnimations(this)
 
+        //Som
+        this.citySound = this.sound.add('city', {
+            loop: true,
+            volume: 1.0, 
+            rate: 1.0
+        }); 
+
+        this.citySound.play();
+
+        this.events.on('shutdown', () => {
+            if (this.citySound && this.citySound.isPlaying) {
+            this.citySound.stop();
+            }
+        });
+
+        this.stepSound = this.sound.add('out-step', {
+            loop: true,
+            volume: 1.0, 
+            rate: 1.0
+        });
+
         //NPC 
          this.npc = new NpcPrefab(this, 650, 390, 'npc-test');
-       //  this.physics.add.collider(this.npc, objetos);
+        //this.physics.add.collider(this.npc, objetos);
          NPCAnimations(this);
 
          this.physics.add.collider(this.player, this.npc)
-
-
 
         //Collider
         objetos.setCollisionByProperty({ collider: true }); 
@@ -127,27 +150,34 @@ export default class Level extends Phaser.Scene {
     }   
 
     update(time, delta) {
+
+        let moving = false; 
+
         this.player.setVelocity(0);
 
 		if (this.left_key.isDown){
 			this.player.setVelocityX(-50);
 			this.player.play('move-left' , true);
 			this.lastDirection = "d-left";
+            moving = true;
 		} 
 		else if (this.right_key.isDown){
 			this.player.setVelocityX(50);
 			this.player.play('move-right', true);
 			this.lastDirection = "d-right";
+            moving = true; 
 		}
 		else if (this.up_key.isDown){
 			this.player.setVelocityY(-50); 
 			this.player.play('move-up', true)
-			this.lastDirection = "d-up";
+			this.lastDirection = "d-up"; 
+            moving = true; 
 		} 
 		else if (this.down_key.isDown){
 			this.player.setVelocityY(50);
 			this.player.play('move-down', true);
 			this.lastDirection = "d-right";
+            moving = true; 
 	    } else {
 			if (this.lastDirection === "d-right") {
 				this.player.play('turn', true);
@@ -157,6 +187,14 @@ export default class Level extends Phaser.Scene {
 				this.player.play('turn-up', true); 
 			}
 		} 
+
+        if (moving) {
+            if (!this.stepSound.isPlaying) {
+                this.stepSound.play();
+            }
+        } else {
+            this.stepSound.stop();
+        }
 
         this.npc.update(time, delta);
 
