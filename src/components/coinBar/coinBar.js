@@ -9,16 +9,16 @@ export default class CoinBar {
             fill: "#FFFFFF",
         };
 
-        this.delfirIcon = scene.add.image(200, 10, "delfir").setDisplaySize(16, 16).setOrigin(0.5);
-        this.delfirText = scene.add.text(215, 0, Wallet.get("delfir"), style).setOrigin(0, 0.5);
+        this.delfirIcon = scene.add.image(170, 10, "delfir").setDisplaySize(16, 16).setOrigin(0.5);
+        this.delfirText = scene.add.text(185, 0, Wallet.get("delfir"), style).setOrigin(0, 0.5);
 
-        this.ditcoinIcon = scene.add.image(260, 0, "ditcoin").setDisplaySize(16, 16).setOrigin(0.5);
-        this.ditcoinText = scene.add.text(275, 0, Wallet.get("ditcoin"), style).setOrigin(0.5);
+        this.ditcoinIcon = scene.add.image(250, 0, "ditcoin").setDisplaySize(16, 16).setOrigin(0.5);
+        this.ditcoinText = scene.add.text(265, 0, Wallet.get("ditcoin"), style).setOrigin(0.5);
 
         this.fichaIcon = scene.add.image(320, 0, "ficha").setDisplaySize(16, 16).setOrigin(0.5);
         this.fichaText = scene.add.text(335, 0, Wallet.get("ficha"), style).setOrigin(0.5);
 
-        this.background = scene.add.rectangle(180, 15, 180, 30, 0x303030)
+        this.background = scene.add.rectangle(150, 15, 210, 30, 0x303030)
             .setOrigin(0, 0.5);
 
         this.container = scene.add.container(x, y, [

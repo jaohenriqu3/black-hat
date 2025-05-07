@@ -95,10 +95,17 @@ export default class Level extends Phaser.Scene {
             }
         });
 
+        //Step
         this.stepSound = this.sound.add('out-step', {
             loop: true,
             volume: 1.0, 
             rate: 1.0
+        });
+
+        this.events.on('shutdown', () => {
+            if (this.StepSound && this.StepSound.isPlaying) {
+            this.stepSound.stop();
+            }
         });
 
         //NPC 
@@ -145,6 +152,7 @@ export default class Level extends Phaser.Scene {
 
     if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
         window.lastScene = "Level";
+        this.stepSound.stop();
         this.scene.start(door.sceneName);
         }
     }   

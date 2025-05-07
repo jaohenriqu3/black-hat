@@ -29,6 +29,8 @@ export default class Coffe extends Phaser.Scene {
         this.load.image("walls", "assets/tilesets/tiletest.png"); 
         this.load.image("cashier", "assets/tilesets/cashier.png");
 
+        this.load.audio('step', 'assets/audios/steps/indoor-footsteps.mp3');
+
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
@@ -68,7 +70,14 @@ export default class Coffe extends Phaser.Scene {
 
         // Player
         this.player = new PlayerPrefab(this, 205, 260, "dante");
-        this.physics.add.existing(this.player);
+        this.physics.add.existing(this.player); 
+
+        //Som
+        this.stepSound = this.sound.add('step', {
+            loop: true,
+            volume: 1.5, 
+            rate: 1.3
+        }); 
 
         PlayerAnimations(this)
 
@@ -116,27 +125,35 @@ export default class Coffe extends Phaser.Scene {
     }
 
     update() {
+
+        let moving = false; 
+
         this.player.setVelocity(0);
 
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
             this.player.play('move-left' , true);
-            this.lastDirection = "d-left";
+            this.lastDirection = "d-left"; 
+            moving = true;
         } 
         else if (this.right_key.isDown){
             this.player.setVelocityX(50);
             this.player.play('move-right', true);
-            this.lastDirection = "d-right";
+            this.lastDirection = "d-right"; 
+            moving = true;
+
         }
         else if (this.up_key.isDown){
             this.player.setVelocityY(-50); 
             this.player.play('move-up', true)
             this.lastDirection = "d-up";
+            moving = true;
         } 
         else if (this.down_key.isDown){
             this.player.setVelocityY(50);
             this.player.play('move-down', true);
             this.lastDirection = "d-right";
+            moving = true;
         } else {
             if (this.lastDirection === "d-right") {
                 this.player.play('turn', true);
@@ -146,6 +163,14 @@ export default class Coffe extends Phaser.Scene {
                 this.player.play('turn-up', true); 
             }
         } 
+
+        if (moving) {
+            if (!this.stepSound.isPlaying) {
+                this.stepSound.play();
+            }
+        } else {
+            this.stepSound.stop();
+        }
 
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
