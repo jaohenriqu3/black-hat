@@ -126,6 +126,7 @@ export default class Menu extends Phaser.Scene {
             .on('pointerdown', () => {
                 window.close()
 
+
                 // Fallback: redirecionar pra uma tela final ou URL
                 // window.location.href = "https://google.com"; // ou qualquer outra página
             })
