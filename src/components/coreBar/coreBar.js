@@ -1,4 +1,4 @@
-import PlayerState from "../../state/playerState.js"; 
+import GameState from "../../state/gameState.js";
 
 export default class CoreBar {
     constructor(scene, x, y, maxCores = 10) {
@@ -7,7 +7,7 @@ export default class CoreBar {
         this.margin = 10;
 
         // estado global
-        this.currentCores = PlayerState.getCores();
+        this.currentCores = GameState.getCore();
 
         this.container = scene.add.container(x, y).setDepth(1000);
         const barWidth = 50;
@@ -27,28 +27,29 @@ export default class CoreBar {
             this.coreRects.push(rect);
         }
 
-        this.updateCores(PlayerState.getCores());
+        this._refreshDisplay();
     }
 
+    _refreshDisplay() {
+        const currentCores = GameState.getCore();
+
+        for (let i = 0; i < this.maxCores; i++) {
+            this.coreRects[i].setFillStyle(i < currentCores ? 0x1EC988 : 0x222222);
+        }
+    }
+
+    
     setPosition(x, y) {
         this.container.setPosition(x, y);
     }
 
-    updateCores(newCount) {
-        this.currentCores = Phaser.Math.Clamp(newCount, 0, this.maxCores);
-        PlayerState.setCores(this.currentCores);
-        for (let i = 0; i < this.maxCores; i++) {
-            this.coreRects[i].setVisible(i < this.currentCores);
-        }
-    }
-
     loseCore() {
-        PlayerState.loseCore();
-        this.updateCores(PlayerState.getCores());
+        GameState.loseCore();
+        this._refreshDisplay();
     }
 
     resetCores() {
-        PlayerState.resetCores();
-        this.updateCores(PlayerState.getCores());
+        GameState.setCore(this.maxCores);
+        this._refreshDisplay();
     }
 }

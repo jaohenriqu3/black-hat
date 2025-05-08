@@ -1,18 +1,17 @@
-import PlayerPrefab from "../prefabs/playerPrefab.js"; 
-import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
-import { addMenuButton } from '../components/menuButton/menuButton.js'; 
-import { EscMenu } from "../components/menuButton/menuESC.js";
+import PlayerPrefab from "../../prefabs/playerPrefab.js"; 
+import { PlayerAnimations, preloadPlayerAnimations } from "../../prefabs/animationsPlayer.js"; 
+import { addMenuButton } from '../../components/menuButton/menuButton.js'; 
+import { EscMenu } from "../../components/menuButton/menuESC.js";
 
-import CoreBar from "../components/coreBar/coreBar.js"; 
-import PlayerState from "../state/playerState.js";
+import CoreBar from "../../components/coreBar/coreBar.js"; 
+import CoinBar from "../../components/coinBar/coinBar.js";
 
-import CoinBar from "../components/coinBar/coinBar.js";
-import Wallet from "../components/coinBar/walletState.js"; 
+import GameState from "../../state/gameState.js";
 
-import { preloadNPCAnimations, NPCAnimations } from "../prefabs/NPCs/test/testAnimation.js";
-import NpcPrefab from "../prefabs/NPCs/test/testPrefab.js";
+import { preloadNPCAnimations, NPCAnimations } from "../../prefabs/NPCs/test/testAnimation.js";
+import NpcPrefab from "../../prefabs/NPCs/test/testPrefab.js";
 
-export default class Level extends Phaser.Scene {
+export default class DelfiCity extends Phaser.Scene {
 
     constructor() {
         super("Level");

@@ -1,31 +1,29 @@
-import PlayerPrefab from "../prefabs/playerPrefab.js";
-import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
-import { addMenuButton } from '../components/menuButton/menuButton.js'; 
-import { EscMenu } from "../components/menuButton/menuESC.js";
-import CoreBar from "../components/coreBar/coreBar.js";
-import CoinBar from "../components/coinBar/coinBar.js"; 
-import Wallet from "../components/coinBar/walletState.js"; 
-import PlayerState from "../state/playerState.js";
+import PlayerPrefab from "../../prefabs/playerPrefab.js";
+import { PlayerAnimations, preloadPlayerAnimations } from "../../prefabs/animationsPlayer.js"; 
+import { addMenuButton } from '../../components/menuButton/menuButton.js'; 
+import { EscMenu } from "../../components/menuButton/menuESC.js";
 
-export default class Doodle extends Phaser.Scene {
+import CoreBar from "../../components/coreBar/coreBar.js";
+import CoinBar from "../../components/coinBar/coinBar.js"; 
+
+import GameState from "../../state/gameState.js";
+
+export default class IboDelfi extends Phaser.Scene {
 
     constructor() {
-        super("Doodle");
+        super("IboDelfi");
     }
 
     preload() {
         this.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
 
-        this.load.tilemapTiledJSON("doodle", "assets/tilemaps/doodle.json");
+        this.load.tilemapTiledJSON("iboDelfi", "assets/tilemaps/ibodelfi.json");
 
-        this.load.image("wallsDoodle", "assets/tilesets/walls.png"); 
-        this.load.image("pcDoodle", "assets/tilesets/infra16.png")
-        this.load.image("stage", "assets/tilesets/stage.png"); 
-        this.load.image("plays", "assets/tilesets/plays.png"); 
-        this.load.image("television", "assets/tilesets/television.png");
-        this.load.image("music", "assets/tilesets/music.png");
-        this.load.image("logo", "assets/tilesets/tilemap_packed.png");
-        
+        this.load.image("iboWalls", "assets/tilesets/walls.png"); 
+        this.load.image("iboInfra", "assets/tilesets/infra2.png"); 
+        this.load.image("iboInfra2", "assets/tilesets/board.png"); 
+        this.load.image("iboInfra3", "assets/tilesets/infra16.png")
+        this.load.image("iboIntens", "assets/tilesets/utils.png");
 
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
@@ -35,11 +33,11 @@ export default class Doodle extends Phaser.Scene {
     }
 
     create() {
-
+        
         addMenuButton(this);
-        EscMenu(this) 
+        EscMenu(this)
         this.coreBar = new CoreBar(this, 10, 50);
-        this.coinBar = new CoinBar(this, this.cameras.main.width);
+        this.coinBar = new CoinBar(this, this.cameras.main.width); 
 
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -50,28 +48,27 @@ export default class Doodle extends Phaser.Scene {
         this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
         // Tilemap
-        this.doodle = this.make.tilemap({ key: "doodle" }); 
+        this.iboDelfi = this.make.tilemap({ key: "iboDelfi" }); 
 
-        const wallsDoodle = this.doodle.addTilesetImage("wallsDoodle", "wallsDoodle"); 
-        const pcDoodle = this.doodle.addTilesetImage("pcDoodle", "pcDoodle");
-        const stage = this.doodle.addTilesetImage("stage", "stage");
-        const playsDoodle = this.doodle.addTilesetImage("plays", "plays") 
-        const television = this.doodle.addTilesetImage("television", "television");
-        const music = this.doodle.addTilesetImage("music", "music"); 
-        const logo =  this.doodle.addTilesetImage("logo", "logo")
+        const iboWalls = this.iboDelfi.addTilesetImage("iboWalls", "iboWalls"); 
+        const iboInfra = this.iboDelfi.addTilesetImage("iboInfra", "iboInfra");
+        const iboInfra2 = this.iboDelfi.addTilesetImage("iboInfra2", "iboInfra2"); 
+        const iboInfra3 = this.iboDelfi.addTilesetImage("iboInfra3", "iboInfra3"); 
+        const iboIntens = this.iboDelfi.addTilesetImage("iboIntens", "iboIntens");
 
         // Layers
-        const doodleBase = this.doodle.createLayer("Chao", wallsDoodle, 0, 0);
-        const wallsDoodleLayer = this.doodle.createLayer("Parede", wallsDoodle, 0, 0);
-        const objetosDoodle = this.doodle.createLayer("Objetos", [pcDoodle, stage, playsDoodle, television, music], 0, 0);
-        const objetosDoodle2 = this.doodle.createLayer("Objetos2", [pcDoodle, stage, playsDoodle, television, music], 0, 0);
-        const objetosDoodle3 = this.doodle.createLayer("Objetos3", [pcDoodle, stage, playsDoodle, television, music, logo], 0, 0);
-
+        const iboBase = this.iboDelfi.createLayer("Chao", iboWalls, 30, 0);
+        const iboWall = this.iboDelfi.createLayer("Parede", iboWalls, 30, 0);
+        const iboObjetos = this.iboDelfi.createLayer("Objetos", [iboInfra, iboInfra2, iboInfra3, iboIntens], 30, 0);
+        const iboObjetos2 = this.iboDelfi.createLayer("Objetos2", [iboInfra, iboInfra2, iboInfra3, iboIntens], 30, 0);
+        const iboObjetos3 = this.iboDelfi.createLayer("Objetos3", [iboInfra, iboInfra2, iboInfra3, iboIntens], 30, 0);
+        
+       
         const spawnPositions = {
-            "Level": { x: 400, y: 400 }, 
-            "DataCenter": { x: 135, y: 75 } 
+            "Level": { x: 390, y: 255 }, 
+            "IboOffice": { x: 435, y: 55 } 
         };
-        const spawn = spawnPositions[window.lastScene] || { x: 400, y: 400 };
+        const spawn = spawnPositions[window.lastScene] || { x: 390, y: 255 };
 
         //Player
         this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
@@ -80,28 +77,29 @@ export default class Doodle extends Phaser.Scene {
         PlayerAnimations(this)
 
         //Collider
-        wallsDoodleLayer.setCollisionByProperty({ collider: true }); 
-        wallsDoodleLayer.setCollisionByExclusion([-1]); 
-        this.physics.add.collider(this.player, wallsDoodleLayer)
+        iboWall.setCollisionByProperty({ collider: true }); 
+        iboWall.setCollisionByExclusion([-1]); 
+        this.physics.add.collider(this.player, iboWall)
 
-        objetosDoodle.setCollisionByProperty({ collider: true }); 
-        objetosDoodle.setCollisionByExclusion([-1]); 
-        this.physics.add.collider(this.player, objetosDoodle); 
+        iboObjetos.setCollisionByProperty({ collider: true }); 
+        iboObjetos.setCollisionByExclusion([-1]); 
+        this.physics.add.collider(this.player, iboObjetos); 
 
-        
+       
         this.doorZones = this.physics.add.staticGroup();
 
-        this.doodleOutDoor = this.createDoor(400, 400, "Pressione E para sair da Doodle", "Level");
-        this.dataCenterDoor = this.createDoor(135, 75, "Pressione E para entrar no Data Center", "DataCenter");
+        this.iboOutDoor = this.createDoor(390, 255, "Pressione E para sair da IBODELFI", "Level");
+        this.iboOfficeDoor = this.createDoor(435, 55, "Pressione E para entrar no escritório", "IboOffice");
 
-      
+    
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
         //objetos.renderDebug(this.add.graphics().setDepth(1))
 
-        this.cameras.main.setZoom(2.4);
-        this.cameras.main.setBounds(0, 0, this.doodle.widthInPixels, this.doodle.heightInPixels);
+        // Configurar câmera
+        this.cameras.main.setZoom(2.5);
+        this.cameras.main.setBounds(0, 0, this.iboDelfi.widthInPixels, this.iboDelfi.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
 
@@ -122,15 +120,14 @@ export default class Doodle extends Phaser.Scene {
         door.enterImage.setVisible(true);
     
         if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
-            window.lastScene = "Doodle";
+            window.lastScene = "IboDelfi";
             this.scene.start(door.sceneName);
         }
     }
 
     update() {
-        this.player.setVelocity(0); 
+        this.player.setVelocity(0);
 
-        
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
             this.player.play('move-left' , true);
@@ -158,7 +155,7 @@ export default class Doodle extends Phaser.Scene {
             } else if (this.lastDirection === "d-up") {
                 this.player.play('turn-up', true); 
             }
-        } 
+        }
 
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
@@ -179,6 +176,7 @@ export default class Doodle extends Phaser.Scene {
             const margin = 5;
         
             const coinBarWidth = this.coinBar.container.width || 180; 
+
             const coinBarX = screenPos.x - coinBarWidth - margin;
             const coinBarY = screenPos.y + margin + 3;
         

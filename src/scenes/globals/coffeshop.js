@@ -1,15 +1,15 @@
-import PlayerPrefab from "../prefabs/playerPrefab.js";
-import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
-import { addMenuButton } from '../components/menuButton/menuButton.js'; 
-import { EscMenu } from "../components/menuButton/menuESC.js"; 
-import CoreBar from "../components/coreBar/coreBar.js"; 
-import PlayerState from "../state/playerState.js";
+import PlayerPrefab from "../../prefabs/playerPrefab.js";
+import { PlayerAnimations, preloadPlayerAnimations } from "../../prefabs/animationsPlayer.js"; 
+import { addMenuButton } from '../../components/menuButton/menuButton.js'; 
+import { EscMenu } from "../../components/menuButton/menuESC.js"; 
 
-import CoinBar from "../components/coinBar/coinBar.js"; 
-import Wallet from "../components/coinBar/walletState.js"; 
+import CoreBar from "../../components/coreBar/coreBar.js"; 
+import CoinBar from "../../components/coinBar/coinBar.js"; 
 
-import CoffeeAttendantPrefab from "../prefabs/NPCs/coffeeAttendant/coffeeAttendantPrefab.js"; 
-import { preloadCoffeeAttendantAnimations, CoffeeAttendantAnimations } from "../prefabs/NPCs/coffeeAttendant/coffeeAttendantAnimation.js";
+import GameState from "../../state/gameState.js";
+
+import CoffeeAttendantPrefab from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantPrefab.js"; 
+import { preloadCoffeeAttendantAnimations, CoffeeAttendantAnimations } from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantAnimation.js";
 
 
 export default class Coffe extends Phaser.Scene {

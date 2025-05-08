@@ -1,8 +1,10 @@
-import PlayerState from "../state/playerState.js";
-import CoreBar from "../components/coreBar/coreBar.js"; 
+//import PlayerState from "../state/playerState.js";
 
+import CoreBar from "../components/coreBar/coreBar.js"; 
 import CoinBar from "../components/coinBar/coinBar.js";
-import Wallet from "../components/coinBar/walletState.js";
+
+import GameState from "../state/gameState.js";
+
 
 export default class DantePC extends Phaser.Scene { 
 
@@ -197,8 +199,7 @@ export default class DantePC extends Phaser.Scene {
                 if (delfirMap[itemData.name]) {
                     const amount = delfirMap[itemData.name];
     
-                    Wallet.add("delfir", amount);
-                    PlayerState.addCoin("delfir", amount);
+                    GameState.addCoins("delfir", amount);
                     this.coinBar._refreshDisplay();
             
                     console.log(`Adicionados ${amount} Delfir`) 

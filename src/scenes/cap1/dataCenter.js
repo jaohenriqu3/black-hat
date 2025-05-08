@@ -1,35 +1,27 @@
-import PlayerPrefab from "../prefabs/playerPrefab.js";
-import { PlayerAnimations, preloadPlayerAnimations } from "../prefabs/animationsPlayer.js"; 
-import { addMenuButton } from '../components/menuButton/menuButton.js'; 
-import { EscMenu } from "../components/menuButton/menuESC.js"; 
-import CoreBar from "../components/coreBar/coreBar.js"; 
-import PlayerState from "../state/playerState.js";
+import PlayerPrefab from "../../prefabs/playerPrefab.js";
+import { PlayerAnimations, preloadPlayerAnimations } from "../../prefabs/animationsPlayer.js"; 
+import { addMenuButton } from '../../components/menuButton/menuButton.js'; 
+import { EscMenu } from "../../components/menuButton/menuESC.js"; 
 
-import CoinBar from "../components/coinBar/coinBar.js"; 
-import Wallet from "../components/coinBar/walletState.js";
+import CoreBar from "../../components/coreBar/coreBar.js";
+import CoinBar from "../../components/coinBar/coinBar.js"; 
+
+import GameState from "../../state/gameState.js";
 
 
-export default class IboOffice extends Phaser.Scene {
+export default class DataCenter extends Phaser.Scene {
 
     constructor() {
-        super("IboOffice");
+        super("DataCenter");
     }
 
     preload() {
-
         this.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
 
-        this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
-        this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
-        this.load.image("ficha", "assets/inputs/UI/coins/ficha.png");
+        this.load.tilemapTiledJSON("dataCenter", "assets/tilemaps/data-center.json");
 
-        this.load.tilemapTiledJSON("iboOffice", "assets/tilemaps/iboOffice.json");
-
-        this.load.image("officeWalls", "assets/tilesets/walls.png"); 
-        this.load.image("officeInfra", "assets/tilesets/infra2.png"); 
-        this.load.image("officeInfra2", "assets/tilesets/board.png"); 
-        this.load.image("officeRoom", "assets/tilesets/room.png"); 
-        this.load.image("officeRoom2", "assets/tilesets/room2.png"); 
+        this.load.image("baseData", "assets/tilesets/walls.png"); 
+        this.load.image("infraData", "assets/tilesets/infra16.png");
 
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
@@ -40,10 +32,10 @@ export default class IboOffice extends Phaser.Scene {
 
     create() {
 
+        addMenuButton(this); 
         EscMenu(this)
-        addMenuButton(this);
         this.coreBar = new CoreBar(this, 10, 50);
-        this.coinBar = new CoinBar(this, this.cameras.main.width); 
+        this.coinBar = new CoinBar(this, this.cameras.main.width);
 
         // Inputs
         this.up_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -54,49 +46,43 @@ export default class IboOffice extends Phaser.Scene {
         this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
         // Tilemap
-        this.IboOffice = this.make.tilemap({ key: "iboOffice" }); 
+        this.dataCenter = this.make.tilemap({ key: "dataCenter" }); 
 
-        const officeWalls = this.IboOffice.addTilesetImage("officeWalls", "officeWalls"); 
-        const officeInfra = this.IboOffice.addTilesetImage("officeInfra", "officeInfra");
-        const officeInfra2 = this.IboOffice.addTilesetImage("officeInfra2", "officeInfra2");
-        const officeRoom = this.IboOffice.addTilesetImage("officeRoom", "officeRoom");
-        const officeRoom2 = this.IboOffice.addTilesetImage("officeRoom2", "officeRoom2");
-
+        const baseData = this.dataCenter.addTilesetImage("baseData", "baseData"); 
+        const infraData = this.dataCenter.addTilesetImage("infraData", "infraData");
+        
         // Layers
-        this.IboOffice.createLayer("Chao", officeWalls, 100, 0);
-        const wallsOffice = this.IboOffice.createLayer("Parede", officeWalls, 100, 0);
-        const objetosOffice = this.IboOffice.createLayer("Objetos", [officeInfra, officeInfra2, officeRoom, officeRoom2], 100, 0);
-        const objetosOffice2 = this.IboOffice.createLayer("Objetos2", [officeInfra, officeInfra2, officeRoom, officeRoom2], 100, 0);
+        this.dataCenter.createLayer("Chao", baseData, 40, 0);
+        const wallsDataCenter = this.dataCenter.createLayer("Parede", baseData, 40, 0);
+        const objetosDataCenter = this.dataCenter.createLayer("Objetos", infraData, 40, 0);
+        const objetosDataCenter2= this.dataCenter.createLayer("Objetos2", infraData, 40, 0);
+        const objetosDataCenter3 = this.dataCenter.createLayer("Objetos3", infraData, 40, 0);
 
         // Player
-        this.player = new PlayerPrefab(this, 315, 270, "dante");
+        this.player = new PlayerPrefab(this, 195, 280, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
 
         //Collider
-        wallsOffice.setCollisionByProperty({ collider: true }); 
-        wallsOffice.setCollisionByExclusion([-1]); 
-        this.physics.add.collider(this.player, wallsOffice)
+        wallsDataCenter.setCollisionByProperty({ collider: true }); 
+        wallsDataCenter.setCollisionByExclusion([-1]); 
+        this.physics.add.collider(this.player, wallsDataCenter)
 
-        objetosOffice.setCollisionByProperty({ collider: true }); 
-        objetosOffice.setCollisionByExclusion([-1]); 
-        this.physics.add.collider(this.player, objetosOffice); 
-
-        objetosOffice2.setCollisionByProperty({ collider: true }); 
-        objetosOffice2.setCollisionByExclusion([-1]); 
-        this.physics.add.collider(this.player, objetosOffice2);
+        objetosDataCenter.setCollisionByProperty({ collider: true }); 
+        objetosDataCenter.setCollisionByExclusion([-1]); 
+        this.physics.add.collider(this.player, objetosDataCenter); 
 
         this.doorZone = this.physics.add.staticGroup();
-        const dataCenterDoor = this.doorZone.create(315, 270,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
+        const dataCenterDoor = this.doorZone.create(195, 270,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
 
-        this.textBackground = this.add.rectangle(315, 270, 220, 15, 0xFFFFFF).setOrigin(0.5);
+        this.textBackground = this.add.rectangle(195, 270, 220, 15, 0xFFFFFF).setOrigin(0.5);
         this.textBackground.setAlpha(0.6);
 
-        this.enterText = this.add.text(315, 270, "Pressione E para sair do Escritório", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
+        this.enterText = this.add.text(195, 270, "Pressione E para sair do Data Center", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
         this.enterText.setVisible(false);
 
-        this.enterImage = this.add.image(315, 300, "keyE").setOrigin(0.5).setScale(1.8);
+        this.enterImage = this.add.image(185, 300, "keyE").setOrigin(0.5).setScale(1.8);
         this.enterImage.setVisible(false);
 
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
@@ -105,9 +91,10 @@ export default class IboOffice extends Phaser.Scene {
         //objetos.renderDebug(this.add.graphics().setDepth(1))
 
         this.cameras.main.setZoom(2.5);
-        this.cameras.main.setBounds(0, 0, this.IboOffice.widthInPixels, this.IboOffice.heightInPixels);
+        this.cameras.main.setBounds(0, 0, this.dataCenter.widthInPixels, this.dataCenter.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
+
 
     showEnterPrompt(player, lobbyDoorOut) {
         this.enterText.setVisible(true);
@@ -115,8 +102,8 @@ export default class IboOffice extends Phaser.Scene {
         this.textBackground.setVisible(true)
 
         if (Phaser.Input.Keyboard.JustDown(this.eKey)) { 
-            window.lastScene = "IboOffice";
-            this.scene.start("IboDelfi"); 
+            window.lastScene = "DataCenter";
+            this.scene.start("Doodle"); 
         }
     }
 
@@ -150,7 +137,7 @@ export default class IboOffice extends Phaser.Scene {
             } else if (this.lastDirection === "d-up") {
                 this.player.play('turn-up', true); 
             }
-        }
+        } 
 
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
@@ -177,7 +164,7 @@ export default class IboOffice extends Phaser.Scene {
         
             this.coinBar.setPosition(coinBarX, coinBarY);
             this.coinBar.container.setScale(0.5)
-        }
+        } 
 
         if (!this.physics.overlap(this.player, this.doorZone)) {
             this.enterText.setVisible(false);

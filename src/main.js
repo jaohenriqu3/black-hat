@@ -3,15 +3,16 @@ import Menu from './screens/menuScreen.js';
 import DantePC from './screens/dantePC.js';
 
 import Preload from './scenes/preload.js'
-import Level from './scenes/level.js' 
-import Lobby from './scenes/lobby.js'; 
-import Coffe from './scenes/coffeshop.js';
-import Doodle from './scenes/doodle.js'; 
-import DataCenter from './scenes/dataCenter.js';
-import IboDelfi from './scenes/ibodelfi.js'; 
-import IboOffice from './scenes/iboOffice.js'; 
-import Cassino from './scenes/cassino.js';
-import CassinoOffice from './scenes/cassinoOffice.js'; 
+
+import DelfiCity from './scenes/globals/delfiCity.js';
+import Lobby from './scenes/globals/lobby.js'; 
+import Coffe from './scenes/globals/coffeshop.js';
+import Doodle from './scenes/cap1/doodle.js'; 
+import DataCenter from './scenes/cap1/dataCenter.js';
+import IboDelfi from './scenes/cap2/ibodelfi.js'; 
+import IboOffice from './scenes/cap2/iboOffice.js'; 
+import Cassino from './scenes/globals/cassino.js';
+import CassinoOffice from './scenes/cap3/cassinoOffice.js'; 
 
 
 window.addEventListener('load', function () {
@@ -41,7 +42,7 @@ window.addEventListener('load', function () {
 	game.scene.add("Preload", Preload);
 	game.scene.add("Boot", Boot, true);
 	game.scene.add("Lobby", Lobby )
-	game.scene.add("Level", Level );
+	game.scene.add("Level", DelfiCity );
 	game.scene.add("Coffe", Coffe);
 	game.scene.add("Doodle", Doodle)
 	game.scene.add("DataCenter", DataCenter);
