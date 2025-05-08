@@ -125,10 +125,7 @@ export default class Menu extends Phaser.Scene {
             .on('pointerout', () => yesButton.setFillStyle(0x555555))
             .on('pointerdown', () => {
                 window.close()
-
-
-                // Fallback: redirecionar pra uma tela final ou URL
-                // window.location.href = "https://google.com"; // ou qualquer outra página
+                
             })
             .setDepth(1000);
     

@@ -8,6 +8,10 @@ import PlayerState from "../state/playerState.js";
 import CoinBar from "../components/coinBar/coinBar.js"; 
 import Wallet from "../components/coinBar/walletState.js"; 
 
+import CoffeeAttendantPrefab from "../prefabs/NPCs/coffeeAttendant/coffeeAttendantPrefab.js"; 
+import { preloadCoffeeAttendantAnimations, CoffeeAttendantAnimations } from "../prefabs/NPCs/coffeeAttendant/coffeeAttendantAnimation.js";
+
+
 export default class Coffe extends Phaser.Scene {
 
     constructor() {
@@ -34,6 +38,8 @@ export default class Coffe extends Phaser.Scene {
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
+        preloadCoffeeAttendantAnimations(this);
+
         
         console.log(this.textures.list);
     }
@@ -61,16 +67,22 @@ export default class Coffe extends Phaser.Scene {
         const cashier = this.coffeShop.addTilesetImage("cashier", "cashier");
 
         // Layers
-        this.coffeShop.createLayer("Chao", wallsbase, 70, 0);
-        this.coffeShop.createLayer("Chao2", [wallsbase, walls, tilesCoffeShop], 70, 0);
-        const coffeeParede = this.coffeShop.createLayer("Parede" , [wallsbase, walls, tilesCoffeShop], 70, 0) 
-        const coffeeObjetos = this.coffeShop.createLayer("Objetos", tilesCoffeShop, 70, 0) 
-        this.coffeShop.createLayer("Objetos2" , [wallsbase, walls, tilesCoffeShop], 70, 0) 
-        this.coffeShop.createLayer("Objetos3" , [wallsbase, walls, tilesCoffeShop, cashier], 70, 0) 
+        this.coffeShop.createLayer("Chao", wallsbase, 70, 0).setDepth(0);
+        this.coffeShop.createLayer("Chao2", [wallsbase, walls, tilesCoffeShop], 70, 0).setDepth(1);
+        const coffeeParede = this.coffeShop.createLayer("Parede" , [wallsbase, walls, tilesCoffeShop], 70, 0).setDepth(5);
+        const coffeeObjetos = this.coffeShop.createLayer("Objetos", tilesCoffeShop, 70, 0).setDepth(6);
+        this.coffeShop.createLayer("Objetos2" , [wallsbase, walls, tilesCoffeShop], 70, 0).setDepth(7);
+        this.coffeShop.createLayer("Objetos3" , [wallsbase, walls, tilesCoffeShop, cashier], 70, 0).setDepth(8);
+        
 
         // Player
-        this.player = new PlayerPrefab(this, 205, 260, "dante");
+        this.player = new PlayerPrefab(this, 205, 260, "dante").setDepth(10);
         this.physics.add.existing(this.player); 
+
+        //NPC 
+        CoffeeAttendantAnimations(this);
+        this.attendant = new CoffeeAttendantPrefab(this, 205, 90); 
+        this.physics.add.collider(this.attendant, coffeeObjetos);
 
         //Som
         this.stepSound = this.sound.add('step', {
@@ -79,8 +91,8 @@ export default class Coffe extends Phaser.Scene {
             rate: 1.3
         }); 
 
-        PlayerAnimations(this)
-
+        PlayerAnimations(this) 
+        
         //Collider'
         coffeeParede.setCollisionByProperty({ collider: true }); 
         coffeeParede.setCollisionByExclusion([-1]); 
@@ -91,15 +103,15 @@ export default class Coffe extends Phaser.Scene {
         this.physics.add.collider(this.player, coffeeObjetos); 
 
         this.doorZone = this.physics.add.staticGroup();
-        const lobbyDoorOut = this.doorZone.create(210, 260,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
+        const lobbyDoorOut = this.doorZone.create(210, 260,).setSize(50, 50).setVisible(null).setDepth(10); // Posiciona e define o tamanho 
 
-        this.textBackground = this.add.rectangle(210, 260, 220, 15, 0xFFFFFF).setOrigin(0.5);
+        this.textBackground = this.add.rectangle(210, 260, 220, 15, 0xFFFFFF).setOrigin(0.5).setDepth(10);
         this.textBackground.setAlpha(0.6);
 
-        this.enterText = this.add.text(210, 260, "Pressione E para sair da cafeteria", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
+        this.enterText = this.add.text(210, 260, "Pressione E para sair da cafeteria", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5).setDepth(10);
         this.enterText.setVisible(false);
 
-        this.enterImage = this.add.image(210, 290, "keyE").setOrigin(0.5).setScale(1.8);
+        this.enterImage = this.add.image(210, 290, "keyE").setOrigin(0.5).setScale(1.8).setDepth(10);
         this.enterImage.setVisible(false);
 
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
