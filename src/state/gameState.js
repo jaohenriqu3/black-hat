@@ -9,11 +9,19 @@ const GameState = {
             ditcoin: 0,
             ficha: 0
         },
-        inventory: []
+        tutorialSeen: false,
     },
 
-    // ==== Capítulo & Progresso ====
+    // Tutorial
+    setTutorialSeen(value = true) {
+        this.data.tutorialSeen = value;
+        this.save();
+    },
+    hasSeenTutorial() {
+        return this.data.tutorialSeen;
+    }, 
 
+    // Capítulo
     setChapter(chapter) {
         this.data.chapter = chapter;
         this.save();
@@ -23,8 +31,7 @@ const GameState = {
         return this.data.chapter;
     },
 
-    // ==== Cena Atual ====
-
+    //Cena
     setScene(sceneKey) {
         this.data.currentScene = sceneKey;
         this.save();
@@ -34,8 +41,7 @@ const GameState = {
         return this.data.currentScene;
     },
 
-    // ==== Core (Energia Hacker) ====
-
+    // Core
     setCore(value) {
         this.data.core = Phaser.Math.Clamp(value, 0, this.data.maxCore);
         this.save();
@@ -56,16 +62,14 @@ const GameState = {
         }
     },
     
-
     getCore() {
         return this.data.core;
     },
 
+    // Moedas
     getMaxCore() {
         return this.data.maxCore;
     },
-
-    // ==== Moedas ====
 
     addCoins(type, amount) {
         if (this.data.coins[type] !== undefined) {
@@ -94,31 +98,6 @@ const GameState = {
         this.save();
     },
 
-    // ==== Inventário ====
-
-    addItem(item) {
-        this.data.inventory.push(item);
-        this.save();
-    },
-
-    removeItem(item) {
-        const index = this.data.inventory.indexOf(item);
-        if (index > -1) {
-            this.data.inventory.splice(index, 1);
-            this.save();
-        }
-    },
-
-    getInventory() {
-        return [...this.data.inventory]; // retorna cópia
-    },
-
-    clearInventory() {
-        this.data.inventory = [];
-        this.save();
-    },
-
-    // ==== Save / Load ====
 
     save() {
         localStorage.setItem("blackHatSave", JSON.stringify(this.data));
@@ -142,7 +121,6 @@ const GameState = {
                 ditcoin: 0,
                 ficha: 0
             },
-            inventory: []
         };
         this.save();
     }

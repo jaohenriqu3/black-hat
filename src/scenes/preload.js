@@ -27,6 +27,6 @@ export default class Preload extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
-        this.scene.start("Lobby");
+        this.scene.start("TelaInicial");
     }
 }

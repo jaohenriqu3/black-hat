@@ -9,6 +9,8 @@ import CoinBar from "../../components/coinBar/coinBar.js";
 
 import GameState from "../../state/gameState.js";
 
+import systemMessage from "../../components/systemMessage/systemMessage.js";
+
 export default class Lobby extends Phaser.Scene {
 
     constructor() {
@@ -116,9 +118,26 @@ export default class Lobby extends Phaser.Scene {
 
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
-        this.cameras.main.setZoom(2.4);
+        this.cameras.main.setZoom(1.0);
         this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
+
+        if (!GameState.hasSeenTutorial()) {
+            this.startTutorial();
+        }
     } 
+
+    startTutorial() {
+        this.dialogIndex = 0;
+    
+        this.dialogs = [
+            "Bem vindo! Esse é Dante. Dante é um profissional freelance na área de Cyber Segurança.",
+            "Sua rotina gira em torno de encontrar vulnerabilidades em sites e sistemas através de BugBounties."
+        ];
+
+        this.player.setVelocity(0);
+        this.tutorialActive = true; 
+        systemMessage(this, this.dialogs[this.dialogIndex]);
+    }
 
     createDoor(x, y, text, sceneName) {
         const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false);
@@ -144,7 +163,9 @@ export default class Lobby extends Phaser.Scene {
    
     update() {  
 
-        let moving = false;
+         let moving = false; 
+
+         if (this.tutorialActive) return; //trava o controle
 
          this.player.setVelocity(0);
 
