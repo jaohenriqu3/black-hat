@@ -1,6 +1,6 @@
 export default function systemMessage(scene, text) {
     if (scene.messageBox) {
-        scene.messageBox.destroy(); // remove anterior se tiver
+        scene.messageBox.destroy(); 
     }
 
     const { width, height } = scene.cameras.main;

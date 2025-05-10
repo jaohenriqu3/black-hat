@@ -165,7 +165,7 @@ export default class Lobby extends Phaser.Scene {
 
          let moving = false; 
 
-         if (this.tutorialActive) return; //trava o controle
+         if (this.tutorialActive) return; 
 
          this.player.setVelocity(0);
 
