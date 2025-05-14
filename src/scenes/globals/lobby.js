@@ -118,7 +118,7 @@ export default class Lobby extends Phaser.Scene {
 
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
-        this.cameras.main.setZoom(1.0);
+        this.cameras.main.setZoom(2.4);
         this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
 
         if (!GameState.hasSeenTutorial()) {
@@ -130,12 +130,19 @@ export default class Lobby extends Phaser.Scene {
         this.dialogIndex = 0;
     
         this.dialogs = [
-            "Bem vindo! Esse é Dante. Dante é um profissional freelance na área de Cyber Segurança.",
-            "Sua rotina gira em torno de encontrar vulnerabilidades em sites e sistemas através de BugBounties."
+            "Bem vindo! Esse é Dante. Dante é um profissional freelancer na área de Cyber Segurança.",
+            "Sua rotina gira em torno de encontrar vulnerabilidades em sites e sistemas através de BugBounties.", 
+            
+            "Use as setas do teclado (⬅️➡️⬆️⬇️) para andar pelo ambiente.", 
+            "Ótimo! Agora você já pode explorar. Vamos dar uma olhada no computador. Caminhe até o computador e pressione [E] para acessá-lo.",
         ];
+
 
         this.player.setVelocity(0);
         this.tutorialActive = true; 
+        this.waitingForMove = false;
+        this.movementDetected = false;
+
         systemMessage(this, this.dialogs[this.dialogIndex]);
     }
 
@@ -156,6 +163,10 @@ export default class Lobby extends Phaser.Scene {
         door.enterImage.setVisible(true);
     
         if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
+             if (this.tutorialActive) {
+            GameState.setTutorialProgress(this.dialogIndex + 1); 
+            }
+
             window.lastScene = "Lobby";
             this.scene.start(door.sceneName);
         }
@@ -165,7 +176,9 @@ export default class Lobby extends Phaser.Scene {
 
          let moving = false; 
 
-         if (this.tutorialActive) return; 
+         if (this.tutorialActive && !this.waitingForMove && !this.movementDetected) { 
+            return; 
+         } 
 
          this.player.setVelocity(0);
 
@@ -208,7 +221,24 @@ export default class Lobby extends Phaser.Scene {
             }
         } else {
             this.stepSound.stop();
+        } 
+
+        if (this.waitingForMove && (this.left_key.isDown || this.right_key.isDown || this.up_key.isDown || this.down_key.isDown)) {
+            this.waitingForMove = false;
+            this.movementDetected = true;
+
+            this.dialogIndex++;
+
+        if (this.dialogIndex < this.dialogs.length) {
+             systemMessage(this, this.dialogs[this.dialogIndex]);
+        } else {
+            if (this.messageBox) this.messageBox.destroy();
+            GameState.setTutorialSeen(true);
+            this.tutorialActive = false;
+         }
+            return;
         }
+
 
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;

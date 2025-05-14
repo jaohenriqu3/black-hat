@@ -1,10 +1,8 @@
-//import PlayerState from "../state/playerState.js";
-
 import CoreBar from "../components/coreBar/coreBar.js"; 
 import CoinBar from "../components/coinBar/coinBar.js";
 
 import GameState from "../state/gameState.js";
-
+import systemMessage from "../components/systemMessage/systemMessage.js";
 
 export default class DantePC extends Phaser.Scene { 
 
@@ -112,7 +110,25 @@ export default class DantePC extends Phaser.Scene {
             this.openPuzzle();
         }
         });
-} 
+
+        if (!GameState.hasSeenTutorial() && GameState.getTutorialProgress() >= 4) {
+            this.startTutorialFromPC();
+        }
+    } 
+
+    startTutorialFromPC() {
+        this.dialogIndex = GameState.getTutorialProgress(); // Deve ser 4
+        this.dialogs = [
+            "Esse é seu computador pessoal, nele você pode fazer seus hackeamentos, comprar intens e gerenciar suas tarefas. Também existem dois intens importantes, que são sua Carteira e seu CoreBar, é importante saber administrar esses intens",
+            "Na sua carteira, voce poderá administrar seus Delfirs, com ele você pode investir em ditcoins, comprar fichas para jogar no cassino, e clarocomprar o merecido cafézinho do dia-dia"
+        ];
+        
+        this.tutorialActive = true;
+
+        this.dialogIndex = globalIndex; // Ex: 4
+        this.localDialogIndex = globalIndex - 4; // Ex: 0 ou 1
+        systemMessage(this, this.dialogs[this.localDialogIndex]);
+    }
 
     openShop() {
         this.popupOpen = true;

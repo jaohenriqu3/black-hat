@@ -17,9 +17,22 @@ const GameState = {
         this.data.tutorialSeen = value;
         this.save();
     },
+
     hasSeenTutorial() {
         return this.data.tutorialSeen;
     }, 
+
+    tutorialProgress: 0,
+
+    setTutorialProgress(index) {
+        this.data.tutorialProgress = index;
+        this.save();
+    },
+
+    getTutorialProgress() {
+        return this.data.tutorialProgress || 0;
+    },
+
 
     // Capítulo
     setChapter(chapter) {
