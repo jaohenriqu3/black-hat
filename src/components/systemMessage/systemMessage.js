@@ -1,82 +1,96 @@
 import GameState from "../../state/gameState.js";
 
+const defaultConfig = {
+  boxWidth: 1100,
+  boxHeight: 80,
+  boxX: 700,
+  boxY: 200,
+  fontSize: "18px",
+};
+
+const sceneConfigs = {
+  Level: { boxY: 650, labelX: 920, labelY: 60 },
+  Coffe: { boxWidth: 500, boxHeight: 65, boxY: 520, fontSize: "14px", labelX: 320, labelY: 45 },
+  Lobby: { boxWidth: 500, boxHeight: 80, boxY: 500, fontSize: "14px", labelX: 320, labelY: 60 },
+  DantePC: { boxWidth: 1250, boxHeight: 100, boxY: -110 },
+  Chapter1Cutscene: { boxWidth: 1250, boxHeight: 100, boxY: -110, labelX: 1050, labelY: 80 },
+  Chapter1GameOver: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Chapter1Corvus: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Chapter2Cutscene: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Chapter2Cassino: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Chapter3Cutscene: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Chapter3Nexus: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Final1: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Final2: { boxWidth: 1250, boxHeight: 100, boxY: -110, fontSize: "22px", labelX: 1050, labelY: 80 },
+  Doodle: { boxWidth: 550, boxHeight: 80, boxY: 520, fontSize: "14px", labelX: 360, labelY: 60 },
+  DataCenter: { boxWidth: 450, boxHeight: 60, boxY: 520, fontSize: "14px", labelX: 270, labelY: 42 },
+  IboDelfi: { boxWidth: 450, boxHeight: 60, boxY: 520, fontSize: "14px", labelX: 270, labelY: 42 },
+  IboOffice: { boxWidth: 450, boxHeight: 60, boxY: 520, fontSize: "14px", labelX: 270, labelY: 42 },
+  Cassino: { boxWidth: 550, boxHeight: 65, boxY: 520, fontSize: "14px", labelX: 360, labelY: 45 },
+  CassinoOffice: { boxWidth: 550, boxHeight: 65, boxY: 520, fontSize: "14px", labelX: 360, labelY: 45 },
+  BlackOffice: { boxWidth: 500, boxHeight: 75, boxY: 520, fontSize: "14px", labelX: 320, labelY: 58 },
+};
+
 export default function systemMessage(scene, text) {
-    if (scene.messageBox) {
-        scene.messageBox.destroy(); 
-    } 
+  if (scene.messageBox) scene.messageBox.destroy();
 
-    const FINAL_TUTORIAL_INDEX = 6;
+  const { width, height } = scene.cameras.main;
+  const key = scene.scene.key;''
 
-    const { width, height } = scene.cameras.main;
+  const config = { ...defaultConfig, ...sceneConfigs[key] };
 
-    let boxWidth = 550; 
-    let boxHeight = 70; 
-    let boxX = 290; 
-    let boxY = 290; 
-    let fontSize = "14px"  
+  const boxX = config.boxX ?? width / 2;
+  const boxY = config.boxY < 0 ? height + config.boxY : config.boxY;
 
-    if (scene.scene.key === "DantePC") {
-        boxWidth = 1250;
-        boxHeight = 100;
-        boxX = width / 2;
-        boxY = height - 110;  
-        fontSize = "18px"
-    }
+  scene.messageBox = scene.add.container().setDepth(1003);
+  scene.children.bringToTop(scene.messageBox);
 
-    scene.messageBox = scene.add.container();
+  const background = scene.add.rectangle(
+    boxX, boxY, config.boxWidth, config.boxHeight, 0xffffff, 0.9
+  ).setOrigin(0.5)
+   .setStrokeStyle(2, 0x000000)
+   .setDepth(1000)
+   .setScrollFactor(0);
 
-    const background = scene.add.rectangle(boxX, boxY, boxWidth, boxHeight, 0xFFFFFF, 0.9)
-        .setOrigin(0.5)
-        .setStrokeStyle(2, 0x000000)
-        .setDepth(1000);
+  const textStyle = {
+    fontFamily: "Arial",
+    fontSize: config.fontSize,
+    wordWrap: { width: config.boxWidth - 40 },
+    color: "#000000",
+    align: "left",
+    delay: 90,
+  };
 
-    const textStyle = {
-        fontFamily: "Arial",
-        fontSize: fontSize,
-        wordWrap: { width: boxWidth - 40 },
-        color: "#000000",
-        align: "left",
-        delay: 90
-    };
+  const labelStyle = {
+    fontFamily: "Arial",
+    fontSize: "12px",
+    wordWrap: { width: config.boxWidth - 40 },
+    color: "#000000",
+    align: "left",
+    delay: 90,
+  };
 
-    const content = scene.add.text(boxX - boxWidth / 2 + 20, boxY - boxHeight / 2 + 10, text, textStyle)
-        .setOrigin(0, 0)
-        .setDepth(1001);
+  const content = scene.add.text(
+    boxX - config.boxWidth / 2 + 20,
+    boxY - config.boxHeight / 2 + 10,
+    text,
+    textStyle
+  ).setOrigin(0, 0)
+   .setDepth(1001)
+   .setScrollFactor(0);
 
-    scene.messageBox.add([background, content]); 
+  const label = scene.add.text(
+    boxX - config.boxWidth / 2 + config.labelX,
+    boxY - config.boxHeight / 2 + config.labelY,
+    "Pressione ENTER para avançar",
+    labelStyle
+  ).setOrigin(0, 0)
+   .setDepth(1002)
+   .setScrollFactor(0);
 
-    console.log("Exibindo mensagem:", text); 
+  scene.messageBox.add([background, content, label]);
 
-    if (text === "Use as setas do teclado (⬅️➡️⬆️⬇️) para andar pelo ambiente.") {
-        scene.waitingForMove = true;
-        return;
-    }
+  console.log("Exibindo mensagem:", text);
 
-    scene.input.keyboard.once('keydown-ENTER', () => {
-    scene.dialogIndex++;
-
-    GameState.setTutorialProgress(scene.dialogIndex);
-
-    if (scene.scene.key === "DantePC") {
-        scene.localDialogIndex++;
-
-        if (scene.localDialogIndex < scene.dialogs.length) {
-            systemMessage(scene, scene.dialogs[scene.localDialogIndex]);
-        } else {
-            scene.messageBox.destroy();
-            if (GameState.getTutorialProgress() >= FINAL_TUTORIAL_INDEX) {
-                GameState.setTutorialSeen(true);
-                scene.tutorialActive = false;
-            }
-        } return; }
-
-        if (scene.dialogIndex < scene.dialogs.length) {
-        systemMessage(scene, scene.dialogs[scene.dialogIndex]);
-        } else {
-            scene.messageBox.destroy();
-        if (GameState.getTutorialProgress() >= FINAL_TUTORIAL_INDEX) {
-            GameState.setTutorialSeen(true);
-            scene.tutorialActive = false;
-        }
-    }
-}); }
+  return scene.messageBox;
+}

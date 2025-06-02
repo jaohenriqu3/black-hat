@@ -7,6 +7,10 @@ import CoreBar from "../../components/coreBar/coreBar.js";
 import CoinBar from "../../components/coinBar/coinBar.js"; 
 
 import GameState from "../../state/gameState.js";
+import systemMessage from "../../components/systemMessage/systemMessage.js"; 
+
+import MaxPrefab from "../../prefabs/NPCs/cassino/max/maxPrefab.js"; 
+import { preloadMaxAnimation, MaxAnimation } from "../../prefabs/NPCs/cassino/max/maxAnimation.js";
 
 export default class CassinoOffice extends Phaser.Scene {
 
@@ -33,9 +37,12 @@ export default class CassinoOffice extends Phaser.Scene {
         this.load.image("officeitems7", "assets/tilesets/museum.png");
         this.load.image("officeitems8", "assets/tilesets/infra2.png");
 
-        this.load.image("keyE", "assets/inputs/keyE/keyE.png");
+        this.load.image("keyE", "assets/inputs/keyE/keyE.png"); 
+
+        this.load.audio('step', 'assets/audios/steps/indoor-footsteps.mp3');
 
         preloadPlayerAnimations(this)
+        preloadMaxAnimation(this)
         
         console.log(this.textures.list);
     }
@@ -76,18 +83,28 @@ export default class CassinoOffice extends Phaser.Scene {
         const objetosUnderCassinoOffice = this.CassinoOffice.createLayer("ObjetosUnder", [cassinoOfficeItems, cassinoOfficeItems2, cassinoOfficeItems3, cassinoOfficeItems4, 
             cassinoOfficeItems5, cassinoOfficeItems6, cassinoOfficeItems7, cassinoOfficeItems8], 30, 0);
         const objetosCassinoOffice = this.CassinoOffice.createLayer("Objetos", [cassinoOfficeItems, cassinoOfficeItems2, cassinoOfficeItems3, cassinoOfficeItems4, 
-            cassinoOfficeItems5, cassinoOfficeItems6, cassinoOfficeItems7, cassinoOfficeItems8], 30, 0); 
+            cassinoOfficeItems5, cassinoOfficeItems6, cassinoOfficeItems7, cassinoOfficeItems8], 30, 0).setDepth(3); 
         const objetosCassinoOffice2 = this.CassinoOffice.createLayer("Objetos2", [cassinoOfficeItems, cassinoOfficeItems2, cassinoOfficeItems3, cassinoOfficeItems4, 
-                cassinoOfficeItems5, cassinoOfficeItems6, cassinoOfficeItems7, cassinoOfficeItems8], 30, 0); 
+                cassinoOfficeItems5, cassinoOfficeItems6, cassinoOfficeItems7, cassinoOfficeItems8], 30, 0).setDepth(4); 
         const objetosCassinoOffice3 = this.CassinoOffice.createLayer("Objetos3", [cassinoOfficeItems, cassinoOfficeItems2, cassinoOfficeItems3, cassinoOfficeItems4, 
-                cassinoOfficeItems5, cassinoOfficeItems6, cassinoOfficeItems7, cassinoOfficeItems8], 30, 0); 
+                cassinoOfficeItems5, cassinoOfficeItems6, cassinoOfficeItems7, cassinoOfficeItems8], 30, 0).setDepth(5); 
         
         // Player
-        this.player = new PlayerPrefab(this, 270, 270, "dante");
+        this.player = new PlayerPrefab(this, 270, 270, "dante").setDepth(10);
         this.physics.add.existing(this.player);
-
         PlayerAnimations(this)
+        
+        //NPC 
+        MaxAnimation(this) 
+        this.max = new MaxPrefab(this, 246, 75).setDepth(2);
+        this.physics.add.collider(this.player, this.max)
 
+         this.stepSound = this.sound.add('step', {
+            loop: true,
+            volume: 1.5, 
+            rate: 1.3
+        }); 
+0        
         //Collider
         wallsCassinoOffice.setCollisionByProperty({ collider: true }); 
         wallsCassinoOffice.setCollisionByExclusion([-1]); 
@@ -110,7 +127,7 @@ export default class CassinoOffice extends Phaser.Scene {
         this.physics.add.collider(this.player, objetosCassinoOffice3)
 
         this.doorZone = this.physics.add.staticGroup();
-        const CassinoOfficeDoor = this.doorZone.create(270, 270,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
+        const CassinoOfficeDoor = this.doorZone.create(270, 270,).setSize(50, 50).setVisible(null); 
 
         this.textBackground = this.add.rectangle(270, 270, 220, 15, 0xFFFFFF).setOrigin(0.5);
         this.textBackground.setAlpha(0.6);
@@ -129,6 +146,8 @@ export default class CassinoOffice extends Phaser.Scene {
         this.cameras.main.setZoom(2.5);
         this.cameras.main.setBounds(0, 0, this.CassinoOffice.widthInPixels, this.CassinoOffice.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+
+        this.showMaxDialog()
     }
 
     showEnterPrompt(player, lobbyDoorOut) {
@@ -140,30 +159,53 @@ export default class CassinoOffice extends Phaser.Scene {
             window.lastScene = "CassinoOffice";
             this.scene.start("Cassino"); 
         }
+    } 
+
+    showMaxDialog(){ 
+        this.dialogIndex = 0; 
+
+        this.dialogActive = true;
+        this.dialogLocked = false; 
+
+        systemMessage(this, GameState.maxDialog[this.dialogIndex]); 
+
+        this.input.keyboard.on("keydown-ENTER", () => {
+        this.dialogIndex++ 
+
+        if (this.dialogIndex < GameState.maxDialog.length){
+            systemMessage(this, GameState.maxDialog[this.dialogIndex])
+        }
+        });
     }
 
     update() {
         this.player.setVelocity(0);
 
+        let moving = false
+
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
             this.player.play('move-left' , true);
             this.lastDirection = "d-left";
+            moving = true;
         } 
         else if (this.right_key.isDown){
             this.player.setVelocityX(50);
             this.player.play('move-right', true);
             this.lastDirection = "d-right";
+            moving = true;
         }
         else if (this.up_key.isDown){
             this.player.setVelocityY(-50); 
             this.player.play('move-up', true)
             this.lastDirection = "d-up";
+            moving = true;
         } 
         else if (this.down_key.isDown){
             this.player.setVelocityY(50);
             this.player.play('move-down', true);
             this.lastDirection = "d-right";
+            moving = true;
         } else {
             if (this.lastDirection === "d-right") {
                 this.player.play('turn', true);
@@ -173,6 +215,14 @@ export default class CassinoOffice extends Phaser.Scene {
                 this.player.play('turn-up', true); 
             }
         } 
+
+        if (moving) {
+            if (!this.stepSound.isPlaying) {
+                this.stepSound.play();
+            }
+        } else {
+            this.stepSound.stop();
+        }
 
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;

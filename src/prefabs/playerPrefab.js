@@ -9,7 +9,6 @@ export default class PlayerPrefab extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
         this.body.setSize(8, 8);
 
-        // Animação padrão
         this.AutoPlayAnimation = "turn";
         this.scene.events.once("create", () => this.awake());
     }

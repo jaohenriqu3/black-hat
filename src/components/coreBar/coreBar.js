@@ -30,6 +30,10 @@ export default class CoreBar {
         this._refreshDisplay();
     }
 
+    setVisible(value) {
+    this.container.setVisible(value);
+    }
+
     _refreshDisplay() {
         const currentCores = GameState.getCore();
 
@@ -38,7 +42,6 @@ export default class CoreBar {
         }
     }
 
-    
     setPosition(x, y) {
         this.container.setPosition(x, y);
     }
@@ -48,8 +51,17 @@ export default class CoreBar {
         this._refreshDisplay();
     }
 
+    loseAllCore(){
+        GameState.loseAllCore();
+        this._refreshDisplay();
+    }
+
     resetCores() {
         GameState.setCore(this.maxCores);
         this._refreshDisplay();
+    } 
+
+    getCoreCount() {
+    return GameState.getCore();
     }
 }

@@ -25,13 +25,18 @@ export default class CoinBar {
             this.delfirIcon, this.delfirText,
             this.ditcoinIcon, this.ditcoinText,
             this.fichaIcon, this.fichaText
-        ]).setDepth(999);
+        ]).setDepth(999); 
+
 
         this._refreshDisplay();
     } 
 
     setPosition(x, y) {
         this.container.setPosition(x, y);
+    }
+
+    setVisible(value) {
+        this.container.setVisible(value);
     }
 
     updateCoins(type, amount) {

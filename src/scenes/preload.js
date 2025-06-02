@@ -1,8 +1,8 @@
 export default class Preload extends Phaser.Scene {
     constructor() {
-        super("Preload");
+        super("Preload");                 
     }
-    
+
     preload() {
        const centerX = this.cameras.main.width / 2;
        const centerY = this.cameras.main.height / 2;
@@ -20,13 +20,13 @@ export default class Preload extends Phaser.Scene {
        });
 
         this.load.image("loadingImage", "assets/preload/hat.png");
-        const image = this.add.image(centerX, centerY - 70, "loadingImage").setScale(0.5).setOrigin(0.5);
     }
 
     create() {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
+        this.image = this.add.image(centerX, centerY - 70, "loadingImage").setScale(0.5).setOrigin(0.5);
 
-        this.scene.start("Lobby");
+        this.scene.start("BlackOffice");
     }
 }

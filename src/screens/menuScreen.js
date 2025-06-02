@@ -54,7 +54,6 @@ export default class Menu extends Phaser.Scene {
             }
         }).setOrigin(0.5);
 
-
         // Botões
         const buttons = ['Ajustes', 'Controles', 'Sobre Black Hat', 'Sair'];
         const buttonActions = ['Settings', 'Controls', 'About', 'Exit'];

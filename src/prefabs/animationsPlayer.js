@@ -27,6 +27,12 @@ export function preloadPlayerAnimations(scene) {
 
     scene.load.image('turn-up-1', 'assets/sprites/dante/turn-up/dante-turn-up-1.png');
     scene.load.image('turn-up-2', 'assets/sprites/dante/turn-up/dante-turn-up-2.png');
+
+    scene.load.image('dante-coffee-1', 'assets/sprites/dante/dante-coffee/dante-coffee-1.png') 
+    scene.load.image('dante-coffee-2', 'assets/sprites/dante/dante-coffee/dante-coffee-2.png')
+    scene.load.image('dante-coffee-3', 'assets/sprites/dante/dante-coffee/dante-coffee-3.png')
+    scene.load.image('dante-coffee-4', 'assets/sprites/dante/dante-coffee/dante-coffee-4.png')
+    scene.load.image('dante-coffee-5', 'assets/sprites/dante/dante-coffee/dante-coffee-5.png')
 }
 
 export function PlayerAnimations(scene) {
@@ -105,4 +111,16 @@ export function PlayerAnimations(scene) {
         frameRate: 2,
         repeat: -1
     });
+    scene.anims.create({
+        key: 'dante-coffee', 
+        frames: [
+            { key: 'dante-coffee-1' },
+            { key: 'dante-coffee-2' },
+            { key: 'dante-coffee-3' },
+            { key: 'dante-coffee-4' },
+            { key: 'dante-coffee-5' }
+        ],
+        frameRate: 4,
+        repeat: 3
+    })
 }

@@ -6,7 +6,14 @@ import { EscMenu } from "../../components/menuButton/menuESC.js";
 import CoreBar from "../../components/coreBar/coreBar.js";
 import CoinBar from "../../components/coinBar/coinBar.js"; 
 
-import GameState from "../../state/gameState.js";
+import GameState from "../../state/gameState.js"; 
+import systemMessage from "../../components/systemMessage/systemMessage.js";
+
+import VictorPrefab from "../../prefabs/NPCs/victor/victorPrefab.js";
+import { preloadVictorAnimation, VictorAnimation } from "../../prefabs/NPCs/victor/animationVictor.js"; 
+
+import DianaPrefab from "../../prefabs/NPCs/diana/dianaPrefab.js"; 
+import { preloadDianaAnimation, dianaAnimation } from "../../prefabs/NPCs/diana/dianaAnimation.js";
 
 
 export default class Doodle extends Phaser.Scene {
@@ -20,6 +27,10 @@ export default class Doodle extends Phaser.Scene {
 
         this.load.tilemapTiledJSON("doodle", "assets/tilemaps/doodle.json");
 
+        this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
+        this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
+        this.load.image("ficha", "assets/inputs/UI/coins/ficha.png");
+
         this.load.image("wallsDoodle", "assets/tilesets/walls.png"); 
         this.load.image("pcDoodle", "assets/tilesets/infra16.png")
         this.load.image("stage", "assets/tilesets/stage.png"); 
@@ -27,16 +38,23 @@ export default class Doodle extends Phaser.Scene {
         this.load.image("television", "assets/tilesets/television.png");
         this.load.image("music", "assets/tilesets/music.png");
         this.load.image("logo", "assets/tilesets/tilemap_packed.png");
-        
 
+        this.load.audio('step', 'assets/audios/steps/indoor-footsteps.mp3');
+        this.load.audio('officeParty', 'assets/audios/office/OfficeParty.mp3'); 
+        
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
+
+        preloadVictorAnimation(this) 
+        preloadDianaAnimation(this)
         
         console.log(this.textures.list);
     }
 
     create() {
+
+        console.log("Cenas ativas:", this.scene.manager.getScenes(true).map(s => s.scene.key));
 
         addMenuButton(this);
         EscMenu(this) 
@@ -63,24 +81,47 @@ export default class Doodle extends Phaser.Scene {
         const logo =  this.doodle.addTilesetImage("logo", "logo")
 
         // Layers
-        const doodleBase = this.doodle.createLayer("Chao", wallsDoodle, 0, 0);
-        const wallsDoodleLayer = this.doodle.createLayer("Parede", wallsDoodle, 0, 0);
-        const objetosDoodle = this.doodle.createLayer("Objetos", [pcDoodle, stage, playsDoodle, television, music], 0, 0);
-        const objetosDoodle2 = this.doodle.createLayer("Objetos2", [pcDoodle, stage, playsDoodle, television, music], 0, 0);
-        const objetosDoodle3 = this.doodle.createLayer("Objetos3", [pcDoodle, stage, playsDoodle, television, music, logo], 0, 0);
+        const doodleBase = this.doodle.createLayer("Chao", wallsDoodle, 0, 0).setDepth(0);
+        const wallsDoodleLayer = this.doodle.createLayer("Parede", wallsDoodle, 0, 0).setDepth(1);
+        const objetosDoodle = this.doodle.createLayer("Objetos", [pcDoodle, stage, playsDoodle, television, music], 0, 0).setDepth(2);
+        const objetosDoodle2 = this.doodle.createLayer("Objetos2", [pcDoodle, stage, playsDoodle, television, music], 0, 0).setDepth(3);
+        const objetosDoodle3 = this.doodle.createLayer("Objetos3", [pcDoodle, stage, playsDoodle, television, music, logo], 0, 0).setDepth(4);
 
         const spawnPositions = {
             "Level": { x: 400, y: 400 }, 
-            "DataCenter": { x: 135, y: 75 } 
+            "DataCenter": { x: 135, y: 75 },
+            "Chapter1GameOver": { x: 400, y: 400 },
         };
         const spawn = spawnPositions[window.lastScene] || { x: 400, y: 400 };
 
         //Player
-        this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
+        this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante").setDepth(10);
         this.physics.add.existing(this.player);
 
-        PlayerAnimations(this)
+        PlayerAnimations(this) 
 
+        VictorAnimation(this);
+        this.victor = new VictorPrefab(this, 375, 107).setDepth(3); 
+        this.physics.add.collider(this.victor, objetosDoodle3); 
+
+        dianaAnimation(this);
+        this.diana = new DianaPrefab(this, 422, 107).setDepth(3);  
+        this.physics.add.collider(this.diana, objetosDoodle3);  
+
+        //audios 
+        this.stepSound = this.sound.add('step', {
+            loop: true,
+            volume: 1.5, 
+            rate: 1.3
+        }); 
+
+        this.office = this.sound.add('officeParty', {
+            loop: true,
+            volume: 0.3, 
+        }); 
+
+        this.office.play()
+        
         //Collider
         wallsDoodleLayer.setCollisionByProperty({ collider: true }); 
         wallsDoodleLayer.setCollisionByExclusion([-1]); 
@@ -90,13 +131,11 @@ export default class Doodle extends Phaser.Scene {
         objetosDoodle.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosDoodle); 
 
-        
         this.doorZones = this.physics.add.staticGroup();
 
         this.doodleOutDoor = this.createDoor(400, 400, "Pressione E para sair da Doodle", "Level");
-        this.dataCenterDoor = this.createDoor(135, 75, "Pressione E para entrar no Data Center", "DataCenter");
+        this.dataCenterDoor = this.createDoor(135, 55, "Pressione E para entrar no Data Center", "DataCenter");
 
-      
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
         //Debug
@@ -105,13 +144,23 @@ export default class Doodle extends Phaser.Scene {
         this.cameras.main.setZoom(2.4);
         this.cameras.main.setBounds(0, 0, this.doodle.widthInPixels, this.doodle.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-    }
+
+        this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+
+        this.dialogIndex = 0;
+
+        systemMessage(this, GameState.doodleDialog[this.dialogIndex])
+
+        this.dialogActive = true;
+        this.dialogLocked = false; 
+        this.dialogSequence = GameState.doodleDialog;
+    } 
 
     createDoor(x, y, text, sceneName) {
-        const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false);
-        door.textBackground = this.add.rectangle(x, y - 10, 240, 15, 0xFFFFFF, 0.6).setOrigin(0.5).setVisible(false); 
-        door.enterText = this.add.text(x, y - 10, text, { fontSize: "10px", fill: "#000000" }).setOrigin(0.5).setVisible(false);
-        door.enterImage = this.add.image(x, y + 20, "keyE").setOrigin(0.5).setScale(1.8).setVisible(false);
+        const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false).setDepth(10);
+        door.textBackground = this.add.rectangle(x, y - 10, 240, 15, 0xFFFFFF, 0.6).setOrigin(0.5).setVisible(false).setDepth(10); 
+        door.enterText = this.add.text(x, y - 10, text, { fontSize: "10px", fill: "#000000" }).setOrigin(0.5).setVisible(false).setDepth(10);
+        door.enterImage = this.add.image(x, y + 20, "keyE").setOrigin(0.5).setScale(1.8).setVisible(false).setDepth(10);
         door.sceneName = sceneName;
     
         this.physics.add.overlap(this.player, door, () => this.showEnterPrompt(door), null, this);
@@ -124,34 +173,40 @@ export default class Doodle extends Phaser.Scene {
         door.enterImage.setVisible(true);
     
         if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
+            this.office.stop()
             window.lastScene = "Doodle";
             this.scene.start(door.sceneName);
+            this.scene.stop();
         }
     }
 
     update() {
+        let moving = false;
         this.player.setVelocity(0); 
 
-        
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
             this.player.play('move-left' , true);
             this.lastDirection = "d-left";
+            moving = true;
         } 
         else if (this.right_key.isDown){
             this.player.setVelocityX(50);
             this.player.play('move-right', true);
             this.lastDirection = "d-right";
+            moving = true;
         }
         else if (this.up_key.isDown){
             this.player.setVelocityY(-50); 
             this.player.play('move-up', true)
             this.lastDirection = "d-up";
+            moving = true;
         } 
         else if (this.down_key.isDown){
             this.player.setVelocityY(50);
             this.player.play('move-down', true);
             this.lastDirection = "d-right";
+            moving = true;
         } else {
             if (this.lastDirection === "d-right") {
                 this.player.play('turn', true);
@@ -161,6 +216,23 @@ export default class Doodle extends Phaser.Scene {
                 this.player.play('turn-up', true); 
             }
         } 
+
+         if (moving) {
+            if (!this.stepSound.isPlaying) {
+                this.stepSound.play();
+            }
+        } else {
+            this.stepSound.stop();
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
+            this.dialogIndex++; 
+        if (this.dialogIndex < GameState.doodleDialog.length) {
+            systemMessage(this, GameState.doodleDialog[this.dialogIndex]);
+        } else {
+            this.dialogLocked = true; 
+            }
+        }
 
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
@@ -194,6 +266,7 @@ export default class Doodle extends Phaser.Scene {
                 door.enterImage.setVisible(false);
                 door.textBackground.setVisible(false);
                  }
-            });
+        });
     }
+    
 }

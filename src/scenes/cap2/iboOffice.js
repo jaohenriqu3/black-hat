@@ -7,6 +7,10 @@ import CoreBar from "../../components/coreBar/coreBar.js";
 import CoinBar from "../../components/coinBar/coinBar.js"; 
 
 import GameState from "../../state/gameState.js";
+import systemMessage from "../../components/systemMessage/systemMessage.js"; 
+
+import MayaPrefab from "../../prefabs/NPCs/maya/mayaPrefab.js"; 
+import { preloadMaya, MayaAnimations } from "../../prefabs/NPCs/maya/mayaAnimation.js";
 
 export default class IboOffice extends Phaser.Scene {
 
@@ -30,9 +34,12 @@ export default class IboOffice extends Phaser.Scene {
         this.load.image("officeRoom", "assets/tilesets/room.png"); 
         this.load.image("officeRoom2", "assets/tilesets/room2.png"); 
 
-        this.load.image("keyE", "assets/inputs/keyE/keyE.png");
+        this.load.image("keyE", "assets/inputs/keyE/keyE.png"); 
 
-        preloadPlayerAnimations(this)
+        this.load.audio('step', 'assets/audios/steps/indoor-footsteps.mp3');
+
+        preloadPlayerAnimations(this) 
+        preloadMaya(this)
         
         console.log(this.textures.list);
     }
@@ -50,7 +57,8 @@ export default class IboOffice extends Phaser.Scene {
         this.left_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         this.right_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
-        this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E); 
+        this.cKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
 
         // Tilemap
         this.IboOffice = this.make.tilemap({ key: "iboOffice" }); 
@@ -64,14 +72,23 @@ export default class IboOffice extends Phaser.Scene {
         // Layers
         this.IboOffice.createLayer("Chao", officeWalls, 100, 0);
         const wallsOffice = this.IboOffice.createLayer("Parede", officeWalls, 100, 0);
-        const objetosOffice = this.IboOffice.createLayer("Objetos", [officeInfra, officeInfra2, officeRoom, officeRoom2], 100, 0);
-        const objetosOffice2 = this.IboOffice.createLayer("Objetos2", [officeInfra, officeInfra2, officeRoom, officeRoom2], 100, 0);
+        const objetosOffice = this.IboOffice.createLayer("Objetos", [officeInfra, officeInfra2, officeRoom, officeRoom2], 100, 0).setDepth(2);
+        const objetosOffice2 = this.IboOffice.createLayer("Objetos2", [officeInfra, officeInfra2, officeRoom, officeRoom2], 100, 0).setDepth(3);
 
         // Player
-        this.player = new PlayerPrefab(this, 315, 270, "dante");
+        this.player = new PlayerPrefab(this, 315, 270, "dante").setDepth(10);
         this.physics.add.existing(this.player);
+         PlayerAnimations(this)
 
-        PlayerAnimations(this)
+        //NPC 
+        MayaAnimations(this)
+        this.maya = new MayaPrefab(this, 252, 65, "maya").setDepth(1); 
+
+        this.stepSound = this.sound.add('step', {
+            loop: true,
+            volume: 1.5, 
+            rate: 1.3
+        }); 
 
         //Collider
         wallsOffice.setCollisionByProperty({ collider: true }); 
@@ -86,61 +103,100 @@ export default class IboOffice extends Phaser.Scene {
         objetosOffice2.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosOffice2);
 
-        this.doorZone = this.physics.add.staticGroup();
-        const dataCenterDoor = this.doorZone.create(315, 270,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
+        this.doorZones = this.physics.add.staticGroup();
 
-        this.textBackground = this.add.rectangle(315, 270, 220, 15, 0xFFFFFF).setOrigin(0.5);
-        this.textBackground.setAlpha(0.6);
-
-        this.enterText = this.add.text(315, 270, "Pressione E para sair do Escritório", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
-        this.enterText.setVisible(false);
-
-        this.enterImage = this.add.image(315, 300, "keyE").setOrigin(0.5).setScale(1.8);
-        this.enterImage.setVisible(false);
+      //this.iboOutDoor = this.createDoor(315, 270, "Pressione E para sair do escritório", "IboDelfi");
+      //this.mayaOffice = this.createDoor(270, 85, "Pressione C para falar com Maya Rios", null);
 
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
-
-        //Debug
-        //objetos.renderDebug(this.add.graphics().setDepth(1))
 
         this.cameras.main.setZoom(2.5);
         this.cameras.main.setBounds(0, 0, this.IboOffice.widthInPixels, this.IboOffice.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+
+        this.showMayaDialog()
     }
 
-    showEnterPrompt(player, lobbyDoorOut) {
-        this.enterText.setVisible(true);
-        this.enterImage.setVisible(true);
-        this.textBackground.setVisible(true)
+    createDoor(x, y, text, sceneName) {
+        const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false);
+        door.textBackground = this.add.rectangle(x, y - 10, 240, 15, 0xFFFFFF, 0.6).setOrigin(0.5).setVisible(false); 
+        door.enterText = this.add.text(x, y - 10, text, { fontSize: "10px", fill: "#000000" }).setOrigin(0.5).setVisible(false);
+        door.enterImage = this.add.image(x, y + 20, "keyE").setOrigin(0.5).setScale(1.8).setVisible(false);
+        door.sceneName = sceneName;
+    
+        this.physics.add.overlap(this.player, door, () => this.showEnterPrompt(door), null, this);
+        return door;
+    }
 
-        if (Phaser.Input.Keyboard.JustDown(this.eKey)) { 
+     showEnterPrompt(door) {
+        door.textBackground.setVisible(true).setDepth(10);
+        door.enterText.setVisible(true).setDepth(10);
+        door.enterImage.setVisible(true).setDepth(10);
+    
+        if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
             window.lastScene = "IboOffice";
-            this.scene.start("IboDelfi"); 
+            this.scene.start(door.sceneName);
         }
     }
 
+    showMayaDialog(){ 
+        this.dialogIndex = 0; 
+
+        this.dialogActive = true;
+        this.dialogLocked = false; 
+        
+        systemMessage(this, GameState.iboOfficeDialog[this.dialogIndex]); 
+
+        this.input.keyboard.off("keydown-ENTER");
+
+        this.input.keyboard.on("keydown-ENTER", () => {
+
+        if (this.dialogLocked || !this.dialogActive) return;
+
+        this.dialogIndex++; 
+
+        if (this.dialogIndex >= GameState.iboOfficeDialog.length) {
+            this.dialogLocked = true;
+            this.dialogActive = false;
+
+            this.cameras.main.fadeOut(2000, 0, 0, 0);
+            this.cameras.main.once("camerafadeoutcomplete", () => {
+                window.lastScene = "IboOffice";
+                this.scene.start("Chapter2Cassino");
+            });
+            return;
+        }
+        systemMessage(this, GameState.iboOfficeDialog[this.dialogIndex]);
+        });  
+    }
+
     update() {
+        let moving = false; 
         this.player.setVelocity(0);
 
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
             this.player.play('move-left' , true);
             this.lastDirection = "d-left";
+            moving = true 
         } 
         else if (this.right_key.isDown){
             this.player.setVelocityX(50);
             this.player.play('move-right', true);
-            this.lastDirection = "d-right";
+            this.lastDirection = "d-right"; 
+            moving = true 
         }
         else if (this.up_key.isDown){
             this.player.setVelocityY(-50); 
             this.player.play('move-up', true)
-            this.lastDirection = "d-up";
+            this.lastDirection = "d-up"; 
+            moving = true 
         } 
         else if (this.down_key.isDown){
             this.player.setVelocityY(50);
             this.player.play('move-down', true);
-            this.lastDirection = "d-right";
+            this.lastDirection = "d-right"; 
+            moving = true 
         } else {
             if (this.lastDirection === "d-right") {
                 this.player.play('turn', true);
@@ -149,6 +205,14 @@ export default class IboOffice extends Phaser.Scene {
             } else if (this.lastDirection === "d-up") {
                 this.player.play('turn-up', true); 
             }
+        } 
+
+        if (moving) {
+            if (!this.stepSound.isPlaying) {
+                this.stepSound.play();
+            }
+        } else {
+            this.stepSound.stop();
         }
 
         if (this.menuButton && this.coreBar) {
@@ -178,10 +242,12 @@ export default class IboOffice extends Phaser.Scene {
             this.coinBar.container.setScale(0.5)
         }
 
-        if (!this.physics.overlap(this.player, this.doorZone)) {
-            this.enterText.setVisible(false);
-            this.enterImage.setVisible(false);
-            this.textBackground.setVisible(false);
-        }
+        this.doorZones.children.iterate((door) => {
+            if (!this.physics.overlap(this.player, door)) {
+                door.enterText.setVisible(false);
+                door.enterImage.setVisible(false);
+                door.textBackground.setVisible(false);
+                 }
+            });
     }
 }

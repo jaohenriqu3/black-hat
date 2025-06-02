@@ -31,7 +31,6 @@ export default class NpcPrefab extends Phaser.Physics.Arcade.Sprite {
         const dist = Math.hypot(dx, dy);
 
         if (dist < 4) {
-            // Chegou ao ponto atual, vai para o próximo
             this.currentTargetIndex = (this.currentTargetIndex + 1) % this.route.length;
             this.target = this.route[this.currentTargetIndex];
             return;

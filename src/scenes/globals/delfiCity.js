@@ -6,7 +6,9 @@ import { EscMenu } from "../../components/menuButton/menuESC.js";
 import CoreBar from "../../components/coreBar/coreBar.js"; 
 import CoinBar from "../../components/coinBar/coinBar.js";
 
-import GameState from "../../state/gameState.js";
+import GameState from "../../state/gameState.js"; 
+import systemMessage from "../../components/systemMessage/systemMessage.js";
+import { delfiCityDialog } from "../../components/systemMessage/systemMessage.js";
 
 import { preloadNPCAnimations, NPCAnimations } from "../../prefabs/NPCs/test/testAnimation.js";
 import NpcPrefab from "../../prefabs/NPCs/test/testPrefab.js";
@@ -29,8 +31,10 @@ export default class DelfiCity extends Phaser.Scene {
 
         this.load.audio('out-step', 'assets/audios/steps/outside-footsteps.mp3');
         this.load.audio('city', 'assets/audios/city/city-sound.mp3');
+        this.load.audio('initial-music', 'assets/audios/music/initial-music.mp3');
 
-
+        this.load.image("dante-in-pc", "assets/images/dante-in-pc.jpeg");
+    
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
         preloadPlayerAnimations(this)
@@ -77,7 +81,7 @@ export default class DelfiCity extends Phaser.Scene {
         // Player
         this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
         this.physics.add.existing(this.player);
-        PlayerAnimations(this)
+        PlayerAnimations(this) 
 
         //Som
         this.citySound = this.sound.add('city', {
@@ -85,6 +89,13 @@ export default class DelfiCity extends Phaser.Scene {
             volume: 1.0, 
             rate: 1.0
         }); 
+
+        this.initialMusic = this.sound.add('initial-music', {
+            loop: true,
+            volume: 1.0, 
+            rate: 1.0
+            }
+        )
 
         this.citySound.play();
 
@@ -131,7 +142,105 @@ export default class DelfiCity extends Phaser.Scene {
         this.cameras.main.setZoom(2.2);
         this.cameras.main.setBounds(0, 0, this.delfiCity_7.widthInPixels, this.delfiCity_7.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+
+        if (window.playEntranceAnimation) {
+        this.entraceAnimation();
+        window.playEntranceAnimation = false;
+        }
+
+        this.waitingForEnterAfterCutscene = true;
+
+        this.typingTimer = null;
     }
+
+    entraceAnimation(){ 
+        this.player.setVisible(true);
+
+        this.coinBar.setVisible(false) 
+        this.menuButton.setVisible(false) 
+        this.coreBar.setVisible(false) 
+
+        this.player.body.enable = false;
+        this.citySound.stop(); 
+       // this.initialMusic.play()
+
+        this.cameras.main.setZoom(1.2);
+         this.cameras.main.fadeIn(10000, 0, 0, 0);
+        this.cameras.main.stopFollow(); 
+
+        this.cameras.main.scrollX = 0;
+        this.cameras.main.scrollY = 200; 
+
+        const scrollDistance = 1400; 
+        const scrollDuration = 150000; 
+
+        systemMessage(this, delfiCityDialog[0]);
+
+        this.tweens.add({
+            targets: this.cameras.main,
+            scrollX: scrollDistance,
+            ease: 'Sine.easeInOut',
+            duration: scrollDuration,
+        });
+        
+        this.waitingForEnterAfterCutscene = true
+            this.input.keyboard.once('keydown-ENTER', () => {
+                this.waitingForEnterAfterCutscene = false;
+                this.showIntroIllustration();
+        });
+    }
+
+    showIntroIllustration() {
+    const { width, height } = this.cameras.main;
+
+    this.illustration = this.add.image(width / 2, height / 2, 'dante-in-pc')
+        .setOrigin(0.5)
+        .setScrollFactor(0)
+        .setDepth(999);
+
+        systemMessage(this, delfiCityDialog[1])
+
+    this.input.keyboard.once('keydown-ENTER', () => {
+
+        if (this.illustration) {
+            this.illustration.destroy();
+        }
+
+        if (this.initialMusic && this.initialMusic.isPlaying) {
+        this.initialMusic.stop();
+        } 
+        this.sound.stopAll();
+
+        this.time.delayedCall(100, () => {
+        this.scene.start("TutorialCut");
+        });
+
+        this.coinBar.setVisible(true);
+        this.menuButton.setVisible(true);
+        this.coreBar.setVisible(true);
+
+        this.player.setVisible(true);
+        this.player.body.enable = true;
+        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+        this.citySound.resume();
+
+    });
+}
+    waitForIntroEnter() {
+    this.introBg = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, "dante-in-pc")
+        .setOrigin(0.5)
+        .setScrollFactor(0)
+        .setDepth(999); 
+
+    this.dialogs = delfiCityDialog;
+    this.dialogIndex = 0;
+    systemMessage(this, this.dialogs[this.dialogIndex]);
+
+    this.input.keyboard.once("keydown-ENTER", () => {
+        this.advanceIntroDialog();
+    });
+}
+
 
    createDoor(x, y, text, sceneName) {
     const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false);

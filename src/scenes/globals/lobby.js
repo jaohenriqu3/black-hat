@@ -9,6 +9,7 @@ import CoinBar from "../../components/coinBar/coinBar.js";
 
 import GameState from "../../state/gameState.js";
 
+import DantePC from "../../screens/dantePC.js";
 import systemMessage from "../../components/systemMessage/systemMessage.js";
 
 export default class Lobby extends Phaser.Scene {
@@ -43,7 +44,11 @@ export default class Lobby extends Phaser.Scene {
 
     create() {
 
-       // this.scale.startFullscreen();
+       this.sound.stopAll();
+
+       if (window.lastScene === "Coffe") {
+        this.lobbyTutorial();
+        }
         
         if (!window.lastScene) {
             window.lastScene = "Lobby"; 
@@ -85,7 +90,8 @@ export default class Lobby extends Phaser.Scene {
 
         const spawnPositions = {
             "Level": { x: 420, y: 270 }, 
-            "DantePC": { x: 250, y: 70 } 
+            "DantePC": { x: 250, y: 70 },
+            "Chapter3Nexus" : { x: 250, y: 70 }
         };
         const spawn = spawnPositions[window.lastScene] || { x: 200, y: 70 };
 
@@ -111,6 +117,7 @@ export default class Lobby extends Phaser.Scene {
         parede.setCollisionByExclusion([-1]);  
         this.physics.add.collider(this.player, parede); 
 
+        //Zona de interação 
         this.doorZones = this.physics.add.staticGroup();
 
         this.lobbyOutDoor = this.createDoor(420, 260, "Pressione E para sair da casa", "Level");
@@ -120,31 +127,7 @@ export default class Lobby extends Phaser.Scene {
 
         this.cameras.main.setZoom(2.4);
         this.cameras.main.setBounds(0, 0, this.lobby.widthInPixels, this.lobby.heightInPixels);
-
-        if (!GameState.hasSeenTutorial()) {
-            this.startTutorial();
-        }
     } 
-
-    startTutorial() {
-        this.dialogIndex = 0;
-    
-        this.dialogs = [
-            "Bem vindo! Esse é Dante. Dante é um profissional freelancer na área de Cyber Segurança.",
-            "Sua rotina gira em torno de encontrar vulnerabilidades em sites e sistemas através de BugBounties.", 
-            
-            "Use as setas do teclado (⬅️➡️⬆️⬇️) para andar pelo ambiente.", 
-            "Ótimo! Agora você já pode explorar. Vamos dar uma olhada no computador. Caminhe até o computador e pressione [E] para acessá-lo.",
-        ];
-
-
-        this.player.setVelocity(0);
-        this.tutorialActive = true; 
-        this.waitingForMove = false;
-        this.movementDetected = false;
-
-        systemMessage(this, this.dialogs[this.dialogIndex]);
-    }
 
     createDoor(x, y, text, sceneName) {
         const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false);
@@ -171,9 +154,40 @@ export default class Lobby extends Phaser.Scene {
             this.scene.start(door.sceneName);
         }
     }
-   
-    update() {  
+    
+    lobbyTutorial() {
+    this.dialogBoxActive = true;
+    this.lobbyDialogIndex = 0;
+    this.lobbyDialog = GameState.lobbyDialog;
 
+    if (this.messageBox) {
+        this.messageBox.destroy();
+    }
+
+    this.messageBox = systemMessage(this, this.lobbyDialog[this.lobbyDialogIndex]);
+
+    this.input.keyboard.on('keydown-ENTER', () => {
+        if (!this.dialogBoxActive) return;
+
+        this.lobbyDialogIndex++;
+
+        if (this.lobbyDialogIndex < this.lobbyDialog.length) {
+            this.messageBox.destroy();
+            this.messageBox = systemMessage(this, this.lobbyDialog[this.lobbyDialogIndex]);
+        } else {
+            this.dialogBoxActive = false;
+            this.lobbyDialog = null;
+
+            if (this.messageBox) {
+                this.messageBox.destroy();
+            }
+
+        }
+    });
+}
+
+    update() {  
+        
          let moving = false; 
 
          if (this.tutorialActive && !this.waitingForMove && !this.movementDetected) { 
@@ -239,7 +253,6 @@ export default class Lobby extends Phaser.Scene {
             return;
         }
 
-
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
             const screenPos = cam.getWorldPoint(0, 0);
@@ -266,7 +279,6 @@ export default class Lobby extends Phaser.Scene {
             this.coinBar.container.setScale(0.5)
         }
         
-
         this.doorZones.children.iterate((door) => {
             if (!this.physics.overlap(this.player, door)) {
                 door.enterText.setVisible(false);

@@ -6,12 +6,11 @@ export default class TelaInicial extends Phaser.Scene {
 
     preload() {
         this.load.image("telaInicial", "assets/screens/initialScreen.png"); 
-
         this.load.audio('intro-music', 'assets/audios/music/intro-music.mp3');
     }
 
     create() {
-       // this.scale.startFullscreen();
+    // this.scale.startFullscreen();
        
     this.add.image(700, 400, "telaInicial").setOrigin(0.5) 
 
@@ -54,7 +53,8 @@ export default class TelaInicial extends Phaser.Scene {
 
     update() {
         if (Phaser.Input.Keyboard.JustDown(this.enterKey)) {
-            this.scene.start("Lobby");
+            window.playEntranceAnimation = true;
+            this.scene.start("Initial");
         }
     }
 }

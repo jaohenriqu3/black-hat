@@ -7,6 +7,7 @@ import CoreBar from "../../components/coreBar/coreBar.js";
 import CoinBar from "../../components/coinBar/coinBar.js"; 
 
 import GameState from "../../state/gameState.js";
+import systemMessage from "../../components/systemMessage/systemMessage.js";
 
 
 export default class DataCenter extends Phaser.Scene {
@@ -18,10 +19,17 @@ export default class DataCenter extends Phaser.Scene {
     preload() {
         this.load.image('menuIcon', 'assets/inputs/UI/menu/menu.png');
 
-        this.load.tilemapTiledJSON("dataCenter", "assets/tilemaps/data-center.json");
+        this.load.tilemapTiledJSON("dataCenter", "assets/tilemaps/data-center.json"); 
+
+        this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
+        this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
+        this.load.image("ficha", "assets/inputs/UI/coins/ficha.png");
 
         this.load.image("baseData", "assets/tilesets/walls.png"); 
-        this.load.image("infraData", "assets/tilesets/infra16.png");
+        this.load.image("infraData", "assets/tilesets/infra16.png"); 
+
+        this.load.audio('step', 'assets/audios/steps/indoor-footsteps.mp3');
+        this.load.audio('datacenter', 'assets/audios/dataCenter/dataCenter.mp3');  
 
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
 
@@ -58,11 +66,30 @@ export default class DataCenter extends Phaser.Scene {
         const objetosDataCenter2= this.dataCenter.createLayer("Objetos2", infraData, 40, 0);
         const objetosDataCenter3 = this.dataCenter.createLayer("Objetos3", infraData, 40, 0);
 
+         const spawnPositions = {
+            "Doodle": { x: 195, y: 270 }, 
+            "DataCenterPC": { x: 465, y: 90 } 
+        };
+        const spawn = spawnPositions[window.lastScene] || { x: 185, y: 270 };
+
         // Player
-        this.player = new PlayerPrefab(this, 195, 280, "dante");
+        this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante");
         this.physics.add.existing(this.player);
 
         PlayerAnimations(this)
+
+        this.stepSound = this.sound.add('step', {
+            loop: true,
+            volume: 1.5, 
+            rate: 1.5
+        }); 
+
+        this.dataCenterSound = this.sound.add('datacenter', {
+            loop: true,
+            volume: 1.0, 
+        }); 
+
+        this.dataCenterSound.play()
 
         //Collider
         wallsDataCenter.setCollisionByProperty({ collider: true }); 
@@ -73,62 +100,78 @@ export default class DataCenter extends Phaser.Scene {
         objetosDataCenter.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetosDataCenter); 
 
-        this.doorZone = this.physics.add.staticGroup();
-        const dataCenterDoor = this.doorZone.create(195, 270,).setSize(50, 50).setVisible(null); // Posiciona e define o tamanho 
+        this.doorZones = this.physics.add.staticGroup();
 
-        this.textBackground = this.add.rectangle(195, 270, 220, 15, 0xFFFFFF).setOrigin(0.5);
-        this.textBackground.setAlpha(0.6);
+       // this.doodleOutDoor = this.createDoor(195, 270, "Pressione E para sair do Data Center", "Doodle");
+        this.dataCenterDoor = this.createDoor(465, 70, "Pressione E para acessar o computador", "DataCenterPC");
 
-        this.enterText = this.add.text(195, 270, "Pressione E para sair do Data Center", { fontSize: "10px", fill: "#000000" }).setOrigin(0.5);
-        this.enterText.setVisible(false);
+        this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this); 
 
-        this.enterImage = this.add.image(185, 300, "keyE").setOrigin(0.5).setScale(1.8);
-        this.enterImage.setVisible(false);
+        this.dialogIndex = 0;
 
-        this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
+        systemMessage(this, GameState.dataCenterDialog[this.dialogIndex])
 
-        //Debug
-        //objetos.renderDebug(this.add.graphics().setDepth(1))
-
+        this.dialogActive = true;
+        this.dialogLocked = false; 
+    
         this.cameras.main.setZoom(2.5);
         this.cameras.main.setBounds(0, 0, this.dataCenter.widthInPixels, this.dataCenter.heightInPixels);
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     }
 
 
-    showEnterPrompt(player, lobbyDoorOut) {
-        this.enterText.setVisible(true);
-        this.enterImage.setVisible(true);
-        this.textBackground.setVisible(true)
+    createDoor(x, y, text, sceneName) {
+        const door = this.doorZones.create(x, y).setSize(50, 50).setVisible(false).setDepth(10);
+        door.textBackground = this.add.rectangle(x, y - 10, 240, 15, 0xFFFFFF, 0.6).setOrigin(0.5).setVisible(false).setDepth(10).setScale(0.8); 
+        door.enterText = this.add.text(x, y - 10, text, { fontSize: "10px", fill: "#000000" }).setOrigin(0.5).setVisible(false).setDepth(10).setScale(0.8);
+        door.enterImage = this.add.image(x, y + 20, "keyE").setOrigin(0.5).setScale(1.8).setVisible(false).setDepth(10);
+        door.sceneName = sceneName;
+    
+        this.physics.add.overlap(this.player, door, () => this.showEnterPrompt(door), null, this);
+        return door;
+    }
 
-        if (Phaser.Input.Keyboard.JustDown(this.eKey)) { 
+    showEnterPrompt(door) {
+        door.textBackground.setVisible(true);
+        door.enterText.setVisible(true);
+        door.enterImage.setVisible(true);
+    
+        if (Phaser.Input.Keyboard.JustDown(this.eKey)) {
+            this.dataCenterSound.stop()
             window.lastScene = "DataCenter";
-            this.scene.start("Doodle"); 
+            this.scene.start(door.sceneName);
+            this.scene.stop();
         }
     }
 
     update() {
         this.player.setVelocity(0);
 
+        let moving = false;
+
         if (this.left_key.isDown){
             this.player.setVelocityX(-50);
             this.player.play('move-left' , true);
             this.lastDirection = "d-left";
+            moving = true;
         } 
         else if (this.right_key.isDown){
             this.player.setVelocityX(50);
             this.player.play('move-right', true);
             this.lastDirection = "d-right";
+            moving = true;
         }
         else if (this.up_key.isDown){
             this.player.setVelocityY(-50); 
             this.player.play('move-up', true)
             this.lastDirection = "d-up";
+            moving = true;
         } 
         else if (this.down_key.isDown){
             this.player.setVelocityY(50);
             this.player.play('move-down', true);
             this.lastDirection = "d-right";
+            moving = true;
         } else {
             if (this.lastDirection === "d-right") {
                 this.player.play('turn', true);
@@ -138,6 +181,14 @@ export default class DataCenter extends Phaser.Scene {
                 this.player.play('turn-up', true); 
             }
         } 
+
+        if (moving) {
+            if (!this.stepSound.isPlaying) {
+                this.stepSound.play();
+            }
+        } else {
+            this.stepSound.stop();
+        }
 
         if (this.menuButton && this.coreBar) {
             const cam = this.cameras.main;
@@ -166,10 +217,12 @@ export default class DataCenter extends Phaser.Scene {
             this.coinBar.container.setScale(0.5)
         } 
 
-        if (!this.physics.overlap(this.player, this.doorZone)) {
-            this.enterText.setVisible(false);
-            this.enterImage.setVisible(false);
-            this.textBackground.setVisible(false);
-        }
+        this.doorZones.children.iterate((door) => {
+            if (!this.physics.overlap(this.player, door)) {
+                door.enterText.setVisible(false);
+                door.enterImage.setVisible(false);
+                door.textBackground.setVisible(false);
+            }
+        });
     }
 }
