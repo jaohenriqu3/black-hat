@@ -6,7 +6,7 @@ export default class Close extends Phaser.Scene {
   }
 
   preload() {
-     this.load.image("logo", "assets/images/Logo.png");
+     this.load.image("logo-final", "assets/images/Logo.png");
   }
 
   create() {
@@ -67,7 +67,7 @@ export default class Close extends Phaser.Scene {
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
-    this.hat = this.add.image(centerX + 10, centerY - 150, 'logo').setScale(0.4);
+    this.hatLogoFinal = this.add.image(centerX + 10, centerY - 150, 'logo-final').setScale(0.4);
 
     const restartBtn = this.add.text(centerX, centerY + 50, "Recomeçar", {
       fontSize: "20px",
@@ -101,7 +101,7 @@ export default class Close extends Phaser.Scene {
        window.open('https://joaos-organization-54.gitbook.io/black-hat', '_blank');
     });
 
-    [this.hat, restartBtn, continueBtn, moreBtn].forEach(btn => {
+    [this.hatLogoFinal, restartBtn, continueBtn, moreBtn].forEach(btn => {
       btn.setAlpha(0);
       this.tweens.add({
         targets: btn,

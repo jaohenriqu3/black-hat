@@ -1,5 +1,10 @@
 import GameState from "../../state/gameState.js";
 
+export const delfiCityDialog = [
+  "Essa é Delfi City, uma cidade tranquila e amigável, referéncia como polo de tecnologia e inovações digitais, onde cada código é uma história, cada sistema é um universo e cada rede é uma conexão, uma cidade que intercala entre o fisíco e o cibernético diariamente. Explore Delfi City e veja o que ela tem a lhe mostrar!",
+  "Dante é um profissional de CyberSegurança, sua vida resume apenas em encontrar falhas e vulnerabilidade em sistemas, e claro, nunca dispensa um bom café...",
+];
+
 const defaultConfig = {
   boxWidth: 1100,
   boxHeight: 80,

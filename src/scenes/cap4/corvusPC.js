@@ -19,7 +19,7 @@ export default class CorvusPC extends Phaser.Scene {
 
         this.load.image("corvusPC", "assets/screens/corvusPC.png");
         this.load.image("hacker", "assets/images/hacker.png"); 
-        this.load.image("corvus", "assets/images/corvuscut.png");
+        this.load.image("corvus-cut", "assets/images/corvuscut.png");
         
         this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     }
@@ -34,7 +34,7 @@ export default class CorvusPC extends Phaser.Scene {
       this.add.image(700, 460 ,"corvusPC");
 
       this.option1 = this.add.rectangle(460, 270, 280, 280, 0x000000).setOrigin(0.5).setInteractive(); 
-      this.add.image(460, 260, "corvus").setScale(0.3) 
+      this.add.image(460, 260, "corvus-cut").setScale(0.3) 
 
       this.true = this.add.text(385, 380, "Denunciar Corvus", {
       fill: "#00FF00", fontFamily: 'monospace', fontSize: "18px"
