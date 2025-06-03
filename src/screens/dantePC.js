@@ -14,7 +14,7 @@ export default class DantePC extends Phaser.Scene {
         this.load.image("dantePC", "assets/screens/dantePC.png");
         this.load.image("shop", "assets/inputs/UI/shop/cart.png");
         this.load.image("shop-black", "assets/inputs/UI/shop/cart-black.png");
-        this.load.image("core-bar", "assets/inputs/UI/shop/corebar.png")
+        this.load.image("core-bar-icon", "assets/inputs/UI/shop/corebar.png")
 
         this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
         this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
@@ -178,9 +178,8 @@ export default class DantePC extends Phaser.Scene {
         });
 
         const shopData = [
-            {name: "Recarregar Core",
-
-                icon: "core-bar",
+            {   name: "Recarregar Core",
+                icon: "core-bar-icon",
                 price: "R$ 4,90",
                 scale: 0.8
             },
@@ -225,8 +224,7 @@ export default class DantePC extends Phaser.Scene {
                 fill: "#333",
                 fontFamily: "monospace"
             }).setOrigin(0.5).setDepth(11);
-
-
+            
             bg.setInteractive();
 
             bg.on("pointerdown", () => {
@@ -263,28 +261,6 @@ export default class DantePC extends Phaser.Scene {
         this.shopPopup.destroy();
         this.closeButton.destroy();
         this.shopItems.forEach(item => item.destroy());
-    }
-
-    showGameOverPopup() {
-    const popup = this.add.rectangle(635, 300, 600, 300, 0x000000).setDepth(1003);
-    popup.setStrokeStyle(4, 0xff0000);
-    const text = this.add.text(635, 275, "GAME OVER", {
-        fontSize: "48px",
-        fill: "#ffffff",
-        fontFamily: "monospace"
-    }).setOrigin(0.5).setDepth(1004);
-
-    const labelText = this.add.text(635, 340, "Você não conseguiu conectar os circuitos, tente novamente", {
-        fontSize: "16px",
-        fill: "#ffffff",
-        fontFamily: "monospace"
-    }).setOrigin(0.5).setDepth(1004)
-
-    this.time.delayedCall(4000, () => {
-        popup.destroy();
-        text.destroy();
-        labelText.destroy();
-    });
     }
 
     closePuzzle() {

@@ -133,10 +133,10 @@ export default class DelfiCity extends Phaser.Scene {
         this.doorZones = this.physics.add.staticGroup();
 
         this.lobbyDoor = this.createDoor(1030, 350, "Pressione E para entrar em casa", "Lobby");
-        this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
-        this.doodleDoor = this.createDoor(210, 390, "Pressione E para entrar na Doodle", "Doodle");
-        this.iboDoor = this.createDoor(422, 345, "Pressione E para entrar na IBODELFI", "IboDelfi");
-        this.cassinoDoor = this.createDoor(1335, 150, "E para entrar no cassino", "Cassino");
+       // this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
+       // this.doodleDoor = this.createDoor(210, 390, "Pressione E para entrar na Doodle", "Doodle");
+       // this.iboDoor = this.createDoor(422, 345, "Pressione E para entrar na IBODELFI", "IboDelfi");
+       // this.cassinoDoor = this.createDoor(1335, 150, "E para entrar no cassino", "Cassino");
 
         // Câmera
         this.cameras.main.setZoom(2.2);
