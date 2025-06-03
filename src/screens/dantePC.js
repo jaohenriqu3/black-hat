@@ -15,8 +15,7 @@ export default class DantePC extends Phaser.Scene {
         this.load.image("shop", "assets/inputs/UI/shop/cart.png");
         this.load.image("shop-black", "assets/inputs/UI/shop/cart-black.png");
 
-        
-        this.load.image("core-bar-icon", "assets/inputs/UI/shop/corebar.png")
+        this.load.image("core-bar-icon", "assets/coreBar/coreBar.png")
 
         this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
         this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
