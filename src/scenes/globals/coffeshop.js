@@ -116,7 +116,7 @@ export default class Coffe extends Phaser.Scene {
         //zona de interação 
         this.doorZones = this.physics.add.staticGroup()
 
-        this.lobbyOutDoor = this.createDoor(210, 260, "Pressione E para sair da cafeteria", "Level");     
+       // this.lobbyOutDoor = this.createDoor(210, 260, "Pressione E para sair da cafeteria", "Level");     
         this.placeOrder = this.createDoor(205, 110, "Pressione C para fazer um pedido", null);  
 
         this.physics.add.overlap(this.player, this.placeOrder, () => this.showEnterPrompt(this.placeOrder), null, this);

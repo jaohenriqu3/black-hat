@@ -175,10 +175,10 @@ export default class Cassino extends Phaser.Scene {
 
         this.doorZones = this.physics.add.staticGroup();
 
-        this.cassinoOutDoor = this.createDoor(270, 430, "Pressione E para sair do Cassino", "Level");
+       // this.cassinoOutDoor = this.createDoor(270, 430, "Pressione E para sair do Cassino", "Level");
         this.cassinoOfficeDoor = this.createDoor(455, 55, "Pressione E para entrar no escritório", "CassinoOffice");
         this.playerCassinoZone = this.createDoor(133, 360, "Pressione C para conversar com o apostador", null);
-        this.cassinoAttendantZone = this.createDoor(80, 70, "Pressione E para comprar fichas", null ); 
+       // this.cassinoAttendantZone = this.createDoor(80, 70, "Pressione E para comprar fichas", null ); 
         this.cassinoAttendant2Zone = this.createDoor(200, 105, "Pressione C para falar com o BarTender", null );
         this.blackNestMemberZone = this.createDoor(450, 260, "Pressione C para conversar com o Hacker", null).setVisible(false); 
 

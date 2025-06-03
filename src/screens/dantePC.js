@@ -14,6 +14,8 @@ export default class DantePC extends Phaser.Scene {
         this.load.image("dantePC", "assets/screens/dantePC.png");
         this.load.image("shop", "assets/inputs/UI/shop/cart.png");
         this.load.image("shop-black", "assets/inputs/UI/shop/cart-black.png");
+
+        
         this.load.image("core-bar-icon", "assets/inputs/UI/shop/corebar.png")
 
         this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
@@ -224,7 +226,7 @@ export default class DantePC extends Phaser.Scene {
                 fill: "#333",
                 fontFamily: "monospace"
             }).setOrigin(0.5).setDepth(11);
-            
+
             bg.setInteractive();
 
             bg.on("pointerdown", () => {

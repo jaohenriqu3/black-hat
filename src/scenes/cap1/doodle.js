@@ -133,7 +133,7 @@ export default class Doodle extends Phaser.Scene {
 
         this.doorZones = this.physics.add.staticGroup();
 
-        this.doodleOutDoor = this.createDoor(400, 400, "Pressione E para sair da Doodle", "Level");
+       // this.doodleOutDoor = this.createDoor(400, 400, "Pressione E para sair da Doodle", "Level");
         this.dataCenterDoor = this.createDoor(135, 55, "Pressione E para entrar no Data Center", "DataCenter");
 
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
