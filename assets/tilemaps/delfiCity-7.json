@@ -134,7 +134,7 @@
         {
          "columns":37,
          "firstgid":1,
-         "image":"delfi-city\/delfi-city\/tilemap_packed.png",
+         "image":"..\/..\/..\/..\/kenney_roguelike-modern-city\/Tilemap\/tilemap_packed.png",
          "imageheight":448,
          "imagewidth":592,
          "margin":0,

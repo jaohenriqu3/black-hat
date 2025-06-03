@@ -9,6 +9,8 @@ export default class Initial extends Phaser.Scene {
   }
 
   create() {
+    this.scale.startFullscreen();
+    
     this.Background = this.add.rectangle(1400, 800, 20000, 10000, 0x000000).setOrigin(0.5);
 
     const centerX = this.cameras.main.centerX;
