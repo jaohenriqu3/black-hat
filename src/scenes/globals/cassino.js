@@ -110,7 +110,9 @@ export default class Cassino extends Phaser.Scene {
 
         const spawnPositions = { 
              "Level": { x: 270, y: 410 }, 
-             "CassinoOffice": { x: 450, y:55 }   
+             "CassinoOffice": { x: 450, y:55 },
+             "CassinoPC": {x: 85, y: 80},
+             "CassinoGame": {x: 370, y:360}
          } 
         const spawn = spawnPositions[window.lastScene] || {  x: 270, y: 410 };
 
@@ -175,12 +177,13 @@ export default class Cassino extends Phaser.Scene {
 
         this.doorZones = this.physics.add.staticGroup();
 
-       // this.cassinoOutDoor = this.createDoor(270, 430, "Pressione E para sair do Cassino", "Level");
+        this.cassinoOutDoor = this.createDoor(270, 430, "Pressione E para sair do Cassino", "Level");
         this.cassinoOfficeDoor = this.createDoor(455, 55, "Pressione E para entrar no escritório", "CassinoOffice");
         this.playerCassinoZone = this.createDoor(133, 360, "Pressione C para conversar com o apostador", null);
-       // this.cassinoAttendantZone = this.createDoor(80, 70, "Pressione E para comprar fichas", null ); 
+        this.CassinoGameZone = this.createDoor(370, 350, "Pressione E para jogar", "CassinoGame");
         this.cassinoAttendant2Zone = this.createDoor(200, 105, "Pressione C para falar com o BarTender", null );
         this.blackNestMemberZone = this.createDoor(450, 260, "Pressione C para conversar com o Hacker", null).setVisible(false); 
+        this.cassinoPC = this.createDoor(105, 60, "Pressione E para comprar fichas", "CassinoPC").setVisible(false); 
 
         this.physics.add.overlap(this.player, this.doorZone, this.showEnterPrompt, null, this);
 
@@ -193,19 +196,50 @@ export default class Cassino extends Phaser.Scene {
 
         this.cassinoOfficeDoor.active = false;
         this.cassinoOfficeDoor.visible = false;
-        this.cassinoOfficeDoor.body.enable = false;
+        this.cassinoOfficeDoor.body.enable = false; 
 
+        this.playerCassinoZone.active = false;
+        this.playerCassinoZone.visible = false;
+        this.playerCassinoZone.body.enable = false; 
+
+        this.cassinoAttendant2Zone.active = false;
+        this.cassinoAttendant2Zone.visible = false;
+        this.cassinoAttendant2Zone.body.enable = false; 
+
+        this.cassinoOutDoor.active = true;
+        this.cassinoOutDoor.visible = false;
+        this.cassinoOutDoor.body.enable = true;
+
+        this.cassinoPC.active = true;
+        this.cassinoPC.visible = false;
+        this.cassinoPC.body.enable = true;
+
+        if (window.lastScene === "Chapter3Cutscene"){
+        this.playerCassinoZone.active = true;
+        this.playerCassinoZone.body.enable = true;
         this.dialogIndex = 0;
         systemMessage(this, GameState.cassinoSystemDialog[this.dialogIndex]) 
+        this.cassinoOutDoor.active = false;
+        this.cassinoOutDoor.visible = false;
+        this.cassinoOutDoor.body.enable = false;
 
-        if (window.lastScene === "DantePC"){
-
+        this.cassinoPC.active = false;
+        this.cassinoPC.visible = false;
+        this.cassinoPC.body.enable = false;
         }
         
         if(window.lastScene === "CassinoOffice"){
             this.dialogIndex = 0;
             this.blackNestMember.setVisible(true)
             systemMessage(this, GameState.cassinoSystemDialog2[this.dialogIndex]) 
+
+            this.cassinoPC.active = false;
+            this.cassinoPC.visible = false;
+            this.cassinoPC.body.enable = false; 
+
+            this.cassinoOutDoor.active = false;
+            this.cassinoOutDoor.visible = false;
+            this.cassinoOutDoor.body.enable = false;
         }
     }
 
@@ -235,6 +269,12 @@ export default class Cassino extends Phaser.Scene {
 
         if (door === this.playerCassinoZone) {
             door.enterImage.setVisible(false).setDepth(11);
+            if (window.lastScene === "Level"){
+                door.textBackground.setVisible(false).setDepth(11);
+                door.enterText.setVisible(false).setDepth(11);
+                door.enterImage.setVisible(false).setDepth(11);
+                door.enterImageC.setVisible(false).setDepth(11);
+            }
         if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
             this.dialogActive = true;
             this.showCassinoPlayerDialog();
@@ -243,7 +283,7 @@ export default class Cassino extends Phaser.Scene {
 
         if (door === this.blackNestMemberZone) {
              door.enterImage.setVisible(false).setDepth(11);
-            if (window.lastScene === "DantePC"){
+            if (window.lastScene === "Chapter3CutScene"){
                 door.textBackground.setVisible(false).setDepth(11);
                 door.enterText.setVisible(false).setDepth(11);
                 door.enterImage.setVisible(false).setDepth(11);
@@ -257,10 +297,16 @@ export default class Cassino extends Phaser.Scene {
 
         if (door === this.cassinoAttendant2Zone) {
              door.enterImage.setVisible(false).setDepth(11);
-            if (window.lastScene === "DantePC"){
+            if (window.lastScene === "Chapter3CutScene"){
                 door.textBackground.setVisible(false).setDepth(11);
                 door.enterText.setVisible(false).setDepth(11);
                 door.enterImage.setVisible(false).setDepth(11); 
+                door.enterImageC.setVisible(false).setDepth(11);
+            } 
+            if (window.lastScene === "Level"){
+                door.textBackground.setVisible(false).setDepth(11);
+                door.enterText.setVisible(false).setDepth(11);
+                door.enterImage.setVisible(false).setDepth(11);
                 door.enterImageC.setVisible(false).setDepth(11);
             }
         if (Phaser.Input.Keyboard.JustDown(this.cKey)) {
@@ -326,6 +372,9 @@ export default class Cassino extends Phaser.Scene {
             if (this.dialogIndex === 3) { 
             // this.dialogLocked = true; 
             // this.dialogActive = false; 
+
+            this.cassinoAttendant2Zone.active = true;
+            this.cassinoAttendant2Zone.body.enable = true;
 
              this.input.keyboard.removeAllListeners("keydown-ENTER");
                 }

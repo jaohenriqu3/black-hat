@@ -12,6 +12,15 @@ import systemMessage from "../../components/systemMessage/systemMessage.js";
 import CoffeeAttendantPrefab from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantPrefab.js"; 
 import { preloadCoffeeAttendantAnimations, CoffeeAttendantAnimations } from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantAnimation.js";
 
+import CoffeeAttendant2Prefab from "../../prefabs/NPCs/coffeeshop/coffeeAttendant2/coffeeAttendant2Prefab.js"; 
+import { preloadCoffeeAttendant2Animations, CoffeeAttendant2Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant2/coffeeAttendant2Animation.js";
+
+import CoffeeAttendant3Prefab from "../../prefabs/NPCs/coffeeshop/coffeeAttendant3/coffeeAttendant3Prefab.js";
+import { preloadCoffeeAttendant3Animations, CoffeeAttendant3Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant3/coffeeAttendant3Animation.js";
+
+import CoffeeClientPrefab from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientPrefab.js"; 
+import { preloadCoffeeClient, CoffeeClientAnimation } from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientAnimation.js";
+
 
 export default class Coffe extends Phaser.Scene {
 
@@ -41,7 +50,10 @@ export default class Coffe extends Phaser.Scene {
         this.load.image("keyC", "assets/inputs/keyC/keyC.png");
 
         preloadPlayerAnimations(this)
-        preloadCoffeeAttendantAnimations(this);
+        preloadCoffeeAttendantAnimations(this); 
+        preloadCoffeeAttendant2Animations(this);
+        preloadCoffeeAttendant3Animations(this);
+        preloadCoffeeClient(this);
 
         console.log(this.textures.list);
     }
@@ -86,6 +98,15 @@ export default class Coffe extends Phaser.Scene {
         this.attendant = new CoffeeAttendantPrefab(this, 205, 90); 
         this.physics.add.collider(this.attendant, coffeeObjetos);
 
+        CoffeeAttendant2Animations(this); 
+        this.attendant2 = new CoffeeAttendant2Prefab(this, 255, 55).setDepth(10);
+
+        CoffeeAttendant3Animations(this); 
+        this.attendant3 = new CoffeeAttendant3Prefab(this, 380, 55).setDepth(10);
+
+        CoffeeClientAnimation(this); 
+        this.client = new CoffeeClientPrefab(this, 370, 150).setDepth(10);
+
         //Som
         this.stepSound = this.sound.add('step', {
             loop: true,
@@ -116,7 +137,7 @@ export default class Coffe extends Phaser.Scene {
         //zona de interação 
         this.doorZones = this.physics.add.staticGroup()
 
-       // this.lobbyOutDoor = this.createDoor(210, 260, "Pressione E para sair da cafeteria", "Level");     
+        this.lobbyOutDoor = this.createDoor(210, 260, "Pressione E para sair da cafeteria", "Level")   
         this.placeOrder = this.createDoor(205, 110, "Pressione C para fazer um pedido", null);  
 
         this.physics.add.overlap(this.player, this.placeOrder, () => this.showEnterPrompt(this.placeOrder), null, this);
@@ -128,7 +149,10 @@ export default class Coffe extends Phaser.Scene {
 
         if (window.lastScene === 'TutorialCut' && !this.dialogAlreadyStarted) {
             systemMessage(this, GameState.coffeTutorialDialog[0])
-        } 
+            this.lobbyOutDoor.setVisible(false);     
+        } else {
+            this.dialogAlreadyStarted = false; 
+        }
     }
 
     createDoor(x, y, text, sceneName) {
@@ -143,34 +167,80 @@ export default class Coffe extends Phaser.Scene {
         return door;
     } 
 
-    showAttendantDialog(){ 
-        this.dialogIndex = 0; 
+    getCoffeePriceByChapter() {
+    const chapter = GameState.getChapter(); 
+    switch (chapter) {
+        case 1:
+            return 5;
+        case 2:
+            return 15;
+        case 3:
+            return 40;
+        case 4:
+            return 60;
+        default:
+            return 5; 
+        }
+    }
 
-        this.dialogActive = true;
-        this.dialogLocked = false; 
-        
-        systemMessage(this, GameState.coffeAtendentDialog2[this.dialogIndex]); 
+    showAttendantDialog() {
+    this.dialogIndex = 0;
+    this.dialogActive = true;
+    this.dialogLocked = false;
 
-        this.input.keyboard.on("keydown-ENTER", () => {
-        this.dialogIndex++; 
+    const chapter = GameState.getChapter();
 
-        this.messageBox = systemMessage(this, GameState.coffeAtendentDialog2[this.dialogIndex]); 
+    let currentDialog;
+    switch (chapter) {
+        case 1:
+            currentDialog = GameState.coffeAtendentDialog2;
+            break;
+        case 2:
+            currentDialog = GameState.coffeAtendentDialog3;
+            break;
+        case 3:
+            currentDialog = GameState.coffeAtendentDialog4;
+            break;
+        case 4:
+            currentDialog = GameState.coffeAtendentDialog5;
+            break;
+        default:
+            currentDialog = GameState.coffeAtendentDialog2;
+    }
 
-        if(this.dialogIndex === 2){ 
+    this.messageBox = systemMessage(this, currentDialog[this.dialogIndex]);
+
+    if (this.enterKeyListener) {
+        this.input.keyboard.off("keydown-ENTER", this.enterKeyListener);
+    }
+
+    this.enterKeyListener = () => {
+        this.dialogIndex++;
+
+
+        if (this.dialogIndex < currentDialog.length) {
+            this.messageBox = systemMessage(this, currentDialog[this.dialogIndex]);
+        } else {
             this.disablePlayerControl = true;
-            this.player.anims.play('dante-coffee'); 
-            this.isAnimating = true; 
-            GameState.addCoins("delfir", -5);
+            this.dialogLocked = true;
+            this.player.anims.play('dante-coffee');
+            this.isAnimating = true;
+
+            const coffeePrice = this.getCoffeePriceByChapter();
+            GameState.addCoins("delfir", -coffeePrice);
             this.coinBar._refreshDisplay();
-            this.player.once('animationcomplete-dante-coffee', () => { 
-                this.messageBox.destroy()
-                this.player.anims.play('turn') 
-                this.disablePlayerControl = false; 
+
+            this.player.once('animationcomplete-dante-coffee', () => {
+                this.messageBox.destroy();
+                this.player.anims.play('turn');
+                this.disablePlayerControl = false;
                 this.dialogAlreadyStarted = false;
             });
-            }
-        });  
+        }
+    };
+        this.input.keyboard.on("keydown-ENTER", this.enterKeyListener);
     }
+
 
     showTutorialAttendantDialog(){
         this.dialogIndex = 0; 
@@ -187,13 +257,17 @@ export default class Coffe extends Phaser.Scene {
 
         if(this.dialogIndex === 2){ 
             this.disablePlayerControl = true;
+            this.dialogLocked = true; 
             this.player.anims.play('dante-coffee'); 
             this.isAnimating = true;
+
+
             this.player.once('animationcomplete-dante-coffee', () => {
             this.cameras.main.fadeOut(1000, 0, 0, 0); 
             this.music.stop()
                 this.cameras.main.once('camerafadeoutcomplete', () => {
-                window.lastScene = 'Coffe'
+                window.lastScene = 'Coffe' 
+                this.dialogAlreadyStarted = false
                 this.scene.start("Lobby");
                 });   
             });
@@ -229,11 +303,27 @@ export default class Coffe extends Phaser.Scene {
                 if (window.lastScene === 'TutorialCut') {
                     this.showTutorialAttendantDialog();
                 } else {
+                    door.textBackground.setVisible(true);
+                    door.enterText.setVisible(true);
+                    door.enterImageC.setVisible(true);
                     this.showAttendantDialog();
                 }
             }
             return;
         }
+        
+        if (window.lastScene === 'TutorialCut'){
+        door.textBackground.setVisible(false);
+        door.enterText.setVisible(false);
+        door.enterImage.setVisible(false);
+        door.enterImageC.setVisible(false);
+        } else {
+            door.textBackground.setVisible(true);
+            door.enterText.setVisible(true);
+            door.enterImage.setVisible(true);
+            door.enterImageC.setVisible(true);
+        }
+
     } 
 
     update() {

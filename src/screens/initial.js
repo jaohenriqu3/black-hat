@@ -1,3 +1,5 @@
+import GameState from "../state/gameState.js";
+
 export default class Initial extends Phaser.Scene {
   constructor() {
     super("Initial");
@@ -10,6 +12,7 @@ export default class Initial extends Phaser.Scene {
 
   create() {
     this.scale.startFullscreen();
+    GameState.setChapter(1)
     
     this.Background = this.add.rectangle(1400, 800, 20000, 10000, 0x000000).setOrigin(0.5);
 
