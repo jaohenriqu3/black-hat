@@ -30,7 +30,7 @@ const sceneConfigs = {
   Doodle: { boxWidth: 550, boxHeight: 80, boxY: 520, fontSize: "14px", labelX: 360, labelY: 60 },
   DataCenter: { boxWidth: 450, boxHeight: 60, boxY: 520, fontSize: "14px", labelX: 270, labelY: 42 },
   IboDelfi: { boxWidth: 450, boxHeight: 60, boxY: 520, fontSize: "14px", labelX: 270, labelY: 42 },
-  IboOffice: { boxWidth: 450, boxHeight: 60, boxY: 520, fontSize: "14px", labelX: 270, labelY: 42 },
+  IboOffice: { boxWidth: 500, boxHeight: 60, boxY: 520, fontSize: "14px", labelX: 320, labelY: 42 },
   Cassino: { boxWidth: 550, boxHeight: 65, boxY: 520, fontSize: "14px", labelX: 360, labelY: 45 },
   CassinoOffice: { boxWidth: 550, boxHeight: 65, boxY: 520, fontSize: "14px", labelX: 360, labelY: 45 },
   BlackOffice: { boxWidth: 500, boxHeight: 75, boxY: 520, fontSize: "14px", labelX: 320, labelY: 58 },

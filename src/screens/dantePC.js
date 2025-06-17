@@ -18,10 +18,13 @@ export default class DantePC extends Phaser.Scene {
         this.load.image("core-bar-icon", "assets/coreBar/coreBar.png")
 
         this.load.image("delfir", "assets/inputs/UI/coins/delfir.png");
+        this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png"); 
         this.load.image("ditcoin", "assets/inputs/UI/coins/ditcoin.png");
         this.load.image("ficha", "assets/inputs/UI/coins/ficha.png");
         this.load.image("news", "assets/inputs/UI/icons/news.jpg")
-        this.load.image("big-delfir", "assets/inputs/UI/shop/big-delfir.png")
+
+        this.load.image("big-delfir", "assets/inputs/UI/shop/big-delfir.png") 
+        this.load.image("big-ditcoin", "assets/inputs/UI/shop/big-ditcoin.png")
         
         this.load.image("arrow", "assets/inputs/UI/arrow/arrow.png");
 
@@ -178,6 +181,15 @@ export default class DantePC extends Phaser.Scene {
             this.closeShop();
         });
 
+        const chapter = GameState.getChapter(); 
+
+        const ditcoinPrices = {
+            1: "300 Delfirs",
+            2: "1000 Delfirs",
+            3: "5000 Delfirs",
+            4: "20000 Delfirs"
+        };
+
         const shopData = [
             {   name: "Recarregar Core",
                 icon: "core-bar-icon",
@@ -185,19 +197,19 @@ export default class DantePC extends Phaser.Scene {
                 scale: 0.8
             },
             {
-                name: "500 Delfir",
+                name: "500 Delfirs",
                 icon: "big-delfir",
                 price: "R$ 4,90 ",
             },
             {
-                name: "2000 Delfir",
+                name: "2000 Delfirs",
                 icon: "big-delfir",
                 price: "R$ 10,90",
             },
             {
-                name: "10000 Delfir",
-                icon: "big-delfir",
-                price: "R$ 19,90",
+                name: "1 Ditcoin",
+                icon: "big-ditcoin",
+                price: ditcoinPrices[chapter],
             }
         ];
 
@@ -229,7 +241,62 @@ export default class DantePC extends Phaser.Scene {
             bg.setInteractive();
 
             bg.on("pointerdown", () => {
-                console.log(`Clique em: ${itemData.name}`);
+
+                const chapter = GameState.getChapter();
+                
+                if (itemData.name === "1 Ditcoin") {
+                  if (chapter <= 2) {
+                    if (!this.noWallet) {
+                        this.textInsufficientBackground = this.add.rectangle(x, 370, 380, 20, 0x000000)
+                            .setOrigin(0.5)
+                            .setDepth(10)
+                            .setVisible(true);
+                        this.noWallet = this.add.text(x, 370, "Você ainda não tem uma carteira de criptoativos", {
+                            fontSize: "14px",
+                            fill: "#FFFFFF",
+                            fontFamily: "monospace",
+                        }).setOrigin(0.5).setDepth(11).setVisible(true);
+
+                        this.time.delayedCall(1500, () => {
+                            this.textInsufficientBackground.destroy();
+                            this.noWallet.destroy();
+                            this.textInsufficientBackground = null;
+                            this.noWallet = null;
+                        });
+                    }
+                    return;
+                } 
+
+                const ditcoinPriceMap = {
+                    2: 1000,
+                    3: 5000,
+                    4: 20000
+                };
+
+                const price = ditcoinPriceMap[chapter];
+                const currentDelfirs = GameState.getCoins("delfir");
+
+                if (currentDelfirs >= price) {
+                    GameState.addCoins("ditcoin", 1);
+                    GameState.addCoins("delfir", -price);
+                    this.coinBar._refreshDisplay();
+                } else {
+                     if (!this.insufficient) {
+                    this.textInsufficientBackground = this.add.rectangle(x, 370, 200, 20, 0x000000).setOrigin(0.5).setDepth(10); 
+                    this.insufficient = this.add.text(x, 370, "Delfirs insuficientes!", {
+                        fontSize: "14px",
+                        fill: "#FFFFFF",
+                        fontFamily: "monospace",
+                    }).setOrigin(0.5).setDepth(11);
+            
+                    this.time.delayedCall(1500, () => {
+                        this.textInsufficientBackground.destroy()
+                        this.insufficient.destroy();
+                        this.insufficient = null;
+                        }); 
+                      }
+                    } return;
+                }
 
                 if (itemData.name === "Recarregar Core") {
                     this.coreBar.resetCores();
@@ -238,27 +305,24 @@ export default class DantePC extends Phaser.Scene {
                 }
 
                 const delfirMap = {
-                    "500 Delfir": 500,
-                    "2000 Delfir": 2000,
+                    "500 Delfirs": 500,
+                    "2000 Delfirs": 2000,
                     "10000 Delfir": 10000,
                 };
 
                 if (delfirMap[itemData.name]) {
                     const amount = delfirMap[itemData.name];
-
                     GameState.addCoins("delfir", amount);
                     this.coinBar._refreshDisplay();
-
                     console.log(`Adicionados ${amount} Delfir`)
             }});
-
+    
             this.shopItems.push(bg, icon, label, price);
         });
     }
 
     closeShop() {
         this.popupOpen = false;
-
         this.shopPopup.destroy();
         this.closeButton.destroy();
         this.shopItems.forEach(item => item.destroy());

@@ -4,7 +4,9 @@ import Menu from './screens/menuScreen.js';
 import DantePC from './screens/dantePC.js'; 
 import DataCenterPC from './scenes/cap1/dataCenterPC.js';
 import DanteCell from './scenes/cap3/danteCell.js';
-import CorvusPC from './scenes/cap4/corvusPC.js';
+import CorvusPC from './scenes/cap4/corvusPC.js'; 
+import CassinoPC from './screens/cassinoPC.js';
+import CassinoGame from './screens/cassinoGame.js';
 
 import Preload from './scenes/preload.js'
 import TutorialCut from './scenes/cutscenes/cap1/tutorialcut.js';
@@ -68,6 +70,8 @@ window.addEventListener('load', function () {
 	game.scene.add("DataCenterPC", DataCenterPC);
 	game.scene.add("DanteCell", DanteCell)
 	game.scene.add("CorvusPC", CorvusPC);
+	game.scene.add("CassinoPC", CassinoPC);
+	game.scene.add("CassinoGame", CassinoGame)
 
 	game.scene.add("Preload", Preload);
 	game.scene.add("Boot", Boot, true);
@@ -81,7 +85,7 @@ window.addEventListener('load', function () {
 	game.scene.add("IboOffice", IboOffice);
 	game.scene.add("Cassino", Cassino);
 	game.scene.add("CassinoOffice", CassinoOffice);
-	game.scene.add("BlackNest", BlackNest);
+	game.scene.add("BlackNest", BlackNest); 
 	
 	game.scene.add("Chapter1Cutscene", Chapter1Cutscene);
 	game.scene.add("Chapter1GameOver", Chapter1GameOver);

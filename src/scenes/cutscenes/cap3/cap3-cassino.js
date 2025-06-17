@@ -21,6 +21,7 @@ export default class Chapter3Cutscene extends Phaser.Scene {
     this.input.keyboard.on("keydown-ENTER", () => {
         this.cameras.main.fadeOut(3000, 0, 0, 0);
         this.cameras.main.once("camerafadeoutcomplete", () => {
+          window.lastScene = "Chapter3Cutscene"
           this.scene.start("Cassino");
         });
     });

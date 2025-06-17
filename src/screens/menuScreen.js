@@ -12,6 +12,7 @@ export default class Menu extends Phaser.Scene {
 
     preload() {
         this.load.image('closeIcon', 'assets/inputs/UI/close/close.png');
+        this.load.image('controls', 'assets/screens/controls.png')
     }
 
     create() { 
@@ -32,7 +33,7 @@ export default class Menu extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', () => { 
             this.returnToGame();
-    }); 
+        }); 
 
     this.input.keyboard.on('keydown-ESC', () => {
         this.returnToGame();
@@ -57,6 +58,7 @@ export default class Menu extends Phaser.Scene {
         // Botões
         const buttons = ['Ajustes', 'Controles', 'Sobre Black Hat', 'Sair'];
         const buttonActions = ['Settings', 'Controls', 'About', 'Exit'];
+        this.menuButtons = [];
 
         buttons.forEach((label, index) => {
             const y = 280 + index * 100;
@@ -67,6 +69,8 @@ export default class Menu extends Phaser.Scene {
                 .on('pointerover', () => button.setFillStyle(0x4A4A4A, 0.7))
                 .on('pointerout', () => button.setFillStyle(0x6C6C6C, 0.7))
                 .on('pointerdown', () => this.handleButton(buttonActions[index]));
+
+            this.menuButtons.push(button);
 
             this.add.text(width / 2, y, label, {
                 fontSize: '24px',
@@ -90,7 +94,7 @@ export default class Menu extends Phaser.Scene {
                 console.log("Abrir Ajustes");
                 break;
             case 'Controls':
-                console.log("Mostrar controles");
+                this.showControls()
                 break;
             case 'About':
                 window.open('https://joaos-organization-54.gitbook.io/black-hat', '_blank');
@@ -99,6 +103,32 @@ export default class Menu extends Phaser.Scene {
                 this.showExitConfirmation();
                 break;
         }
+    }
+
+    showControls(){ 
+        this.scene.bringToTop();
+
+        const width = 1400;
+        const height = 800;
+
+        this.controlsImage = this.add.image(700, 400, "controls")
+
+        this.closeControlsButton = this.add.image((width / 2) - 650 + 20, (height / 2) - 350 + 20, 'closeIcon')
+        .setOrigin(0, 0)
+        .setScale(2.5)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => { 
+            this.closeControls();
+        }); 
+
+        this.menuButtons.forEach(btn => btn.disableInteractive({ useHandCursor: false }));
+    }
+
+    closeControls(){ 
+        this.controlsImage.destroy();
+        this.closeControlsButton.destroy();
+
+        this.menuButtons.forEach(btn => btn.setInteractive({ useHandCursor: true }));
     }
 
     showExitConfirmation() {

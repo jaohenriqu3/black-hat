@@ -8,12 +8,14 @@ const GameState = {
         core: 10,
         maxCore: 10,
         coins: {
-            delfir: 800,
+            delfir: 1200,
             ditcoin: 0,
             ficha: 0
         },
         tutorialSeen: false, 
         currentChapter: 1,
+        ditcoinBoostedAt3: false,
+        ditcoinBoostedAt4: false,
     },
 
     coffeTutorialDialog: [ 
@@ -29,7 +31,7 @@ const GameState = {
     coffeAtendentDialog2: [
         "Dante: Olá, um café forte, por favor",
         "Atendente: Claro, fica 5 delfirs ", 
-        "Aqui está, obrigado"
+        "Dante: Aqui está, obrigado"
     ], 
 
     coffeAtendentDialog3: [
@@ -37,7 +39,7 @@ const GameState = {
         "Atendente: Claro, fica 15 delfirs ", 
         "Dante: Preços subindo?",
         "Atendente: Sim, as coisas ficaram difíceis depois desse ataques do tal BlackNest",
-        "Dante: Fiquei sabendo... aqui está"
+        "Dante: Fiquei sabendo... aqui está (Entrega os delfirs)"
     ], 
 
     coffeAtendentDialog4: [
@@ -47,6 +49,12 @@ const GameState = {
         "Atendente: Pois é, a crise de Delfi City está absurda"
     ], 
 
+    coffeAtendentDialog5: [
+        "Dante: Olá, um café forte, por favor",
+        "Atendente: Claro, fica 60 delfirs ",
+        "Dante: A crise financeira em Delfi City continua...", 
+        "Atendente: Infelizmente, já estamos em risco de fecharmos as portas... "
+    ], 
 
     lobbyDialog: [ 
         "Essa é sua casa, o hackerspace perfeito para resolver os problemas de Delfi City, no seu computador você pode acessar suas tasks nos capítulos estabelecidos, além de poder comprar delfirs e checar as notícias"
@@ -88,8 +96,8 @@ const GameState = {
         "Atendente: Boa tarde, senhor. Devido à situação atual, estamos operando com algumas restrições. Como posso ajudá-lo?", 
         "Dante: Preciso criar uma carteira de investimentos em criptoativos. Quero aproveitar o momento de alta.", 
         "Atendente: Entendido. quanto você gostaria de aplicar para começar a investir?", 
-        "Dante: 500 Delfirs", 
-        "Atendente: Perfeito, sua carteira já está em funcionamento",
+        "Dante: Gostaria de comprar 1 Ditcoin", 
+        "Atendente: Perfeito, sua carteira já está em funcionamento, na cotação atual 1 Ditcoin equivale a 1000 Delfirs",
         "Dante: Obrigado, a gerencia está disponível? tenho umas informações que podem ser uteis para lidar com o caos que estamos enfrentando",
         "Atendente: Não está, mas nesse caso, podemos abrir uma exceção, o escritório da Maya fica na próxima porta a direita",
         "Va até o escritório"
@@ -208,7 +216,18 @@ const GameState = {
 
     // Capítulo
     setChapter(chapter) {
-        this.currentChapter = chapter;
+    this.currentChapter = chapter; 
+    // if (chapter === 3 && !this.data.ditcoinBoostedAt3) {
+    //     const currentDitcoins = this.data.coins.ditcoin;
+    //     this.data.coins.ditcoin = Math.floor(currentDitcoins * 5); //+400%
+    //     this.data.ditcoinBoostedAt3 = true;
+    // }
+
+    // if (chapter === 4 && !this.data.ditcoinBoostedAt4) {
+    //     const currentDitcoins = this.data.coins.ditcoin;
+    //     this.data.coins.ditcoin = Math.floor(currentDitcoins * 4); //+300%
+    //     this.data.ditcoinBoostedAt4 = true;
+    // }
     },
 
     getChapter() {
@@ -282,7 +301,7 @@ const GameState = {
 
     resetCoins() {
         this.data.coins = {
-            delfir: 800,
+            delfir: 1200,
             ditcoin: 0,
             ficha: 0
         };

@@ -71,7 +71,9 @@ export default class DelfiCity extends Phaser.Scene {
             "Coffe": { x: 680, y: 371 },    
             "Doodle": { x: 210, y: 390 },   
             "IboDelfi": {x: 422, y: 345},
-            "Cassino": {x: 1335, y: 150}
+            "Cassino": {x: 1335, y: 150},
+            "Chapter1Corvus": {x: 210, y: 390},
+            "Chapter2Cassino": {x: 422, y: 345},
         };
 
         const spawn = spawnPositions[window.lastScene] || { x: 405, y: 745  }; 
@@ -117,15 +119,15 @@ export default class DelfiCity extends Phaser.Scene {
             this.stepSound.stop();
             }
         });
-
-        //NPC 
+        
+        //NPC
          this.npc = new NpcPrefab(this, 650, 390, 'npc-test');
-        //this.physics.add.collider(this.npc, objetos);
+         //this.physics.add.collider(this.npc, objetos);
          NPCAnimations(this);
 
-         this.physics.add.collider(this.player, this.npc)
+        this.physics.add.collider(this.player, this.npc)
 
-        //Collider
+        //Collider 
         objetos.setCollisionByProperty({ collider: true }); 
         objetos.setCollisionByExclusion([-1]); 
         this.physics.add.collider(this.player, objetos); 
@@ -133,10 +135,10 @@ export default class DelfiCity extends Phaser.Scene {
         this.doorZones = this.physics.add.staticGroup();
 
         this.lobbyDoor = this.createDoor(1030, 350, "Pressione E para entrar em casa", "Lobby");
-       // this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
+        this.cafeDoor = this.createDoor(680, 371, "Pressione E para entrar na cafeteria", "Coffe");
        // this.doodleDoor = this.createDoor(210, 390, "Pressione E para entrar na Doodle", "Doodle");
        // this.iboDoor = this.createDoor(422, 345, "Pressione E para entrar na IBODELFI", "IboDelfi");
-       // this.cassinoDoor = this.createDoor(1335, 150, "E para entrar no cassino", "Cassino");
+        this.cassinoDoor = this.createDoor(1335, 150, "E para entrar no cassino", "Cassino");
 
         // Câmera
         this.cameras.main.setZoom(2.2);

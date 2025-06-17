@@ -24,7 +24,8 @@ export default class Chapter1Corvus extends Phaser.Scene {
     this.input.keyboard.on("keydown-ENTER", () => {
         this.cameras.main.fadeOut(3000, 0, 0, 0);
         this.cameras.main.once("camerafadeoutcomplete", () => {
-          this.scene.start("Lobby");
+          window.lastScene = "Chapter1Corvus";
+          this.scene.start("Level");
         });
     });
   }

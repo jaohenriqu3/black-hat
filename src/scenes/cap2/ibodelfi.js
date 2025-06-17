@@ -198,13 +198,13 @@ export default class IboDelfi extends Phaser.Scene {
 
          if (this.dialogIndex === 4) {
                 const currentDelfirs = GameState.getCoins("delfir");
-                if (currentDelfirs >= 500) {
-                    GameState.addCoins("ditcoin", 5);
-                    GameState.addCoins("delfir", -500);
+                if (currentDelfirs >= 1000) {
+                    GameState.addCoins("ditcoin", 1);
+                    GameState.addCoins("delfir", -1000);
                     this.coinBar._refreshDisplay();
                     systemMessage(this, GameState.iboDelfiAttendentDialog[this.dialogIndex]);
                 } else {
-                    systemMessage(this, "Você não tem Delfirs suficientes para abrir uma carteira.");
+                    systemMessage(this, "Você não tem Delfirs suficientes para comprar Ditcoins no momento, mas abri sua carteira, você poderá tentar comprar novamente depois.");
                     this.dialogLocked = true;
                 }
             }

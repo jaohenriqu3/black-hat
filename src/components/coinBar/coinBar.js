@@ -13,7 +13,7 @@ export default class CoinBar {
         this.delfirText = scene.add.text(185, 15, GameState.getCoins("delfir"), style).setOrigin(0, 0.5);
 
         this.ditcoinIcon = scene.add.image(250, 15, "ditcoin").setDisplaySize(16, 16).setOrigin(0.5);
-        this.ditcoinText = scene.add.text(265, 15, GameState.getCoins("ditcoin"), style).setOrigin(0.5);
+        this.ditcoinText = scene.add.text(270, 15, GameState.getCoins("ditcoin"), style).setOrigin(0.5);
 
         this.fichaIcon = scene.add.image(320, 15, "ficha").setDisplaySize(16, 16).setOrigin(0.5);
         this.fichaText = scene.add.text(335, 15, GameState.getCoins("ficha"), style).setOrigin(0.5);
