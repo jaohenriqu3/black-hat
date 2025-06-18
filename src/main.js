@@ -1,6 +1,7 @@
 import TelaInicial from './screens/initialScreen.js';
 import Initial from './screens/initial.js';
 import Menu from './screens/menuScreen.js'; 
+import Map from './components/map/map.js';
 import DantePC from './screens/dantePC.js'; 
 import DataCenterPC from './scenes/cap1/dataCenterPC.js';
 import DanteCell from './scenes/cap3/danteCell.js';
@@ -65,6 +66,7 @@ window.addEventListener('load', function () {
 	game.scene.add("TelaInicial", TelaInicial); 
 	game.scene.add("Initial", Initial);
 	game.scene.add("Menu", Menu);
+	game.scene.add("Map", Map)
 
 	game.scene.add("DantePC", DantePC);
 	game.scene.add("DataCenterPC", DataCenterPC);
