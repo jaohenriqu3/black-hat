@@ -150,6 +150,9 @@ export default class DantePC extends Phaser.Scene {
             window.open('https://joaos-organization-54.gitbook.io/black-hat', '_blank');
             }
         });
+
+        console.log("Chapter:" [chapter])
+        
     }
 
     startChapter(chapterNumber) {
@@ -187,7 +190,8 @@ export default class DantePC extends Phaser.Scene {
             1: "300 Delfirs",
             2: "1000 Delfirs",
             3: "5000 Delfirs",
-            4: "20000 Delfirs"
+            4: "20000 Delfirs", 
+            0: "300 Delfirs"
         };
 
         const shopData = [

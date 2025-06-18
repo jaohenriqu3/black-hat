@@ -217,17 +217,6 @@ const GameState = {
     // Capítulo
     setChapter(chapter) {
     this.currentChapter = chapter; 
-    // if (chapter === 3 && !this.data.ditcoinBoostedAt3) {
-    //     const currentDitcoins = this.data.coins.ditcoin;
-    //     this.data.coins.ditcoin = Math.floor(currentDitcoins * 5); //+400%
-    //     this.data.ditcoinBoostedAt3 = true;
-    // }
-
-    // if (chapter === 4 && !this.data.ditcoinBoostedAt4) {
-    //     const currentDitcoins = this.data.coins.ditcoin;
-    //     this.data.coins.ditcoin = Math.floor(currentDitcoins * 4); //+300%
-    //     this.data.ditcoinBoostedAt4 = true;
-    // }
     },
 
     getChapter() {
