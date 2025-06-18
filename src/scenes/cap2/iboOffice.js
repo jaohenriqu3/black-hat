@@ -3,6 +3,8 @@ import { PlayerAnimations, preloadPlayerAnimations } from "../../prefabs/animati
 import { addMenuButton } from '../../components/menuButton/menuButton.js'; 
 import { EscMenu } from "../../components/menuButton/menuESC.js"; 
 
+import { MapM } from "../../components/map/mapM.js"; 
+
 import CoreBar from "../../components/coreBar/coreBar.js"; 
 import CoinBar from "../../components/coinBar/coinBar.js"; 
 
@@ -48,6 +50,8 @@ export default class IboOffice extends Phaser.Scene {
 
         EscMenu(this)
         addMenuButton(this);
+        MapM(this); 
+        
         this.coreBar = new CoreBar(this, 10, 50);
         this.coinBar = new CoinBar(this, this.cameras.main.width); 
 
