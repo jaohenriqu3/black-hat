@@ -23,6 +23,8 @@ import { preloadCoffeeAttendant3Animations, CoffeeAttendant3Animations } from ".
 import CoffeeClientPrefab from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientPrefab.js"; 
 import { preloadCoffeeClient, CoffeeClientAnimation } from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientAnimation.js";
 
+import CoffeeClient2Prefab from "../../prefabs/NPCs/coffeeshop/coffeeClient/2/coffeeClient2Prefab.js"; 
+import { CoffeeClient2Animation, preloadCoffeeClient2 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/2/coffeeClient2Animation.js";
 
 export default class Coffe extends Phaser.Scene {
 
@@ -56,6 +58,7 @@ export default class Coffe extends Phaser.Scene {
         preloadCoffeeAttendant2Animations(this);
         preloadCoffeeAttendant3Animations(this);
         preloadCoffeeClient(this);
+        preloadCoffeeClient2(this);
 
         console.log(this.textures.list);
     }
@@ -110,6 +113,10 @@ export default class Coffe extends Phaser.Scene {
 
         CoffeeClientAnimation(this); 
         this.client = new CoffeeClientPrefab(this, 370, 150).setDepth(10);
+
+        CoffeeClient2Animation(this); 
+        this.client2 = new CoffeeClient2Prefab(this, 310, 110).setDepth(10);; 
+        this.physics.add.collider(this.client2, this.player); 
 
         //Som
         this.stepSound = this.sound.add('step', {
