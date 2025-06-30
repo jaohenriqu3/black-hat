@@ -17,6 +17,7 @@ import { preloadVictorAnimation, VictorAnimation } from "../../prefabs/NPCs/vict
 import DianaPrefab from "../../prefabs/NPCs/diana/dianaPrefab.js"; 
 import { preloadDianaAnimation, dianaAnimation } from "../../prefabs/NPCs/diana/dianaAnimation.js";
 
+import { spawnAllNpcs } from "../../prefabs/managers/doodleManager.js";
 
 export default class Doodle extends Phaser.Scene {
 
@@ -104,13 +105,7 @@ export default class Doodle extends Phaser.Scene {
 
         PlayerAnimations(this) 
 
-        VictorAnimation(this);
-        this.victor = new VictorPrefab(this, 375, 107).setDepth(3); 
-        this.physics.add.collider(this.victor, objetosDoodle3); 
-
-        dianaAnimation(this);
-        this.diana = new DianaPrefab(this, 422, 107).setDepth(3);  
-        this.physics.add.collider(this.diana, objetosDoodle3);  
+        spawnAllNpcs(this);
 
         //audios 
         this.stepSound = this.sound.add('step', {
