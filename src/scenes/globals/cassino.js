@@ -23,6 +23,8 @@ import { preloadCassinoAttendant2, CassinoAttendantAnimation2 } from "../../pref
 import BlackNestMemberPrefab from "../../prefabs/NPCs/cassino/blackNestMember/blackNestMemberPrefab.js"; 
 import { preloadBlackNestMember, BlackNestMemberAnimation } from "../../prefabs/NPCs/cassino/blackNestMember/blackNestMemberAnimation.js"
 
+import { spawnAllNpcs } from "../../prefabs/managers/cassinoManager.js";
+
 export default class Cassino extends Phaser.Scene {
 
     constructor() {
@@ -123,24 +125,13 @@ export default class Cassino extends Phaser.Scene {
         //Player
         this.player = new PlayerPrefab(this, spawn.x, spawn.y, "dante").setDepth(10);
         this.physics.add.existing(this.player);
+        PlayerAnimations(this);
 
-        //NPC 
-        CassinoPlayerAnimation(this)
-        this.cassinoPlayer = new CassinoPlayerPrefab(this, 133, 360);
+        //NPCs via manager
+        spawnAllNpcs(this);
         this.physics.add.collider(this.cassinoPlayer, objetosCassino)
         this.physics.add.collider(this.player, this.cassinoPlayer)
-
-        CassinoAttendantAnimation(this) 
-        this.cassinoAttendant = new CassinoAttendantPrefab(this, 70, 60).setDepth(2); 
-
-        CassinoAttendantAnimation2(this) 
-        this.cassinoAttendant = new CassinoAttendant2Prefab(this, 200, 75).setDepth(3);
-
-        BlackNestMemberAnimation(this)
-        this.blackNestMember = new BlackNestMemberPrefab(this, 485, 265).setVisible(false)
         this.physics.add.collider(this.player, this.blackNestMember)
-        
-        PlayerAnimations(this)
 
         //audios 
         this.stepSound = this.sound.add('step', {
@@ -206,6 +197,10 @@ export default class Cassino extends Phaser.Scene {
         this.playerCassinoZone.visible = false;
         this.playerCassinoZone.body.enable = false; 
 
+        this.blackNestMemberZone.active = false;
+        this.blackNestMemberZone.visible = false;
+        this.blackNestMemberZone.body.enable = false; 
+
         this.cassinoAttendant2Zone.active = false;
         this.cassinoAttendant2Zone.visible = false;
         this.cassinoAttendant2Zone.body.enable = false; 
@@ -236,6 +231,9 @@ export default class Cassino extends Phaser.Scene {
             this.dialogIndex = 0;
             this.blackNestMember.setVisible(true)
             systemMessage(this, GameState.cassinoSystemDialog2[this.dialogIndex]) 
+
+            this.blackNestMemberZone.active = true;
+            this.blackNestMemberZone.body.enable = true;
 
             this.cassinoPC.active = false;
             this.cassinoPC.visible = false;
