@@ -24,9 +24,14 @@ export default class DantePC extends Phaser.Scene {
         this.load.image("news", "assets/inputs/UI/icons/news.jpg")
 
         this.load.image("big-delfir", "assets/inputs/UI/shop/big-delfir.png") 
-        this.load.image("big-ditcoin", "assets/inputs/UI/shop/big-ditcoin.png")
-        
-        this.load.image("arrow", "assets/inputs/UI/arrow/arrow.png");
+        this.load.image("big-ditcoin", "assets/inputs/UI/shop/big-ditcoin.png") 
+
+        this.load.image("big-ditcoin", "assets/inputs/UI/shop/big-ditcoin.png") 
+
+        this.load.image("news1", "assets/images/news1.png");
+        this.load.image("news2", "assets/images/news2.png");
+        this.load.image("news3", "assets/images/news3.png");
+        this.load.image("news4", "assets/images/news4.png");
 
         this.eKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     }
@@ -147,7 +152,7 @@ export default class DantePC extends Phaser.Scene {
 
       this.newsBackground.on("pointerdown", () => {
         if (!this.popupOpen) {
-            window.open('https://joaos-organization-54.gitbook.io/black-hat', '_blank');
+            this.openNews();
             }
         });
 
@@ -167,6 +172,42 @@ export default class DantePC extends Phaser.Scene {
 
             this.scene.start(`Chapter${chapterNumber}Cutscene`);
         });
+    }
+
+    openNews() {
+        if (this.popupOpen) return;
+        this.popupOpen = true;
+
+        // Cria o fundo do pop-up
+        this.newsPopup = this.add.rectangle(635, 275, 650, 350, 0x222222).setDepth();
+
+        // Botão de fechar
+        this.closeNewsButton = this.add.text(922, 100, "X", {
+            fontSize: "32px",
+            fill: "#ffffff",
+            fontFamily: "monospace",
+            backgroundColor: "#ff0000",
+            padding: { x: 10, y: 5 }
+        }).setInteractive().setDepth(11).on("pointerdown", () => {
+            this.closeNews();
+        });
+
+        // Determina a imagem de acordo com o capítulo
+        const chapter = GameState.getChapter();
+        let newsImageKey = "news1";
+        if (chapter === 2) newsImageKey = "news2";
+        else if (chapter === 3) newsImageKey = "news3";
+        else if (chapter >= 4) newsImageKey = "news4";
+
+        // Exibe a imagem dentro da área do pop-up
+        this.newsImage = this.add.image(635, 275, newsImageKey).setDepth(0).setDisplaySize(650, 345);
+    }
+
+    closeNews() {
+        this.popupOpen = false;
+        if (this.newsPopup) this.newsPopup.destroy();
+        if (this.closeNewsButton) this.closeNewsButton.destroy();
+        if (this.newsImage) this.newsImage.destroy();
     }
 
     openShop() {
