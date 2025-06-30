@@ -11,20 +11,13 @@ import CoinBar from "../../components/coinBar/coinBar.js";
 import GameState from "../../state/gameState.js"; 
 import systemMessage from "../../components/systemMessage/systemMessage.js";
 
-import CoffeeAttendantPrefab from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantPrefab.js"; 
-import { preloadCoffeeAttendantAnimations, CoffeeAttendantAnimations } from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantAnimation.js";
+import { spawnAllNpcs } from "../../prefabs/managers/CoffeeShopManager.js";
 
-import CoffeeAttendant2Prefab from "../../prefabs/NPCs/coffeeshop/coffeeAttendant2/coffeeAttendant2Prefab.js"; 
-import { preloadCoffeeAttendant2Animations, CoffeeAttendant2Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant2/coffeeAttendant2Animation.js";
-
-import CoffeeAttendant3Prefab from "../../prefabs/NPCs/coffeeshop/coffeeAttendant3/coffeeAttendant3Prefab.js";
-import { preloadCoffeeAttendant3Animations, CoffeeAttendant3Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant3/coffeeAttendant3Animation.js";
-
-import CoffeeClientPrefab from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientPrefab.js"; 
-import { preloadCoffeeClient, CoffeeClientAnimation } from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientAnimation.js";
-
-import CoffeeClient2Prefab from "../../prefabs/NPCs/coffeeshop/coffeeClient/2/coffeeClient2Prefab.js"; 
-import { CoffeeClient2Animation, preloadCoffeeClient2 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/2/coffeeClient2Animation.js";
+import { preloadCoffeeAttendantAnimations } from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantAnimation.js";
+import { preloadCoffeeAttendant2Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant2/coffeeAttendant2Animation.js";
+import { preloadCoffeeAttendant3Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant3/coffeeAttendant3Animation.js";
+import { preloadCoffeeClient } from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientAnimation.js";
+import { preloadCoffeeClient2 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/2/coffeeClient2Animation.js";
 
 export default class Coffe extends Phaser.Scene {
 
@@ -53,8 +46,8 @@ export default class Coffe extends Phaser.Scene {
         this.load.image("keyE", "assets/inputs/keyE/keyE.png");
         this.load.image("keyC", "assets/inputs/keyC/keyC.png");
 
-        preloadPlayerAnimations(this)
-        preloadCoffeeAttendantAnimations(this); 
+        preloadPlayerAnimations(this);
+        preloadCoffeeAttendantAnimations(this);
         preloadCoffeeAttendant2Animations(this);
         preloadCoffeeAttendant3Animations(this);
         preloadCoffeeClient(this);
@@ -101,22 +94,7 @@ export default class Coffe extends Phaser.Scene {
         this.physics.add.existing(this.player); 
 
         //NPC 
-        CoffeeAttendantAnimations(this);
-        this.attendant = new CoffeeAttendantPrefab(this, 205, 90); 
-        this.physics.add.collider(this.attendant, coffeeObjetos);
-
-        CoffeeAttendant2Animations(this); 
-        this.attendant2 = new CoffeeAttendant2Prefab(this, 255, 55).setDepth(10);
-
-        CoffeeAttendant3Animations(this); 
-        this.attendant3 = new CoffeeAttendant3Prefab(this, 380, 55).setDepth(10);
-
-        CoffeeClientAnimation(this); 
-        this.client = new CoffeeClientPrefab(this, 370, 150).setDepth(10);
-
-        CoffeeClient2Animation(this); 
-        this.client2 = new CoffeeClient2Prefab(this, 310, 110).setDepth(10);; 
-        this.physics.add.collider(this.client2, this.player); 
+        const npcs = spawnAllNpcs(this);
 
         //Som
         this.stepSound = this.sound.add('step', {
