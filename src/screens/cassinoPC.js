@@ -46,13 +46,13 @@ export default class CassinoPC extends Phaser.Scene {
 
       this.cardTitle = this.add.text(370, 340, "1 Ficha", {fontSize: "22px", fill: "#00000", fontFamily: 'monospace'}) 
       this.cardTitle2 = this.add.text(510, 340, "5 Fichas", {fontSize: "22px", fill: "#00000", fontFamily: 'monospace'}) 
-      this.cardTitle3 = this.add.text(670, 340, "1 Ficha", {fontSize: "22px", fill: "#00000", fontFamily: 'monospace'}) 
-      this.cardTitle4 = this.add.text(810, 340, "5 Fichas", {fontSize: "22px", fill: "#00000", fontFamily: 'monospace'}) 
+      this.cardTitle3 = this.add.text(660, 340, "5 Fichas", {fontSize: "22px", fill: "#00000", fontFamily: 'monospace'}) 
+      this.cardTitle4 = this.add.text(800, 340, "100 Fichas", {fontSize: "22px", fill: "#00000", fontFamily: 'monospace'}) 
     
       this.cardPrice = this.add.text(360, 370, "200 Delfirs", {fontSize: "17px", fill: "#00000", fontFamily: 'monospace'}) 
       this.cardPrice2 = this.add.text(510, 370, "950 Delfirs", {fontSize: "17px", fill: "#00000", fontFamily: 'monospace'}) 
       this.cardPrice3 = this.add.text(670, 370, "1 DitCoin", {fontSize: "17px", fill: "#00000", fontFamily: 'monospace'}) 
-      this.cardPrice4 = this.add.text(812, 370, "5 DitCoins", {fontSize: "17px", fill: "#00000", fontFamily: 'monospace'}) 
+      this.cardPrice4 = this.add.text(812, 370, "10 DitCoins", {fontSize: "17px", fill: "#00000", fontFamily: 'monospace'}) 
 
       this.preesE = this.add.text(200, 15, "Pressione E para sair do computador",
      { fontSize: "20px", fill: "#FFFFFF", fontFamily: 'monospace',}).setOrigin(0.5); 
@@ -109,7 +109,7 @@ export default class CassinoPC extends Phaser.Scene {
         this.cardBackground3.on("pointerdown", () => {
             if (GameState.getCoins("ditcoin") >= 1) {
                 GameState.addCoins("ditcoin", -1);
-                GameState.addCoins("ficha", 1);
+                GameState.addCoins("ficha", 5);
                 this.coinBar._refreshDisplay();
                 this.showFeedbackTrue("Compra realizada!");
             } else {
@@ -118,9 +118,9 @@ export default class CassinoPC extends Phaser.Scene {
         });
 
         this.cardBackground4.on("pointerdown", () => {
-            if (GameState.getCoins("ditcoin") >= 5) {
-                GameState.addCoins("ditcoin", -5);
-                GameState.addCoins("ficha", 1);
+            if (GameState.getCoins("ditcoin") >= 10) {
+                GameState.addCoins("ditcoin", -10);
+                GameState.addCoins("ficha", 100);
                 this.coinBar._refreshDisplay();
                 this.showFeedbackTrue("Compra realizada!");
             } else {
