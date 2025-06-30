@@ -14,6 +14,7 @@ import { delfiCityDialog } from "../../components/systemMessage/systemMessage.js
 
 import { preloadNPCAnimations, NPCAnimations } from "../../prefabs/NPCs/test/testAnimation.js";
 import NpcPrefab from "../../prefabs/NPCs/test/testPrefab.js";
+import { spawnAllNpcs } from "../../prefabs/managers/delfiCityManager.js";
 
 export default class DelfiCity extends Phaser.Scene {
 
@@ -124,9 +125,10 @@ export default class DelfiCity extends Phaser.Scene {
         });
         
         //NPC
-         this.npc = new NpcPrefab(this, 650, 390, 'npc-test');
-         //this.physics.add.collider(this.npc, objetos);
-         NPCAnimations(this);
+        spawnAllNpcs(this);
+        //this.npc = new NpcPrefab(this, 650, 390, 'npc-test');
+        //this.physics.add.collider(this.npc, objetos);
+        //NPCAnimations(this);
 
         this.physics.add.collider(this.player, this.npc)
 
