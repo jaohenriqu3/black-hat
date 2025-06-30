@@ -27,6 +27,6 @@ export default class Preload extends Phaser.Scene {
         const centerY = this.scale.height / 2;
         this.image = this.add.image(centerX, centerY - 70, "loadingImage").setScale(0.5).setOrigin(0.5);
 
-        this.scene.start("CassinoPC")
+        this.scene.start("Coffe")
     }
 }
