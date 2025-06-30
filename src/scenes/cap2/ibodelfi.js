@@ -11,8 +11,8 @@ import CoinBar from "../../components/coinBar/coinBar.js";
 import GameState from "../../state/gameState.js"; 
 import systemMessage from "../../components/systemMessage/systemMessage.js";
 
-import IboAttendantPrefab from "../../prefabs/NPCs/iboAttendant/iboAttendantPrefab.js";
 import { preloadIboAtttendant, IboAttendantAnimations } from "../../prefabs/NPCs/iboAttendant/iboAttendantaAnimation.js";
+import { spawnAllNpcs } from "../../prefabs/managers/iboDelfiManager.js";
 
 export default class IboDelfi extends Phaser.Scene {
 
@@ -92,9 +92,8 @@ export default class IboDelfi extends Phaser.Scene {
         this.physics.add.existing(this.player);
         PlayerAnimations(this)
 
-        //NPC 
-        IboAttendantAnimations(this)
-        this.attendant = new IboAttendantPrefab(this, 460, 140).setDepth(4); 
+        //NPC via manager
+        spawnAllNpcs(this);
         this.physics.add.collider(this.attendant, iboObjetos3)
 
         //audios 
