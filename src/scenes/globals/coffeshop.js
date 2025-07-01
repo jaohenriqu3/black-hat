@@ -18,6 +18,10 @@ import { preloadCoffeeAttendant2Animations } from "../../prefabs/NPCs/coffeeshop
 import { preloadCoffeeAttendant3Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant3/coffeeAttendant3Animation.js";
 import { preloadCoffeeClient } from "../../prefabs/NPCs/coffeeshop/coffeeClient/1/coffeeClientAnimation.js";
 import { preloadCoffeeClient2 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/2/coffeeClient2Animation.js";
+import { preloadCoffeeClient3 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/3/coffeClient3Animation.js";
+import { preloadCoffeeClient4 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/4/coffeeClient4Animation.js";
+import { preloadCoffeeClient5 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/5/coffeeClient5Animation.js";
+import { preloadCoffeeClient6 } from "../../prefabs/NPCs/coffeeshop/coffeeClient/6/coffeeClient6Animation.js";
 
 export default class Coffe extends Phaser.Scene {
 
@@ -52,8 +56,10 @@ export default class Coffe extends Phaser.Scene {
         preloadCoffeeAttendant3Animations(this);
         preloadCoffeeClient(this);
         preloadCoffeeClient2(this);
-
-        console.log(this.textures.list);
+        preloadCoffeeClient3(this);
+        preloadCoffeeClient4(this);
+        preloadCoffeeClient5(this);
+        preloadCoffeeClient6(this);
     }
 
     create() {
@@ -94,7 +100,8 @@ export default class Coffe extends Phaser.Scene {
         this.physics.add.existing(this.player); 
 
         //NPC 
-        const npcs = spawnAllNpcs(this);
+        const chapter = GameState.getChapter();
+        const npcs = spawnAllNpcs(this, chapter);
 
         //Som
         this.stepSound = this.sound.add('step', {
