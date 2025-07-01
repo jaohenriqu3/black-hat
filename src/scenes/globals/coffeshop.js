@@ -11,7 +11,7 @@ import CoinBar from "../../components/coinBar/coinBar.js";
 import GameState from "../../state/gameState.js"; 
 import systemMessage from "../../components/systemMessage/systemMessage.js";
 
-import { spawnAllNpcs } from "../../prefabs/managers/CoffeeShopManager.js";
+import { spawnAllNpcs } from "../../prefabs/managers/coffeeShopManager.js";
 
 import { preloadCoffeeAttendantAnimations } from "../../prefabs/NPCs/coffeeAttendant/coffeeAttendantAnimation.js";
 import { preloadCoffeeAttendant2Animations } from "../../prefabs/NPCs/coffeeshop/coffeeAttendant2/coffeeAttendant2Animation.js";
