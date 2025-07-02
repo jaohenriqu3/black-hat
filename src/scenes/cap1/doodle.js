@@ -11,11 +11,17 @@ import CoinBar from "../../components/coinBar/coinBar.js";
 import GameState from "../../state/gameState.js"; 
 import systemMessage from "../../components/systemMessage/systemMessage.js";
 
-import VictorPrefab from "../../prefabs/NPCs/victor/victorPrefab.js";
 import { preloadVictorAnimation, VictorAnimation } from "../../prefabs/NPCs/victor/animationVictor.js"; 
-
-import DianaPrefab from "../../prefabs/NPCs/diana/dianaPrefab.js"; 
 import { preloadDianaAnimation, dianaAnimation } from "../../prefabs/NPCs/diana/dianaAnimation.js";
+import { preloadDoodleFanAnimation } from "../../prefabs/NPCs/doodle/1/doodleFanAnimation.js";
+import { preloadDoodleFan2Animation } from "../../prefabs/NPCs/doodle/2/doodleFan2Animation.js";
+import { preloadDoodleFan3Animation } from "../../prefabs/NPCs/doodle/3/doodleFan3Animation.js";
+import { preloadDoodleFan4Animation } from "../../prefabs/NPCs/doodle/4/doodleFan4Animation.js";
+import { preloadDoodleFan5Animation } from "../../prefabs/NPCs/doodle/5/doodleFan5Animation.js";
+import { preloadDoodleFan6Animation } from "../../prefabs/NPCs/doodle/6/doodleFan6Animation.js";
+import { preloadDoodleFan7Animation } from "../../prefabs/NPCs/doodle/7/doodleFan7Animation.js";
+import { preloadDoodleFan8Animation } from "../../prefabs/NPCs/doodle/8/doodleFan8Animation.js";
+import { preloadDoodleFan9Animation } from "../../prefabs/NPCs/doodle/9/doodleFan9Animation.js";
 
 import { spawnAllNpcs } from "../../prefabs/managers/doodleManager.js";
 
@@ -51,14 +57,18 @@ export default class Doodle extends Phaser.Scene {
 
         preloadVictorAnimation(this) 
         preloadDianaAnimation(this)
-        
-        console.log(this.textures.list);
-    }
+        preloadDoodleFanAnimation(this)
+        preloadDoodleFan2Animation(this)
+        preloadDoodleFan3Animation(this)
+        preloadDoodleFan4Animation(this)
+        preloadDoodleFan5Animation(this)
+        preloadDoodleFan6Animation(this)
+        preloadDoodleFan7Animation(this)
+        preloadDoodleFan8Animation(this)
+        preloadDoodleFan9Animation(this)
+        }
 
     create() {
-
-        console.log("Cenas ativas:", this.scene.manager.getScenes(true).map(s => s.scene.key));
-
         addMenuButton(this);
         EscMenu(this) 
         MapM(this)
@@ -105,7 +115,17 @@ export default class Doodle extends Phaser.Scene {
 
         PlayerAnimations(this) 
 
-        spawnAllNpcs(this);
+        spawnAllNpcs(this); 
+
+        this.physics.add.collider(this.player, this.doodleFan)
+        this.physics.add.collider(this.player, this.doodleFan2)
+        this.physics.add.collider(this.player, this.doodleFan3)
+        this.physics.add.collider(this.player, this.doodleFan4)
+        this.physics.add.collider(this.player, this.doodleFan5)
+        this.physics.add.collider(this.player, this.doodleFan6)
+        this.physics.add.collider(this.player, this.doodleFan7)
+        this.physics.add.collider(this.player, this.doodleFan8)
+        this.physics.add.collider(this.player, this.doodleFan9)
 
         //audios 
         this.stepSound = this.sound.add('step', {
