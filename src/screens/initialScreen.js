@@ -14,7 +14,7 @@ export default class TelaInicial extends Phaser.Scene {
        
     this.add.image(700, 400, "telaInicial").setOrigin(0.5) 
 
-    this.add.text(80, 780, "Versão: 1.4.9", {
+    this.add.text(80, 780, "Versão: 1.4.10", {
         fontSize: "22px", 
         fontFamily: "Arial", 
         fill: "#ffffff", 

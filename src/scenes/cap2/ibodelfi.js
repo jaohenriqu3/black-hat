@@ -11,7 +11,18 @@ import CoinBar from "../../components/coinBar/coinBar.js";
 import GameState from "../../state/gameState.js"; 
 import systemMessage from "../../components/systemMessage/systemMessage.js";
 
-import { preloadIboAtttendant, IboAttendantAnimations } from "../../prefabs/NPCs/iboAttendant/iboAttendantaAnimation.js";
+import { preloadIboAtttendant } from "../../prefabs/NPCs/iboAttendant/iboAttendantaAnimation.js";
+import { preloadIbo } from "../../prefabs/NPCs/iboDelfi/1/iboAnimation.js"
+import { preloadIbo2 } from "../../prefabs/NPCs/iboDelfi/2/ibo2Animation.js";
+import { preloadIbo3 } from "../../prefabs/NPCs/iboDelfi/3/ibo3Animation.js";
+import { preloadIbo4 } from "../../prefabs/NPCs/iboDelfi/4/ibo4Animation.js";
+import { preloadIbo5 } from "../../prefabs/NPCs/iboDelfi/5/ibo5Animation.js";
+import { preloadIbo6 } from "../../prefabs/NPCs/iboDelfi/6/ibo6Animation.js";
+import { preloadIbo7 } from "../../prefabs/NPCs/iboDelfi/7/ibo7Animation.js";
+import { preloadIbo8 } from "../../prefabs/NPCs/iboDelfi/8/ibo8Animation.js";
+import { preloadIbo9 } from "../../prefabs/NPCs/iboDelfi/9/ibo9Animation.js";
+import { preloadIbo10 } from "../../prefabs/NPCs/iboDelfi/10/ibo10Animation.js";
+import { preloadIbo11 } from "../../prefabs/NPCs/iboDelfi/11/ibo11Animation.js";
 import { spawnAllNpcs } from "../../prefabs/managers/iboDelfiManager.js";
 
 export default class IboDelfi extends Phaser.Scene {
@@ -43,8 +54,18 @@ export default class IboDelfi extends Phaser.Scene {
 
         preloadPlayerAnimations(this);
         preloadIboAtttendant(this);
-        console.log(this.textures.list);
-    }
+        preloadIbo(this);
+        preloadIbo2(this);
+        preloadIbo3(this);
+        preloadIbo4(this);
+        preloadIbo5(this);
+        preloadIbo6(this);
+        preloadIbo7(this);
+        preloadIbo8(this);
+        preloadIbo9(this);
+        preloadIbo10(this);
+        preloadIbo11(this);
+        }
 
     create() {
         
