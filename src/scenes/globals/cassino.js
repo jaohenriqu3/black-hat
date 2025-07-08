@@ -23,6 +23,25 @@ import { preloadCassinoAttendant2, CassinoAttendantAnimation2 } from "../../pref
 import BlackNestMemberPrefab from "../../prefabs/NPCs/cassino/blackNestMember/blackNestMemberPrefab.js"; 
 import { preloadBlackNestMember, BlackNestMemberAnimation } from "../../prefabs/NPCs/cassino/blackNestMember/blackNestMemberAnimation.js"
 
+import C1Prefab from "../../prefabs/NPCs/cassino/1/c1Prefab.js";
+import { C1Animation, preloadC1Animation } from "../../prefabs/NPCs/cassino/1/c1Animation.js";
+import C2Prefab from "../../prefabs/NPCs/cassino/2/c2Prefab.js";
+import { C2Animation, preloadC2Animation } from "../../prefabs/NPCs/cassino/2/c2Animation.js";
+import C3Prefab from "../../prefabs/NPCs/cassino/3/c3Prefab.js";
+import { C3Animation, preloadC3Animation } from "../../prefabs/NPCs/cassino/3/c3Animation.js";
+import C4Prefab from "../../prefabs/NPCs/cassino/4/c4Prefab.js";
+import { C4Animation, preloadC4Animation } from "../../prefabs/NPCs/cassino/4/c4Animation.js";
+import C5Prefab from "../../prefabs/NPCs/cassino/5/c5Prefab.js";
+import { C5Animation, preloadC5Animation } from "../../prefabs/NPCs/cassino/5/c5Animation.js";
+import C6Prefab from "../../prefabs/NPCs/cassino/6/c6Prefab.js";
+import { C6Animation, preloadC6Animation } from "../../prefabs/NPCs/cassino/6/c6Animation.js";
+import C7Prefab from "../../prefabs/NPCs/cassino/7/c7Prefab.js";
+import { C7Animation, preloadC7Animation } from "../../prefabs/NPCs/cassino/7/c7Animation.js";
+import C8Prefab from "../../prefabs/NPCs/cassino/8/c8Prefab.js";
+import { C8Animation, preloadC8Animation } from "../../prefabs/NPCs/cassino/8/c8Animation.js";
+import { C9Animation, preloadC9Animation } from "../../prefabs/NPCs/cassino/9/c9Animation.js"; 
+import { preloadSingerAnimation } from "../../prefabs/NPCs/cassino/singer/singerAnimation.js";
+
 import { spawnAllNpcs } from "../../prefabs/managers/cassinoManager.js";
 
 export default class Cassino extends Phaser.Scene {
@@ -64,8 +83,16 @@ export default class Cassino extends Phaser.Scene {
         preloadCassinoAttendant(this)
         preloadCassinoAttendant2(this)
         preloadBlackNestMember(this)
-
-        console.log(this.textures.list);
+        preloadC1Animation(this)
+        preloadC2Animation(this)
+        preloadC3Animation(this)
+        preloadC4Animation(this)
+        preloadC5Animation(this)
+        preloadC6Animation(this)
+        preloadC7Animation(this)
+        preloadC8Animation(this) 
+        preloadC9Animation(this)
+        preloadSingerAnimation(this)
     }
 
     create() {
@@ -118,8 +145,9 @@ export default class Cassino extends Phaser.Scene {
              "Level": { x: 270, y: 410 }, 
              "CassinoOffice": { x: 450, y:55 },
              "CassinoPC": {x: 85, y: 80},
-             "CassinoGame": {x: 370, y:360}
+             "CassinoGame": {x: 315, y:360}
          } 
+
         const spawn = spawnPositions[window.lastScene] || {  x: 270, y: 410 };
 
         //Player
@@ -127,11 +155,24 @@ export default class Cassino extends Phaser.Scene {
         this.physics.add.existing(this.player);
         PlayerAnimations(this);
 
-        //NPCs via manager
+        //NPCs 
         spawnAllNpcs(this);
         this.physics.add.collider(this.cassinoPlayer, objetosCassino)
         this.physics.add.collider(this.player, this.cassinoPlayer)
         this.physics.add.collider(this.player, this.blackNestMember)
+        this.physics.add.collider(this.player, this.c1) 
+        this.physics.add.collider(this.player, this.c2) 
+        this.physics.add.collider(this.player, this.c3)  
+        this.physics.add.collider(this.player, this.c4)  
+        this.physics.add.collider(this.player, this.c5)  
+        this.physics.add.collider(this.c1, objetosCassino)
+        this.physics.add.collider(this.c2, objetosCassino)
+        this.physics.add.collider(this.c3, objetosCassino)          
+        this.physics.add.collider(this.c4, objetosCassino)      
+        this.physics.add.collider(this.c5, objetosCassino)
+        this.physics.add.collider(this.c6, objetosCassino)
+        this.physics.add.collider(this.c7, objetosCassino)
+        this.physics.add.collider(this.c8, objetosCassino)
 
         //audios 
         this.stepSound = this.sound.add('step', {
@@ -175,7 +216,7 @@ export default class Cassino extends Phaser.Scene {
         this.cassinoOutDoor = this.createDoor(270, 430, "Pressione E para sair do Cassino", "Level");
         this.cassinoOfficeDoor = this.createDoor(455, 55, "Pressione E para entrar no escritório", "CassinoOffice");
         this.playerCassinoZone = this.createDoor(133, 360, "Pressione C para conversar com o apostador", null);
-        this.CassinoGameZone = this.createDoor(370, 350, "Pressione E para jogar", "CassinoGame");
+        this.CassinoGameZone = this.createDoor(315, 350, "Pressione E para jogar", "CassinoGame");
         this.cassinoAttendant2Zone = this.createDoor(200, 105, "Pressione C para falar com o BarTender", null );
         this.blackNestMemberZone = this.createDoor(450, 260, "Pressione C para conversar com o Hacker", null).setVisible(false); 
         this.cassinoPC = this.createDoor(105, 60, "Pressione E para comprar fichas", "CassinoPC").setVisible(false); 
