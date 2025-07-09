@@ -212,6 +212,7 @@ export default class DantePC extends Phaser.Scene {
 
     openShop() {
         this.popupOpen = true;
+        this.confirmPopupOpen = false;
 
         this.shopPopup = this.add.rectangle(635, 275, 650, 350, 0x9E9AA6).setDepth(10);
 
@@ -262,14 +263,61 @@ export default class DantePC extends Phaser.Scene {
         const spacing = 140;
         this.shopItems = [];
 
+        this.showConfirmPopup = (x, y, width, height, onConfirm) => {
+            if (this.confirmPopupOpen) return;
+            this.confirmPopupOpen = true;
+
+            const confirmBg = this.add.rectangle(x, y, width, height, 0x222222).setDepth(20);
+            const confirmText = this.add.text(x, y - 30, "Confirmar compra?", {
+                fontSize: "10px",
+                fill: "#FFFFFF",
+                fontFamily: "monospace",
+            }).setOrigin(0.5).setDepth(21);
+
+            const btnSim = this.add.text(x - 30, y + 30, "Sim", {
+                fontSize: "18px",
+                fill: "#00FF00",
+                fontFamily: "monospace",
+                backgroundColor: "#222",
+                padding: { x: 10, y: 5 }
+            }).setOrigin(0.5).setInteractive().setDepth(21);
+
+            const btnNao = this.add.text(x + 30, y + 30, "Não", {
+                fontSize: "18px",
+                fill: "#FF0000",
+                fontFamily: "monospace",
+                backgroundColor: "#222",
+                padding: { x: 10, y: 5 }
+            }).setOrigin(0.5).setInteractive().setDepth(21);
+
+        
+            const destroyPopup = () => {
+                confirmBg.destroy();
+                confirmText.destroy();
+                btnSim.destroy();
+                btnNao.destroy();
+                this.confirmPopupOpen = false;
+            };
+
+            btnSim.on("pointerdown", () => {
+                destroyPopup();
+                onConfirm();
+            });
+            btnNao.on("pointerdown", () => {
+                destroyPopup();
+            });
+        };
+
         shopData.forEach((itemData, i) => {
             const x = startX + i * spacing;
+            const y = 280;
+            const width = 110;
+            const height = 300;
 
-            const bg = this.add.rectangle(x, 280, 110, 300, 0xffffff).setDepth(10);
+            const bg = this.add.rectangle(x, y, width, height, 0xffffff).setDepth(10);
             const icon = this.add.image(x, 230, itemData.icon)
             .setScale(itemData.scale || 1.0)
             .setDepth(11);
-
 
             const label = this.add.text(x, 310, itemData.name, {
                 fontSize: "12px",
@@ -286,81 +334,82 @@ export default class DantePC extends Phaser.Scene {
             bg.setInteractive();
 
             bg.on("pointerdown", () => {
+                this.showConfirmPopup(x, y, width, height, () => {
+                    const chapter = GameState.getChapter();
+                    if (itemData.name === "1 Ditcoin") {
+                        if (chapter <= 2) {
+                            if (!this.noWallet) {
+                                this.textInsufficientBackground = this.add.rectangle(x, 370, 380, 20, 0x000000)
+                                    .setOrigin(0.5)
+                                    .setDepth(10)
+                                    .setVisible(true);
+                                this.noWallet = this.add.text(x, 370, "Você ainda não tem uma carteira de criptoativos", {
+                                    fontSize: "14px",
+                                    fill: "#FFFFFF",
+                                    fontFamily: "monospace",
+                                }).setOrigin(0.5).setDepth(11).setVisible(true);
 
-                const chapter = GameState.getChapter();
-                
-                if (itemData.name === "1 Ditcoin") {
-                  if (chapter <= 2) {
-                    if (!this.noWallet) {
-                        this.textInsufficientBackground = this.add.rectangle(x, 370, 380, 20, 0x000000)
-                            .setOrigin(0.5)
-                            .setDepth(10)
-                            .setVisible(true);
-                        this.noWallet = this.add.text(x, 370, "Você ainda não tem uma carteira de criptoativos", {
-                            fontSize: "14px",
-                            fill: "#FFFFFF",
-                            fontFamily: "monospace",
-                        }).setOrigin(0.5).setDepth(11).setVisible(true);
+                                this.time.delayedCall(1500, () => {
+                                    this.textInsufficientBackground.destroy();
+                                    this.noWallet.destroy();
+                                    this.textInsufficientBackground = null;
+                                    this.noWallet = null;
+                                });
+                            }
+                            return;
+                        } 
 
-                        this.time.delayedCall(1500, () => {
-                            this.textInsufficientBackground.destroy();
-                            this.noWallet.destroy();
-                            this.textInsufficientBackground = null;
-                            this.noWallet = null;
-                        });
+                        const ditcoinPriceMap = {
+                            2: 1000,
+                            3: 5000,
+                            4: 20000
+                        };
+
+                        const price = ditcoinPriceMap[chapter];
+                        const currentDelfirs = GameState.getCoins("delfir");
+
+                        if (currentDelfirs >= price) {
+                            GameState.addCoins("ditcoin", 1);
+                            GameState.addCoins("delfir", -price);
+                            this.coinBar._refreshDisplay();
+                        } else {
+                            if (!this.insufficient) {
+                                this.textInsufficientBackground = this.add.rectangle(x, 370, 200, 20, 0x000000).setOrigin(0.5).setDepth(10); 
+                                this.insufficient = this.add.text(x, 370, "Delfirs insuficientes!", {
+                                    fontSize: "14px",
+                                    fill: "#FFFFFF",
+                                    fontFamily: "monospace",
+                                }).setOrigin(0.5).setDepth(11);
+                        
+                                this.time.delayedCall(1500, () => {
+                                    this.textInsufficientBackground.destroy()
+                                    this.insufficient.destroy();
+                                    this.insufficient = null;
+                                }); 
+                            }
+                        } return;
                     }
-                    return;
-                } 
 
-                const ditcoinPriceMap = {
-                    2: 1000,
-                    3: 5000,
-                    4: 20000
-                };
+                    if (itemData.name === "Recarregar Core") {
+                        this.coreBar.resetCores();
+                        console.log("Cores recarregadas!");
+                        return;
+                    }
 
-                const price = ditcoinPriceMap[chapter];
-                const currentDelfirs = GameState.getCoins("delfir");
+                    const delfirMap = {
+                        "500 Delfirs": 500,
+                        "2000 Delfirs": 2000,
+                        "10000 Delfir": 10000,
+                    };
 
-                if (currentDelfirs >= price) {
-                    GameState.addCoins("ditcoin", 1);
-                    GameState.addCoins("delfir", -price);
-                    this.coinBar._refreshDisplay();
-                } else {
-                     if (!this.insufficient) {
-                    this.textInsufficientBackground = this.add.rectangle(x, 370, 200, 20, 0x000000).setOrigin(0.5).setDepth(10); 
-                    this.insufficient = this.add.text(x, 370, "Delfirs insuficientes!", {
-                        fontSize: "14px",
-                        fill: "#FFFFFF",
-                        fontFamily: "monospace",
-                    }).setOrigin(0.5).setDepth(11);
-            
-                    this.time.delayedCall(1500, () => {
-                        this.textInsufficientBackground.destroy()
-                        this.insufficient.destroy();
-                        this.insufficient = null;
-                        }); 
-                      }
-                    } return;
-                }
-
-                if (itemData.name === "Recarregar Core") {
-                    this.coreBar.resetCores();
-                    console.log("Cores recarregadas!");
-                    return;
-                }
-
-                const delfirMap = {
-                    "500 Delfirs": 500,
-                    "2000 Delfirs": 2000,
-                    "10000 Delfir": 10000,
-                };
-
-                if (delfirMap[itemData.name]) {
-                    const amount = delfirMap[itemData.name];
-                    GameState.addCoins("delfir", amount);
-                    this.coinBar._refreshDisplay();
-                    console.log(`Adicionados ${amount} Delfir`)
-            }});
+                    if (delfirMap[itemData.name]) {
+                        const amount = delfirMap[itemData.name];
+                        GameState.addCoins("delfir", amount);
+                        this.coinBar._refreshDisplay();
+                        console.log(`Adicionados ${amount} Delfir`)
+                    }
+                });
+            });
     
             this.shopItems.push(bg, icon, label, price);
         });
